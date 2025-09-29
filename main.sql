@@ -38,6 +38,9 @@ DROP TABLE IF EXISTS airport;
     description VARCHAR(10) NOT NULL 
 );
 
+INSERT INTO status (id, description) VALUES
+(0, 'on time'), (1, 'delayed'), (2, 'cancelled');
+
  CREATE TABLE pilot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR(20) NOT NULL,
