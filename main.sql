@@ -1,12 +1,23 @@
 
 
-DROP TABLE flight;
+-- check the table just created:
+. schema
+-- check the list of tables:
+. table
+
+
+
+DROP TABLE IF EXISTS flight;
+DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS status;
+DROP TABLE IF EXISTS pilot;
+DROP TABLE IF EXISTS airport;
 
 
  CREATE TABLE flight (
     number VARCHAR(10) PRIMARY KEY,
-    originId INTEGER NOT NULL REFERENCES location(id),
-    destinationId INTEGER NOT NULL REFERENCES location(id),
+    originId INTEGER NOT NULL REFERENCES airport(id),
+    destinationId INTEGER NOT NULL REFERENCES airport(id),
     departureTime DATE NOT NULL
 );
 
@@ -34,8 +45,38 @@ DROP TABLE flight;
     phone VARCHAR(16)
 );
 
- CREATE TABLE location (
+
+
+
+
+
+
+ CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(20) NOT NULL
+    name VARCHAR(20) NOT NULL,
+    city VARCHAR(20) NOT NULL,
+    country VARCHAR(20) NOT NULL
 );
+
+
+
+
+
+INSERT INTO airport (name, city, country) VALUES
+('Tokyo Haneda Airport', 'Tokyo', 'Japan'),
+('London Heathrow Airport', 'London', 'United Kingdom'),
+('Hong Kong International Airport', 'Hong Kong', 'Hong Kong'),
+('Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands'),
+('Frankfurt Airport', 'Frankfurt', 'Germany'),
+('Changi Airport', 'Singapore', 'Singapore'),
+('Incheon International Airport', 'Seoul', 'South Korea'),
+('Johannesburg OR Tambo International Airport', 'Johannesburg', 'South Africa'),
+('Sydney Airport', 'Sydney', 'Australia'),
+('Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia'),
+('Toronto Pearson International Airport', 'Toronto', 'Canada'),
+('Chennai International Airport', 'Chennai', 'India'),
+('Cairo International Airport', 'Cairo', 'Egypt'),
+('JFK Airport', 'New York', 'United States'),
+('Lisbon Humberto Delgado Airport', 'Lisbon', 'Portugal');
+
 
