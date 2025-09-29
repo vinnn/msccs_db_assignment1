@@ -28,6 +28,12 @@ CREATE TABLE schedule (
     arrivalActualTime TIME NOT NULL
 );
 
+-- INSERT INTO schedule (flightNumber, statusId, pilotId, departureActualDate,departureActualTime, arrivalActualDate, arrivalActualTime) VALUES
+-- ('YESA101', 0, 1, '07:55:00'),
+
+
+
+
 
 
 
@@ -35,25 +41,26 @@ CREATE TABLE flight (
     number VARCHAR(10) PRIMARY KEY,
     originId INTEGER NOT NULL REFERENCES airport(id),
     destinationId INTEGER NOT NULL REFERENCES airport(id),
-    departureTime DATE NOT NULL
+    departureTime TIME NOT NULL,
+    duration TIME NOT NULL
 );
 
 INSERT INTO flight (number, originId, destinationId, departureTime) VALUES
-('YESA101', 1, 4, '07:55:00'),
-('YESA102', 1, 6, '09:35:00'),
-('YESA103', 1, 9, '11:50:00'),
-('YESA104', 3, 5, '11:30:00'),
-('YESA105', 3, 4, '10:55:00'),
-('YESA106', 4, 8, '08:35:00'),
-('YESA107', 4, 14, '20:20:00'),
-('YESA108', 11, 4, '20:55:00'),
-('YESA109', 10, 2, '08:00:00'),
-('YESA110', 8, 3, '16:20:00'),
-('YESA111', 9, 3, '19:25:00'),
-('YESA112', 9, 4, '10:55:00'),
-('YESA113', 12, 4, '08:30:00'),
-('YESA114', 12, 4, '12:45:00'),
-('YESA115', 12, 4, '17:10:00');
+('YESA101', 1, 4, '07:55:00', '11:05:00'),
+('YESA102', 1, 6, '09:35:00', '08:25:00'),
+('YESA103', 1, 9, '11:50:00', '12:05:00'),
+('YESA104', 3, 5, '11:30:00', '09:00:00'),
+('YESA105', 3, 4, '10:55:00', '05:20:00'),
+('YESA106', 4, 8, '08:35:00', '06:00:00'),
+('YESA107', 4, 14, '20:20:00', '07:25:00'),
+('YESA108', 11, 4, '20:55:00', '04:05:00'),
+('YESA109', 10, 2, '08:00:00', '05:35:00'),
+('YESA110', 8, 3, '16:20:00', 05:25:00'),
+('YESA111', 9, 3, '19:25:00', '06:35:00'),
+('YESA112', 9, 4, '10:55:00', '06:25:00'),
+('YESA113', 12, 4, '08:30:00', '03:00:00'),
+('YESA114', 12, 4, '12:45:00', '04:35:00'),
+('YESA115', 12, 4, '17:10:00', '04:25:00');
 
 
 
