@@ -40,15 +40,25 @@ DROP TABLE IF EXISTS airport;
 
  CREATE TABLE pilot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(20) NOT NULL,
-    email VARCHAR(30),
-    phone VARCHAR(16)
+    first_name VARCHAR(20) NOT NULL,
+    last_name VARCHAR(20) NOT NULL,
+    email VARCHAR(30) UNIQUE NOT NULL,
+    phone VARCHAR(16) UNIQUE NOT NULL
 );
 
 
 
-
-
+INSERT INTO pilot (first_name, last_name, email, phone) VALUES
+('Steve', 'Lewis', 's.lewis@yesairways', '0849384738202'),
+('Josh', 'Tambo', 'j.tambo@yesairways', '0849389873642'),
+('Sylvie', 'Aritin', 's.aritin@yesairways', '0839876462737'),
+('Joseph', 'Dimst', 'j.dimst@yesairways', '0898346493877'),
+('Aruna', 'Reno', 'a.reno@yesairways', '0837648376438'),
+('Bill', 'Farr', 'b.farr@yesairways', '0852374203846'),
+('Max', 'Himtas', 'm.himtas@yesairways', '0899846288872'),
+('Bob', 'Hewitt', 'b.hewitt@yesairways', '0852837698379'),
+('Marina', 'Bens', 'm.bens@yesairways', '0823876349879'),
+('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880');
 
 
  CREATE TABLE airport (
