@@ -14,15 +14,10 @@ DROP TABLE IF EXISTS pilot;
 DROP TABLE IF EXISTS airport;
 
 
- CREATE TABLE flight (
-    number VARCHAR(10) PRIMARY KEY,
-    originId INTEGER NOT NULL REFERENCES airport(id),
-    destinationId INTEGER NOT NULL REFERENCES airport(id),
-    departureTime DATE NOT NULL
-);
 
 
- CREATE TABLE schedule (
+
+CREATE TABLE schedule (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     flightNumber VARCHAR(10) NOT NULL REFERENCES flight(number),
     statusId INTEGER NOT NULL REFERENCES status(id),
@@ -33,7 +28,38 @@ DROP TABLE IF EXISTS airport;
     arrivalActualTime TIME NOT NULL
 );
 
- CREATE TABLE status (
+
+
+
+CREATE TABLE flight (
+    number VARCHAR(10) PRIMARY KEY,
+    originId INTEGER NOT NULL REFERENCES airport(id),
+    destinationId INTEGER NOT NULL REFERENCES airport(id),
+    departureTime DATE NOT NULL
+);
+
+INSERT INTO flight (number, originId, destinationId, departureTime) VALUES
+('YESA101', 1, 4, '07:55:00'),
+('YESA102', 1, 6, '09:35:00'),
+('YESA103', 1, 9, '11:50:00'),
+('YESA104', 3, 5, '11:30:00'),
+('YESA105', 3, 4, '10:55:00'),
+('YESA106', 4, 8, '08:35:00'),
+('YESA107', 4, 14, '20:20:00'),
+('YESA108', 11, 4, '20:55:00'),
+('YESA109', 10, 2, '08:00:00'),
+('YESA110', 8, 3, '16:20:00'),
+('YESA111', 9, 3, '19:25:00'),
+('YESA112', 9, 4, '10:55:00'),
+('YESA113', 12, 4, '08:30:00'),
+('YESA114', 12, 4, '12:45:00'),
+('YESA115', 12, 4, '17:10:00');
+
+
+
+
+
+CREATE TABLE status (
     id INTEGER PRIMARY KEY,
     description VARCHAR(10) NOT NULL 
 );
@@ -41,7 +67,9 @@ DROP TABLE IF EXISTS airport;
 INSERT INTO status (id, description) VALUES
 (0, 'on time'), (1, 'delayed'), (2, 'cancelled');
 
- CREATE TABLE pilot (
+
+
+CREATE TABLE pilot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
@@ -64,7 +92,7 @@ INSERT INTO pilot (first_name, last_name, email, phone) VALUES
 ('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880');
 
 
- CREATE TABLE airport (
+CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(20) NOT NULL,
     city VARCHAR(20) NOT NULL,
