@@ -1,50 +1,41 @@
 
 
+DROP TABLE flight;
 
 
  CREATE TABLE flight (
-    number VARCHAR(10) NOT NULL,
-    originId INTEGER NOT NULL,
-    destinationId INTEGER NOT NULL,
-    departureTime DATE NOT NULL,
-    PRIMARY KEY (number),
-    FOREIGN KEY (originId) REFERENCES location(id),
-    FOREIGN KEY (destinationId) REFERENCES location(id)
-)
+    number VARCHAR(10) PRIMARY KEY,
+    originId INTEGER NOT NULL REFERENCES location(id),
+    destinationId INTEGER NOT NULL REFERENCES location(id),
+    departureTime DATE NOT NULL
+);
 
 
  CREATE TABLE schedule (
-    id INTEGER UNSIGNED NOT NULL AUTOINCREMENT,
-    flightNumber VARCHAR(10) NOT NULL,
-    statusId INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    flightNumber VARCHAR(10) NOT NULL REFERENCES flight(number),
+    statusId INTEGER NOT NULL REFERENCES status(id),
+    pilotId INTEGER NOT NULL REFERENCES pilot(id),
     departureActualDate DATE NOT NULL,
     departureActualTime TIME NOT NULL,
     arrivalActualDate DATE NOT NULL,
-    arrivalActualTime TIME NOT NULL,
-    pilotId INTEGER NOT NULL
-    PRIMARY KEY (id),
-    FOREIGN KEY (flightNumber) REFERENCES flight(number),    
-    FOREIGN KEY (statusId) REFERENCES status(id),
-    FOREIGN KEY (pilotId) REFERENCES pilot(id)    
-)
+    arrivalActualTime TIME NOT NULL
+);
 
  CREATE TABLE status (
-    id INTEGER NOT NULL,
-    description VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id)    
-)
+    id INTEGER PRIMARY KEY,
+    description VARCHAR(10) NOT NULL 
+);
 
  CREATE TABLE pilot (
-    id INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(20) NOT NULL,
     email VARCHAR(30),
-    phone VARCHAR(16),
-    PRIMARY KEY (id)
-)
+    phone VARCHAR(16)
+);
 
  CREATE TABLE location (
-    id INTEGER NOT NULL,
-    name VARCHAR(20) NOT NULL,
-    PRIMARY KEY (id)
-)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(20) NOT NULL
+);
 
