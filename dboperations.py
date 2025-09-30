@@ -1,6 +1,59 @@
 import sqlite3
 
+
+# flights
+# - date
+# - time
+# - status
+# - route
+
+
 class DBOperations:
+  
+    sql_create_if_not_exist_table_schedule = "CREATE TABLE IF NOT EXISTS schedule ( \
+        id INTEGER PRIMARY KEY AUTOINCREMENT, \
+        flightNumber VARCHAR(10) NOT NULL REFERENCES flight(number), \
+        statusId INTEGER NOT NULL REFERENCES status(id), \
+        pilotId INTEGER NOT NULL REFERENCES pilot(id), \
+        departureActualDate DATE NOT NULL, \
+        departureActualTime TIME NOT NULL, \
+        arrivalActualDate DATE NOT NULL, \
+        arrivalActualTime TIME NOT NULL \
+    );"
+
+    sql_create_if_not_exist_table_flight = "CREATE TABLE IF NOT EXISTS flight ( \
+        number VARCHAR(10) PRIMARY KEY, \
+        originId INTEGER NOT NULL REFERENCES airport(id), \
+        destinationId INTEGER NOT NULL REFERENCES airport(id), \
+        departureTime TIME NOT NULL, \
+        duration TIME NOT NULL \
+    );"
+
+    sql_create_if_not_exist_table_status = "CREATE TABLE IF NOT EXISTS status ( \
+        id INTEGER PRIMARY KEY, \
+        description VARCHAR(10) NOT NULL \
+    );"
+
+    sql_create_if_not_exist_table_pilot = "CREATE TABLE IF NOT EXISTS pilot ( \
+        id INTEGER PRIMARY KEY AUTOINCREMENT, \
+        first_name VARCHAR(20) NOT NULL, \
+        last_name VARCHAR(20) NOT NULL, \
+        email VARCHAR(30) UNIQUE NOT NULL, \
+        phone VARCHAR(16) UNIQUE NOT NULL \
+    );"
+
+    sql_create_if_not_exist_table_airport = "CREATE TABLE IF NOT EXISTS airport ( \
+        id INTEGER PRIMARY KEY AUTOINCREMENT, \
+        name VARCHAR(20) NOT NULL, \
+        city VARCHAR(20) NOT NULL, \
+        country VARCHAR(20) NOT NULL \
+    );"
+
+ 
+
+
+
+
 #   sql_create_tables_firsttime = "" \
 #   "CREATE TABLE IF NOT EXISTS schedule;" \
 #     "CREATE TABLE IF NOT EXISTS flight;" \
@@ -18,127 +71,177 @@ class DBOperations:
 #   sql_delete_data = ""
 #   sql_drop_table = ""
 
-  ############################################# 
-  def __init__(self):
-    try:
-      self.conn = sqlite3.connect("airline.db")
-      self.cur = self.conn.cursor()
-    #   self.cur.execute(self.sql_create_tables_firsttime)
-      self.cur.execute('''SELECT * FROM pilot''')
-      result = self.cur.fetchone()
-      print(result)
-      self.conn.commit()
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
+    ############################################# 
+    def __init__(self):
+        try:
+            self.conn = sqlite3.connect("airline.db")
+            self.cur = self.conn.cursor()
+            self.cur.execute(self.sql_create_if_not_exist_table_schedule)
+            #   self.cur.execute('''SELECT * FROM pilot''')
+            #   result = self.cur.fetchone()
+            #   print(result)
+            self.conn.commit()
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
-  ############################################# 
-  def get_connection(self):
-    self.conn = sqlite3.connect("DBName.db")
-    self.cur = self.conn.cursor()
-    
+    ############################################# 
+    def get_connection(self):
+        self.conn = sqlite3.connect("airline.db")
+        self.cur = self.conn.cursor()
+        
 
-  ############################################# 
-  def create_table(self):
-    try:
-      self.get_connection()
-      self.cur.execute(self.sql_create_table)
-      self.conn.commit()
-      print("Table created successfully")
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
+    ############################################# 
+    # def create_table(self):
+    #     try:
+    #         self.get_connection()
+    #         self.cur.execute(self.sql_create_table)
+    #         self.conn.commit()
+    #         print("Table created successfully")
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close()
 
-  ############################################# 
-  def insert_data(self):
-    try:
-      self.get_connection()
+    ############################################# 
+    def insert_flight_in_schedule(self):
+        try:
+            self.get_connection()
 
-      flight = FlightInfo()
-      flight.set_flight_id(int(input("Enter FlightID: ")))
+            flight = FlightInfo()
+            flight.set_flight_id(int(input("Enter FlightID: ")))
 
-      self.cur.execute(self.sql_insert, tuple(str(flight).split("\n")))
+            self.cur.execute(self.sql_insert, tuple(str(flight).split("\n")))
 
-      self.conn.commit()
-      print("Inserted data successfully")
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
-  ############################################# 
-  def select_all(self):
-    try:
-      self.get_connection()
-      self.cur.execute(self.sql_select_all)
-      result = self.cur.fetchall()
-
-      # think how you could develop this method to show the records
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
-  ############################################# 
-  def search_data(self):
-    try:
-      self.get_connection()
-      flightID = int(input("Enter FlightNo: "))
-      self.cur.execute(self.sql_search, tuple(str(flightID)))
-      result = self.cur.fetchone()
-      if type(result) == type(tuple()):
-        for index, detail in enumerate(result):
-          if index == 0:
-            print("Flight ID: " + str(detail))
-          elif index == 1:
-            print("Flight Origin: " + detail)
-          elif index == 2:
-            print("Flight Destination: " + detail)
-          else:
-            print("Status: " + str(detail))
-      else:
-        print("No Record")
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
+            self.conn.commit()
+            print("Inserted data successfully")
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
 
-  ############################################# 
-  def update_data(self):
-    try:
-      self.get_connection()
-
-      # Update statement
-
-      if result.rowcount != 0:
-        print(str(result.rowcount) + "Row(s) affected.")
-      else:
-        print("Cannot find this record in the database")
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
 
 
-# Define Delete_data method to delete data from the table. The user will need to input the flight id to delete the corrosponding record.
+    ############################################# 
+    def search_data(self):
+        try:
+            self.get_connection()
+            flightID = int(input("Enter FlightNo: "))
+            self.cur.execute(self.sql_search, tuple(str(flightID)))
+            result = self.cur.fetchone()
+            if type(result) == type(tuple()):
+                for index, detail in enumerate(result):
+                    if index == 0:
+                        print("Flight ID: " + str(detail))
+                    elif index == 1:
+                        print("Flight Origin: " + detail)
+                    elif index == 2:
+                        print("Flight Destination: " + detail)
+                    else:
+                        print("Status: " + str(detail))
+            else:
+                print("No Record")
 
-  def delete_data(self):
-    try:
-      self.get_connection()
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
-      if result.rowcount != 0:
-        print(str(result.rowcount) + "Row(s) affected.")
-      else:
-        print("Cannot find this record in the database")
 
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
+
+    ############################################# 
+    def select_all(self):
+        try:
+            self.get_connection()
+            self.cur.execute(self.sql_select_all)
+            result = self.cur.fetchall()
+
+            # think how you could develop this method to show the records
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+    # def select_flights_by_destination_and_date(self):
+    #     try:
+
+    #         "SELECT * FROM schedule \
+    #                 WHERE  \
+    #             );"
+
+    #         self.get_connection()
+    #         self.cur.execute(self.sql_select_flights_by_destination_and_date)
+    #         result = self.cur.fetchall()
+
+    #         # think how you could develop this method to show the records
+
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close() 
+
+
+
+    ############################################# 
+    def search_data(self):
+        try:
+            self.get_connection()
+            flightID = int(input("Enter FlightNo: "))
+            self.cur.execute(self.sql_search, tuple(str(flightID)))
+            result = self.cur.fetchone()
+            if type(result) == type(tuple()):
+                for index, detail in enumerate(result):
+                    if index == 0:
+                        print("Flight ID: " + str(detail))
+                    elif index == 1:
+                        print("Flight Origin: " + detail)
+                    elif index == 2:
+                        print("Flight Destination: " + detail)
+                    else:
+                        print("Status: " + str(detail))
+            else:
+                print("No Record")
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+    ############################################# 
+    def update_data(self):
+        try:
+            self.get_connection()
+
+            # Update statement
+
+            if result.rowcount != 0:
+                print(str(result.rowcount) + "Row(s) affected.")
+            else:
+                print("Cannot find this record in the database")
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+    # Define Delete_data method to delete data from the table. The user will need to input the flight id to delete the corrosponding record.
+
+    def delete_data(self):
+        try:
+            self.get_connection()
+
+            if result.rowcount != 0:
+                print(str(result.rowcount) + "Row(s) affected.")
+            else:
+                print("Cannot find this record in the database")
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 

@@ -29,7 +29,7 @@ CREATE TABLE schedule (
 );
 
 -- INSERT INTO schedule (flightNumber, statusId, pilotId, departureActualDate,departureActualTime, arrivalActualDate, arrivalActualTime) VALUES
--- ('YESA101', 0, 1, '2025-12-04', '07:55:00', ),
+-- ('YESA101', 0, 1, '07:55:00'),
 
 
 

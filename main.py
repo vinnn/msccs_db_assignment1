@@ -195,7 +195,7 @@ class FlightInfo:
 while True:
   print("\n Menu:")
   print("**********")
-  print(" 1. Create table FlightInfo")
+  print(" 1. View flights by destination and date")
   print(" 2. Insert data into FlightInfo")
   print(" 3. Select all data from FlightInfo")
   print(" 4. Search a flight")
@@ -209,7 +209,8 @@ while True:
   __choose_menu = int(input("Enter your choice: "))
   # db_ops = DBOperations()    # this is the original location
   if __choose_menu == 1:
-    db_ops.create_table()
+    db_ops.select_flights_by_destination_and_date()
+    # db_ops.create_table()
   elif __choose_menu == 2:
     db_ops.insert_data()
   elif __choose_menu == 3:
