@@ -1,5 +1,6 @@
 import sqlite3
 
+from pilot import PilotInfo
 
 # flights
 # - date
@@ -92,6 +93,29 @@ class DBOperations:
         self.cur = self.conn.cursor()
         
 
+
+    def insert_new_pilot(self):
+        try:
+            self.get_connection()
+
+            pilot = PilotInfo()
+            pilot.set_first_name(input("Enter pilot first name: "))
+            pilot.set_last_name(input("Enter pilot last name: "))
+            pilot.set_email(input("Enter pilot email address: "))
+            pilot.set_phone(input("Enter pilot phone number: "))
+
+            sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
+            self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
+
+            self.conn.commit()
+            print("Inserted data successfully")
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+
     ############################################# 
     # def create_table(self):
     #     try:
@@ -105,21 +129,6 @@ class DBOperations:
     #         self.conn.close()
 
     ############################################# 
-    def insert_flight_in_schedule(self):
-        try:
-            self.get_connection()
-
-            flight = FlightInfo()
-            flight.set_flight_id(int(input("Enter FlightID: ")))
-
-            self.cur.execute(self.sql_insert, tuple(str(flight).split("\n")))
-
-            self.conn.commit()
-            print("Inserted data successfully")
-        except Exception as e:
-            print(e)
-        finally:
-            self.conn.close()
 
 
 
@@ -165,50 +174,9 @@ class DBOperations:
         finally:
             self.conn.close()
 
-    # def select_flights_by_destination_and_date(self):
-    #     try:
-
-    #         "SELECT * FROM schedule \
-    #                 WHERE  \
-    #             );"
-
-    #         self.get_connection()
-    #         self.cur.execute(self.sql_select_flights_by_destination_and_date)
-    #         result = self.cur.fetchall()
-
-    #         # think how you could develop this method to show the records
-
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.conn.close() 
 
 
 
-    ############################################# 
-    def search_data(self):
-        try:
-            self.get_connection()
-            flightID = int(input("Enter FlightNo: "))
-            self.cur.execute(self.sql_search, tuple(str(flightID)))
-            result = self.cur.fetchone()
-            if type(result) == type(tuple()):
-                for index, detail in enumerate(result):
-                    if index == 0:
-                        print("Flight ID: " + str(detail))
-                    elif index == 1:
-                        print("Flight Origin: " + detail)
-                    elif index == 2:
-                        print("Flight Destination: " + detail)
-                    else:
-                        print("Status: " + str(detail))
-            else:
-                print("No Record")
-
-        except Exception as e:
-            print(e)
-        finally:
-            self.conn.close()
 
 
     ############################################# 

@@ -7,8 +7,8 @@
 
 
 
-DROP TABLE IF EXISTS flight;
-DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS flights;
+DROP TABLE IF EXISTS route;
 DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS pilot;
 DROP TABLE IF EXISTS airport;
@@ -17,51 +17,53 @@ DROP TABLE IF EXISTS airport;
 
 
 
-CREATE TABLE schedule (
+CREATE TABLE flights (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    flightNumber VARCHAR(10) NOT NULL REFERENCES flight(number),
+    routeId VARCHAR(10) NOT NULL REFERENCES route(id),
     statusId INTEGER NOT NULL REFERENCES status(id),
     pilotId INTEGER NOT NULL REFERENCES pilot(id),
-    departureActualDate DATE NOT NULL,
-    departureActualTime TIME NOT NULL,
-    arrivalActualDate DATE NOT NULL,
-    arrivalActualTime TIME NOT NULL
+    departureDate DATE NOT NULL,
+    departureTime TIME NOT NULL
+    -- arrivalActualDate DATE NOT NULL, calculated based on duration
+    -- arrivalActualTime TIME NOT NULL  calculated based on duration
 );
 
--- INSERT INTO schedule (flightNumber, statusId, pilotId, departureActualDate,departureActualTime, arrivalActualDate, arrivalActualTime) VALUES
--- ('YESA101', 0, 1, '2025-12-04', '07:55:00', ),
+INSERT INTO flights (routeId, statusId, pilotId, departureDate, departureTime) VALUES
+(1, 1, 4, '2025-09-30', '11:05:00'),
+(3, 1, 6, '2025-10-03', '08:25:00'),
+(5, 1, 9, '2025-10-03', '12:05:00'),
+(8, 3, 5, '2025-10-04', '09:00:00'),
+(8, 3, 4, '2025-10-10', '05:20:00'),
+(6, 4, 8, '2025-10-12', '06:00:00'),
+(9, 4, 14, '2025-10-30', '07:25:00');
 
 
 
 
-
-
-
-CREATE TABLE flight (
-    number VARCHAR(10) PRIMARY KEY,
+CREATE TABLE route (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ref VARCHAR(10),
     originId INTEGER NOT NULL REFERENCES airport(id),
     destinationId INTEGER NOT NULL REFERENCES airport(id),
-    departureTime TIME NOT NULL,
     duration TIME NOT NULL
 );
 
-INSERT INTO flight (number, originId, destinationId, departureTime, duration) VALUES
-('YESA101', 1, 4, '07:55:00', '11:05:00'),
-('YESA102', 1, 6, '09:35:00', '08:25:00'),
-('YESA103', 1, 9, '11:50:00', '12:05:00'),
-('YESA104', 3, 5, '11:30:00', '09:00:00'),
-('YESA105', 3, 4, '10:55:00', '05:20:00'),
-('YESA106', 4, 8, '08:35:00', '06:00:00'),
-('YESA107', 4, 14, '20:20:00', '07:25:00'),
-('YESA108', 11, 4, '20:55:00', '04:05:00'),
-('YESA109', 10, 2, '08:00:00', '05:35:00'),
-('YESA110', 8, 3, '16:20:00', '05:25:00'),
-('YESA111', 9, 3, '19:25:00', '06:35:00'),
-('YESA112', 9, 4, '10:55:00', '06:25:00'),
-('YESA113', 12, 4, '08:30:00', '03:00:00'),
-('YESA114', 12, 4, '12:45:00', '04:35:00'),
-('YESA115', 12, 4, '17:10:00', '04:25:00');
-
+INSERT INTO route (ref, originId, destinationId, duration) VALUES
+('YESA101', 1, 4, '11:05:00'),
+('YESA102', 1, 6, '08:25:00'),
+('YESA103', 1, 9, '12:05:00'),
+('YESA104', 3, 5, '09:00:00'),
+('YESA105', 3, 4, '05:20:00'),
+('YESA106', 4, 8, '06:00:00'),
+('YESA107', 4, 14, '07:25:00'),
+('YESA108', 11, 4, '04:05:00'),
+('YESA109', 10, 2, '05:35:00'),
+('YESA110', 8, 3, '05:25:00'),
+('YESA111', 9, 3, '06:35:00'),
+('YESA112', 9, 4, '06:25:00'),
+('YESA113', 12, 4, '03:00:00'),
+('YESA114', 12, 4, '04:35:00'),
+('YESA115', 12, 4, '04:25:00');
 
 
 
@@ -76,6 +78,7 @@ INSERT INTO status (id, description) VALUES
 
 
 
+
 CREATE TABLE pilot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR(20) NOT NULL,
@@ -83,8 +86,6 @@ CREATE TABLE pilot (
     email VARCHAR(30) UNIQUE NOT NULL,
     phone VARCHAR(16) UNIQUE NOT NULL
 );
-
-
 
 INSERT INTO pilot (first_name, last_name, email, phone) VALUES
 ('Steve', 'Lewis', 's.lewis@yesairways', '0849384738202'),
@@ -99,16 +100,14 @@ INSERT INTO pilot (first_name, last_name, email, phone) VALUES
 ('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880');
 
 
+
+
 CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(20) NOT NULL,
     city VARCHAR(20) NOT NULL,
     country VARCHAR(20) NOT NULL
 );
-
-
-
-
 
 INSERT INTO airport (name, city, country) VALUES
 ('Tokyo Haneda Airport', 'Tokyo', 'Japan'),

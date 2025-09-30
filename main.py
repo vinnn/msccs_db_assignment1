@@ -200,7 +200,7 @@ while True:
   print(" 3. Select all data from FlightInfo")
   print(" 4. Search a flight")
   print(" 5. Update data some records")
-  print(" 6. Delete data some records")
+  print(" 6. Insert a new pilot")
   print(" 7. Exit\n")
 
 
@@ -220,7 +220,7 @@ while True:
   elif __choose_menu == 5:
     db_ops.update_data()
   elif __choose_menu == 6:
-    db_ops.delete_data()
+    db_ops.insert_new_pilot()
   elif __choose_menu == 7:
     exit(0)
   else:
