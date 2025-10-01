@@ -1,6 +1,9 @@
 import sqlite3
 
 from pilot import PilotInfo
+from flight import FlightInfo
+from airport import AirportInfo
+from route import RouteInfo
 
 # flights
 # - date
@@ -50,28 +53,6 @@ class DBOperations:
         country VARCHAR(20) NOT NULL \
     );"
 
- 
-
-
-
-
-#   sql_create_tables_firsttime = "" \
-#   "CREATE TABLE IF NOT EXISTS schedule;" \
-#     "CREATE TABLE IF NOT EXISTS flight;" \
-#       "CREATE TABLE IF NOT EXISTS status;" \
-#         "CREATE TABLE IF NOT EXISTS pilot;" \
-#           "CREATE TABLE IF NOT EXISTS airport;"
-
-#   sql_create_table = "CREATE TABLE TableName"
-
-#   sql_insert = ""
-#   sql_select_all = "SELECT * FROM pilot"
-#   sql_search = "select * from TableName where FlightID = ?"
-#   sql_alter_data = ""
-#   sql_update_data = ""
-#   sql_delete_data = ""
-#   sql_drop_table = ""
-
     ############################################# 
     def __init__(self):
         try:
@@ -93,7 +74,7 @@ class DBOperations:
         self.cur = self.conn.cursor()
         
 
-
+    ############################################# PILOTS      
     def insert_new_pilot(self):
         try:
             self.get_connection()
@@ -115,7 +96,7 @@ class DBOperations:
             self.conn.close()
 
 
-    def select_pilots(self):
+    def select_all_pilots(self):
         try:
             self.get_connection()
             self.cur.execute("SELECT * FROM pilot")
@@ -132,6 +113,75 @@ class DBOperations:
             print(e)
         finally:
             self.conn.close()
+
+
+    ############################################# AIRPORTS      
+    def insert_new_airport(self):
+        try:
+            self.get_connection()
+
+            airport = AirportInfo()
+            airport.set_name(input("Enter airport name: "))
+            airport.set_city(input("Enter airport city name: "))
+            airport.set_country(input("Enter airport country name: "))
+            airport.set_weather(input("Enter airport local weather: "))
+
+            sql_insert = "INSERT INTO airport (name, city, country, weather) VALUES (?,?,?,?)"
+            self.cur.execute(sql_insert, tuple(str(airport).split("\n")))
+
+            self.conn.commit()
+            print("Inserted data successfully")
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+    def select_all_airports(self):
+        try:
+            self.get_connection()
+            self.cur.execute("SELECT * FROM airport")
+            results = self.cur.fetchall()
+
+            headers = ["id","name","city", "country"]
+            print("{:<6}{:<20}{:<20}{:<30}".format(*headers)) # *: unpack argument sequence            
+            # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
+            print("-" * 90)
+            for row in results:
+                print("{:<6}{:<20}{:<20}{:<30}".format(row[0], row[1][:18], row[2][:18], row[3][:18]))   # *: unpack argument sequence
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+    ############################################# ROUTES      
+    def insert_new_route(self):
+        try:
+            self.get_connection()
+
+            self.select_all_airports()
+
+            route = RouteInfo()
+            route.set_ref(input("Enter route reference number: "))
+            route.set_originId(input("Enter origin airport id: "))
+            route.set_destinationId(input("Enter destination airport id: "))
+            route.set_duration(input("Enter route flight duration (HR:MM:SS): "))
+
+            sql_insert = "INSERT INTO route (ref, originId, destinationId, duration) VALUES (?,?,?,?)"
+            self.cur.execute(sql_insert, tuple(str(route).split("\n")))
+
+            self.conn.commit()
+            print("Inserted data successfully")
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+
+
+
 
     ############################################# 
     # def create_table(self):
