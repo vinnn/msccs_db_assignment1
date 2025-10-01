@@ -1,14 +1,14 @@
 import sqlite3
-from dbmodels.pilot import Pilot
+from dbmodels.airport import Airport
 
-class PilotsTable:
+class AirportTable:
 
-    sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS pilot ( \
+    sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS airport ( \
         id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        first_name VARCHAR(20) NOT NULL, \
-        last_name VARCHAR(20) NOT NULL, \
-        email VARCHAR(30) UNIQUE NOT NULL, \
-        phone VARCHAR(16) UNIQUE NOT NULL \
+        name VARCHAR(20) NOT NULL, \
+        city VARCHAR(20) NOT NULL, \
+        country VARCHAR(20) NOT NULL, \
+        weather VARCHAR(20) NOT NULL \
     );"
 
     ############################################# 
@@ -29,18 +29,18 @@ class PilotsTable:
         self.cur = self.conn.cursor()
 
     ############################################# 
-    def insert_new_pilot(self):
+    def insert_new_airport(self):
         try:
             self.get_connection()
 
-            pilot = Pilot()
-            pilot.set_first_name(input("Enter pilot first name: "))
-            pilot.set_last_name(input("Enter pilot last name: "))
-            pilot.set_email(input("Enter pilot email address: "))
-            pilot.set_phone(input("Enter pilot phone number: "))
+            airport = Airport()
+            airport.set_name(input("Enter airport name: "))
+            airport.set_city(input("Enter airport city name: "))
+            airport.set_country(input("Enter airport country name: "))
+            airport.set_weather(input("Enter airport local weather: "))
 
-            sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
-            self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
+            sql_insert = "INSERT INTO airport (name, city, country, weather) VALUES (?,?,?,?)"
+            self.cur.execute(sql_insert, tuple(str(airport).split("\n")))
 
             confirm = True if input("confirm creation (Y/N): ") == "Y" else False
             if confirm:
@@ -48,30 +48,31 @@ class PilotsTable:
                 print("Inserted data successfully")
             else:
                 print("Cancelled insertion")
-
         except Exception as e:
             print(e)
         finally:
             self.conn.close()
 
 
-    def select_all_pilots(self):
+    def select_all_airports(self):
         try:
             self.get_connection()
-            self.cur.execute("SELECT * FROM pilot")
+            self.cur.execute("SELECT * FROM airport")
             results = self.cur.fetchall()
 
-            headers = ["id","first name","last name", "email", "phone"]
-            print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*headers)) # *: unpack argument sequence            
+            headers = ["id","name","city","country","weather"]
+            print("{:<6}{:<50}{:<20}{:<20}{:<20}".format(*headers)) # *: unpack argument sequence            
             # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
-            print("-" * 90)
+            print("-" * 106)
             for row in results:
-                print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*row))   # *: unpack argument sequence
+                print("{:<6}{:<50}{:<20}{:<20}{:<20}".format(row[0], row[1][:48], row[2][:18], row[3][:18], row[4][:18]))   # *: unpack argument sequence
+            print("-" * 106)
 
         except Exception as e:
             print(e)
         finally:
             self.conn.close()
+
 
 
 

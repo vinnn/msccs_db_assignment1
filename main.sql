@@ -7,7 +7,7 @@
 
 
 
-DROP TABLE IF EXISTS flights;
+DROP TABLE IF EXISTS flight;
 DROP TABLE IF EXISTS route;
 DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS pilot;
@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS airport;
 
 
 
-CREATE TABLE flights (
+CREATE TABLE flight (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     routeId VARCHAR(10) NOT NULL REFERENCES route(id),
     statusId INTEGER NOT NULL REFERENCES status(id),
@@ -28,14 +28,14 @@ CREATE TABLE flights (
     -- arrivalActualTime TIME NOT NULL  calculated based on duration
 );
 
-INSERT INTO flights (routeId, statusId, pilotId, departureDate, departureTime) VALUES
-(1, 1, 4, '2025-09-30', '11:05:00'),
-(3, 1, 6, '2025-10-03', '08:25:00'),
+INSERT INTO flight (routeId, statusId, pilotId, departureDate, departureTime) VALUES
+(1, 0, 4, '2025-09-30', '11:05:00'),
+(3, 0, 6, '2025-10-03', '08:25:00'),
 (5, 1, 9, '2025-10-03', '12:05:00'),
-(8, 3, 5, '2025-10-04', '09:00:00'),
-(8, 3, 4, '2025-10-10', '05:20:00'),
-(6, 4, 8, '2025-10-12', '06:00:00'),
-(9, 4, 14, '2025-10-30', '07:25:00');
+(8, 0, 5, '2025-10-04', '09:00:00'),
+(8, 0, 4, '2025-10-10', '05:20:00'),
+(6, 0, 8, '2025-10-12', '06:00:00'),
+(9, 0, 14, '2025-10-30', '07:25:00');
 
 
 
@@ -69,10 +69,10 @@ INSERT INTO route (originId, destinationId, duration) VALUES
 
 CREATE TABLE status (
     id INTEGER PRIMARY KEY,
-    description VARCHAR(10) NOT NULL 
+    text VARCHAR(10) NOT NULL 
 );
 
-INSERT INTO status (id, description) VALUES
+INSERT INTO status (id, text) VALUES
 (0, 'on time'), (1, 'delayed'), (2, 'cancelled');
 
 

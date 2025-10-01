@@ -1,12 +1,11 @@
 
-
     # id INTEGER PRIMARY KEY AUTOINCREMENT,
     # name VARCHAR(20) NOT NULL,
     # city VARCHAR(20) NOT NULL,
     # country VARCHAR(20) NOT NULL
 
 
-class AirportInfo:
+class Airport:
 
     def __init__(self):
         self.id = None

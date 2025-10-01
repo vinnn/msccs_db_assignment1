@@ -1,14 +1,11 @@
 
-
-
     # id INTEGER PRIMARY KEY AUTOINCREMENT,
     # ref VARCHAR(10),
     # originId INTEGER NOT NULL REFERENCES airport(id),
     # destinationId INTEGER NOT NULL REFERENCES airport(id),
     # duration TIME NOT NULL
 
-
-class RouteInfo:
+class Route:
 
     def __init__(self):
         self.id = None
