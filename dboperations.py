@@ -1,6 +1,6 @@
 import sqlite3
 
-from pilot import PilotInfo
+from dbtables.pilotsTable import PilotsTable
 from flight import FlightInfo
 from airport import AirportInfo
 from route import RouteInfo
@@ -44,13 +44,13 @@ class DBOperations:
         description VARCHAR(10) NOT NULL \
     );"
 
-    sql_create_if_not_exist_table_pilot = "CREATE TABLE IF NOT EXISTS pilot ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        first_name VARCHAR(20) NOT NULL, \
-        last_name VARCHAR(20) NOT NULL, \
-        email VARCHAR(30) UNIQUE NOT NULL, \
-        phone VARCHAR(16) UNIQUE NOT NULL \
-    );"
+    # sql_create_if_not_exist_table_pilot = "CREATE TABLE IF NOT EXISTS pilot ( \
+    #     id INTEGER PRIMARY KEY AUTOINCREMENT, \
+    #     first_name VARCHAR(20) NOT NULL, \
+    #     last_name VARCHAR(20) NOT NULL, \
+    #     email VARCHAR(30) UNIQUE NOT NULL, \
+    #     phone VARCHAR(16) UNIQUE NOT NULL \
+    # );"
 
     sql_create_if_not_exist_table_airport = "CREATE TABLE IF NOT EXISTS airport ( \
         id INTEGER PRIMARY KEY AUTOINCREMENT, \
@@ -81,44 +81,44 @@ class DBOperations:
         
 
     ############################################# PILOTS      
-    def insert_new_pilot(self):
-        try:
-            self.get_connection()
+    # def insert_new_pilot(self):
+    #     try:
+    #         self.get_connection()
 
-            pilot = PilotInfo()
-            pilot.set_first_name(input("Enter pilot first name: "))
-            pilot.set_last_name(input("Enter pilot last name: "))
-            pilot.set_email(input("Enter pilot email address: "))
-            pilot.set_phone(input("Enter pilot phone number: "))
+    #         pilot = PilotInfo()
+    #         pilot.set_first_name(input("Enter pilot first name: "))
+    #         pilot.set_last_name(input("Enter pilot last name: "))
+    #         pilot.set_email(input("Enter pilot email address: "))
+    #         pilot.set_phone(input("Enter pilot phone number: "))
 
-            sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
-            self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
+    #         sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
+    #         self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
 
-            self.conn.commit()
-            print("Inserted data successfully")
-        except Exception as e:
-            print(e)
-        finally:
-            self.conn.close()
+    #         self.conn.commit()
+    #         print("Inserted data successfully")
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close()
 
 
-    def select_all_pilots(self):
-        try:
-            self.get_connection()
-            self.cur.execute("SELECT * FROM pilot")
-            results = self.cur.fetchall()
+    # def select_all_pilots(self):
+    #     try:
+    #         self.get_connection()
+    #         self.cur.execute("SELECT * FROM pilot")
+    #         results = self.cur.fetchall()
 
-            headers = ["id","first name","last name", "email", "phone"]
-            print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*headers)) # *: unpack argument sequence            
-            # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
-            print("-" * 90)
-            for row in results:
-                print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*row))   # *: unpack argument sequence
+    #         headers = ["id","first name","last name", "email", "phone"]
+    #         print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*headers)) # *: unpack argument sequence            
+    #         # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
+    #         print("-" * 90)
+    #         for row in results:
+    #             print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*row))   # *: unpack argument sequence
 
-        except Exception as e:
-            print(e)
-        finally:
-            self.conn.close()
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close()
 
 
     ############################################# AIRPORTS      

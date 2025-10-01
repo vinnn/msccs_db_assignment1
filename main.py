@@ -1,6 +1,7 @@
 import sqlite3
 
 from dboperations import DBOperations
+from dbtables.pilotsTable import PilotsTable
 
 # Define DBOperation class to manage all data into the database.
 # Give a name of your choice to the database
@@ -226,6 +227,7 @@ while True:
 
 
   db_ops = DBOperations()
+  pilot_ops = PilotsTable()
 
   __choose_menu = int(input("Enter your choice: "))
   # db_ops = DBOperations()    # this is the original location
@@ -237,11 +239,11 @@ while True:
   elif __choose_menu == 3:
     db_ops.select_all()
   elif __choose_menu == 4:
-    db_ops.insert_new_airport()
-  elif __choose_menu == 5:
-    db_ops.select_all_pilots()
+    pilot_ops.insert_new_pilot()
+  elif __choose_menu == 5: 
+    pilot_ops.select_all_pilots()
   elif __choose_menu == 6:
-    db_ops.insert_new_pilot()
+    pilot_ops.insert_new_pilot()
   elif __choose_menu == 7:
     db_ops.insert_new_airport()
   elif __choose_menu == 8:
