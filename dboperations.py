@@ -12,6 +12,12 @@ from route import RouteInfo
 # - route
 
 
+# TODO: db.rollback
+
+
+
+
+
 class DBOperations:
   
     sql_create_if_not_exist_table_schedule = "CREATE TABLE IF NOT EXISTS schedule ( \
@@ -179,7 +185,22 @@ class DBOperations:
             self.conn.close()
 
 
+    def select_all_routes(self):
+        try:
+            self.get_connection()
+            self.cur.execute("SELECT r.id, a1.name, a1.city, a1.country, a2.name, a2.city, a2.country, r.duration FROM route r, airport a1, airport a2 WHERE r.originId=a1.id AND r.destinationId=a2.id")
+            results = self.cur.fetchall()
 
+            headers = ["id","origin airport","city", "country", "destination airport", "city", "country", "duration"]
+            print("{:<6}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}".format(*headers)) # *: unpack argument sequence            
+            print("-" * 120)
+            for row in results:
+                print("{:<6}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}".format(row[0], row[1][:18], row[2][:14], row[3][:14], row[4][:18], row[5][:14], row[6][:14], row[7][:10]))   # *: unpack argument sequence
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
 
 

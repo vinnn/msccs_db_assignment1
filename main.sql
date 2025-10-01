@@ -42,28 +42,27 @@ INSERT INTO flights (routeId, statusId, pilotId, departureDate, departureTime) V
 
 CREATE TABLE route (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ref VARCHAR(10),
     originId INTEGER NOT NULL REFERENCES airport(id),
     destinationId INTEGER NOT NULL REFERENCES airport(id),
     duration TIME NOT NULL
 );
 
-INSERT INTO route (ref, originId, destinationId, duration) VALUES
-('YESA101', 1, 4, '11:05:00'),
-('YESA102', 1, 6, '08:25:00'),
-('YESA103', 1, 9, '12:05:00'),
-('YESA104', 3, 5, '09:00:00'),
-('YESA105', 3, 4, '05:20:00'),
-('YESA106', 4, 8, '06:00:00'),
-('YESA107', 4, 14, '07:25:00'),
-('YESA108', 11, 4, '04:05:00'),
-('YESA109', 10, 2, '05:35:00'),
-('YESA110', 8, 3, '05:25:00'),
-('YESA111', 9, 3, '06:35:00'),
-('YESA112', 9, 4, '06:25:00'),
-('YESA113', 12, 4, '03:00:00'),
-('YESA114', 12, 4, '04:35:00'),
-('YESA115', 12, 4, '04:25:00');
+INSERT INTO route (originId, destinationId, duration) VALUES
+(1, 4, '11:05:00'),
+(1, 6, '08:25:00'),
+(1, 9, '12:05:00'),
+(3, 5, '09:00:00'),
+(3, 4, '05:20:00'),
+(4, 8, '06:00:00'),
+(4, 14, '07:25:00'),
+(11, 4, '04:05:00'),
+(10, 2, '05:35:00'),
+(8, 3, '05:25:00'),
+(9, 3, '06:35:00'),
+(9, 4, '06:25:00'),
+(12, 4, '03:00:00'),
+(12, 4, '04:35:00'),
+(12, 4, '04:25:00');
 
 
 
