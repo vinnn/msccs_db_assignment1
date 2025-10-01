@@ -135,8 +135,12 @@ class DBOperations:
             sql_insert = "INSERT INTO airport (name, city, country, weather) VALUES (?,?,?,?)"
             self.cur.execute(sql_insert, tuple(str(airport).split("\n")))
 
-            self.conn.commit()
-            print("Inserted data successfully")
+            confirm = True if input("confirm creation (Y/N): ") == "Y" else False
+            if confirm:
+                self.conn.commit()
+                print("Inserted data successfully")
+            else:
+                print("Cancelled insertion")
         except Exception as e:
             print(e)
         finally:
@@ -149,12 +153,13 @@ class DBOperations:
             self.cur.execute("SELECT * FROM airport")
             results = self.cur.fetchall()
 
-            headers = ["id","name","city", "country"]
-            print("{:<6}{:<20}{:<20}{:<30}".format(*headers)) # *: unpack argument sequence            
+            headers = ["id","name","city","country","weather"]
+            print("{:<6}{:<50}{:<20}{:<20}{:<20}".format(*headers)) # *: unpack argument sequence            
             # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
-            print("-" * 90)
+            print("-" * 106)
             for row in results:
-                print("{:<6}{:<20}{:<20}{:<30}".format(row[0], row[1][:18], row[2][:18], row[3][:18]))   # *: unpack argument sequence
+                print("{:<6}{:<50}{:<20}{:<20}{:<20}".format(row[0], row[1][:48], row[2][:18], row[3][:18], row[4][:18]))   # *: unpack argument sequence
+            print("-" * 106)
 
         except Exception as e:
             print(e)
@@ -164,17 +169,16 @@ class DBOperations:
     ############################################# ROUTES      
     def insert_new_route(self):
         try:
-            self.get_connection()
-
+            # show airport information (including ids) in order to create new route
             self.select_all_airports()
 
             route = RouteInfo()
-            route.set_ref(input("Enter route reference number: "))
             route.set_originId(input("Enter origin airport id: "))
             route.set_destinationId(input("Enter destination airport id: "))
             route.set_duration(input("Enter route flight duration (HR:MM:SS): "))
 
-            sql_insert = "INSERT INTO route (ref, originId, destinationId, duration) VALUES (?,?,?,?)"
+            self.get_connection()
+            sql_insert = "INSERT INTO route (originId, destinationId, duration) VALUES (?,?,?)"
             self.cur.execute(sql_insert, tuple(str(route).split("\n")))
 
             self.conn.commit()
@@ -196,11 +200,23 @@ class DBOperations:
             print("-" * 120)
             for row in results:
                 print("{:<6}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}".format(row[0], row[1][:18], row[2][:14], row[3][:14], row[4][:18], row[5][:14], row[6][:14], row[7][:10]))   # *: unpack argument sequence
+            print("-" * 120)
 
         except Exception as e:
             print(e)
         finally:
             self.conn.close()
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -217,7 +217,7 @@ while True:
   print(" 6. Assign pilot to flight")
   print(" 7. Add a new destination (airport)")
   print(" 8. View destination (airport) information")   # / update
-  print(" 9. Add a new flight route")
+  print(" 9. Add a new flight route")                                                         #DONE
   print(" 10. View flight routes")                                                            #DONE
   print(" 11. Exit\n")
 
@@ -243,10 +243,10 @@ while True:
   elif __choose_menu == 6:
     db_ops.insert_new_pilot()
   elif __choose_menu == 7:
-    db_ops.insert_new_route()
+    db_ops.insert_new_airport()
   elif __choose_menu == 8:
-    db_ops.insert_new_route()
-  elif __choose_menu == 9:
+    db_ops.select_all_airports()
+  elif __choose_menu == 9:                # DONE
     db_ops.insert_new_route()
   elif __choose_menu == 10:               # DONE
     db_ops.select_all_routes()

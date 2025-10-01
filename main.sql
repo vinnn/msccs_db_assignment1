@@ -110,20 +110,20 @@ CREATE TABLE airport (
 );
 
 INSERT INTO airport (name, city, country, weather) VALUES
-('Tokyo Haneda Airport', 'Tokyo', 'Japan',''),
-('London Heathrow Airport', 'London', 'United Kingdom',''),
-('Hong Kong International Airport', 'Hong Kong', 'Hong Kong',''),
-('Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands', 'cloudy'),
+('Haneda Airport', 'Tokyo', 'Japan',''),
+('Heathrow Airport', 'London', 'United Kingdom',''),
+('International Airport', 'Hong Kong', 'Hong Kong',''),
+('Schiphol Airport', 'Amsterdam', 'Netherlands', 'cloudy'),
 ('Frankfurt Airport', 'Frankfurt', 'Germany', 'sunny'),
 ('Changi Airport', 'Singapore', 'Singapore',''),
 ('Incheon International Airport', 'Seoul', 'South Korea',''),
-('Johannesburg OR Tambo International Airport', 'Johannesburg', 'South Africa',''),
+('OR Tambo International Airport', 'Johannesburg', 'South Africa',''),
 ('Sydney Airport', 'Sydney', 'Australia',''),
-('Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia',''),
+('International Airport', 'Kuala Lumpur', 'Malaysia',''),
 ('Toronto Pearson International Airport', 'Toronto', 'Canada',''),
-('Chennai International Airport', 'Chennai', 'India', 'very hot'),
-('Cairo International Airport', 'Cairo', 'Egypt',''),
+('International Airport', 'Chennai', 'India', 'very hot'),
+('International Airport', 'Cairo', 'Egypt',''),
 ('JFK Airport', 'New York', 'United States',''),
-('Lisbon Humberto Delgado Airport', 'Lisbon', 'Portugal', 'rainy');
+('Humberto Delgado Airport', 'Lisbon', 'Portugal', 'rainy');
 
 

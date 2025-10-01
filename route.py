@@ -12,13 +12,9 @@ class RouteInfo:
 
     def __init__(self):
         self.id = None
-        self.ref = None
         self.originId = None
         self.destinationId = None
         self.duration = None
-
-    def set_ref(self, ref):
-        self.ref = ref
 
     def set_originId(self, originId):
         self.originId = originId
@@ -30,5 +26,5 @@ class RouteInfo:
         self.duration = duration
 
     def __str__(self):     # this can then be called as :  str(airport)
-        returnStr = self.ref + "\n" + self.originId + "\n" + self.destinationId + "\n" + self.duration 
+        returnStr = self.originId + "\n" + self.destinationId + "\n" + self.duration 
         return returnStr
