@@ -31,4 +31,17 @@ class PilotInfo:
         returnStr = self.first_name + "\n" + self.last_name + "\n" + self.email + "\n" + self.phone 
         return returnStr
     
+    # def __tablerow__(self):
 
+
+
+            # if type(result) == type(tuple()):
+            #     for index, detail in enumerate(result):
+            #         if index == 0:
+            #             print("Flight ID: " + str(detail))
+            #         elif index == 1:
+            #             print("Flight Origin: " + detail)
+            #         elif index == 2:
+            #             print("Flight Destination: " + detail)
+            #         else:
+            #             print("Status: " + str(detail))

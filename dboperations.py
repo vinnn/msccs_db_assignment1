@@ -115,6 +115,23 @@ class DBOperations:
             self.conn.close()
 
 
+    def select_pilots(self):
+        try:
+            self.get_connection()
+            self.cur.execute("SELECT * FROM pilot")
+            results = self.cur.fetchall()
+
+            headers = ["id","first name","last name", "email", "phone"]
+            print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*headers)) # *: unpack argument sequence            
+            # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
+            print("-" * 90)
+            for row in results:
+                print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*row))   # *: unpack argument sequence
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
     ############################################# 
     # def create_table(self):
