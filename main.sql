@@ -106,24 +106,25 @@ CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(20) NOT NULL,
     city VARCHAR(20) NOT NULL,
-    country VARCHAR(20) NOT NULL
+    country VARCHAR(20) NOT NULL,
+    weather VARCHAR(20)
 );
 
-INSERT INTO airport (name, city, country) VALUES
-('Tokyo Haneda Airport', 'Tokyo', 'Japan'),
-('London Heathrow Airport', 'London', 'United Kingdom'),
-('Hong Kong International Airport', 'Hong Kong', 'Hong Kong'),
-('Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands'),
-('Frankfurt Airport', 'Frankfurt', 'Germany'),
-('Changi Airport', 'Singapore', 'Singapore'),
-('Incheon International Airport', 'Seoul', 'South Korea'),
-('Johannesburg OR Tambo International Airport', 'Johannesburg', 'South Africa'),
-('Sydney Airport', 'Sydney', 'Australia'),
-('Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia'),
-('Toronto Pearson International Airport', 'Toronto', 'Canada'),
-('Chennai International Airport', 'Chennai', 'India'),
-('Cairo International Airport', 'Cairo', 'Egypt'),
-('JFK Airport', 'New York', 'United States'),
-('Lisbon Humberto Delgado Airport', 'Lisbon', 'Portugal');
+INSERT INTO airport (name, city, country, weather) VALUES
+('Tokyo Haneda Airport', 'Tokyo', 'Japan',''),
+('London Heathrow Airport', 'London', 'United Kingdom',''),
+('Hong Kong International Airport', 'Hong Kong', 'Hong Kong',''),
+('Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands', 'cloudy'),
+('Frankfurt Airport', 'Frankfurt', 'Germany', 'sunny'),
+('Changi Airport', 'Singapore', 'Singapore',''),
+('Incheon International Airport', 'Seoul', 'South Korea',''),
+('Johannesburg OR Tambo International Airport', 'Johannesburg', 'South Africa',''),
+('Sydney Airport', 'Sydney', 'Australia',''),
+('Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia',''),
+('Toronto Pearson International Airport', 'Toronto', 'Canada',''),
+('Chennai International Airport', 'Chennai', 'India', 'very hot'),
+('Cairo International Airport', 'Cairo', 'Egypt',''),
+('JFK Airport', 'New York', 'United States',''),
+('Lisbon Humberto Delgado Airport', 'Lisbon', 'Portugal', 'rainy');
 
 

@@ -192,16 +192,37 @@ class FlightInfo:
 # These argument will be definded by the users on the console.
 # The user will select a choice from the menu to interact with the database.
 
+
+
+
+# - view all flights
+# - view flight by multiple criteria 
+#     - destination
+#     - status
+#     - departure date
+# - update flight info
+# - assign pilot to flight
+# - view pilot schedule
+# - view destination information
+#     - update 
+
 while True:
   print("\n Menu:")
   print("**********")
-  print(" 1. View flights by destination and date")
-  print(" 2. Insert data into FlightInfo")
-  print(" 3. Select all data from FlightInfo")
-  print(" 4. Search a flight")
-  print(" 5. View all pilots")
-  print(" 6. Insert a new pilot")
-  print(" 7. Exit\n")
+  print(" 1. Add a new flight")
+  print(" 2. View flights")   # filter vs destination, status, departure date
+  print(" 3. Update flight")
+  print(" 4. Add a new pilot") 
+  print(" 5. View pilots")     # filter with availability / select pilot / see schedule
+  print(" 6. Assign pilot to flight")
+  print(" 7. Add a new destination (airport)")
+  print(" 8. View destination (airport) information")   # / update
+  print(" 9. Add a new flight route")
+  print(" 10. View flight routes")  
+  print(" 11. Exit\n")
+
+
+
 
 
   db_ops = DBOperations()
@@ -216,12 +237,14 @@ while True:
   elif __choose_menu == 3:
     db_ops.select_all()
   elif __choose_menu == 4:
-    db_ops.search_data()
+    db_ops.insert_new_airport()
   elif __choose_menu == 5:
-    db_ops.select_pilots()
+    db_ops.select_all_pilots()
   elif __choose_menu == 6:
     db_ops.insert_new_pilot()
   elif __choose_menu == 7:
-    exit(0)
+    db_ops.insert_new_route()
+  elif __choose_menu == 8:
+    exit(0)    
   else:
     print("Invalid Choice")
