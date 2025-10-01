@@ -14,8 +14,6 @@ class FlightTable:
         departureTime TIME NOT NULL \
     );"
 
-
-
     ############################################# 
     def __init__(self):
         try:
@@ -81,7 +79,7 @@ class FlightTable:
                              ''')
             results = self.cur.fetchall()
 
-            print(results)
+            # print(results)
 
             headers = ["id","departure date", "time","from airport","city", "country","to airport","city","country","status"]
             formatsize = "{:<6}{:<18}{:<14}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}"
@@ -97,3 +95,29 @@ class FlightTable:
             self.conn.close()
 
 
+    def select_one_flight(self, flightId):
+        try:
+            self.get_connection()       
+            sql_select = '''
+                            SELECT f.id, f.departureDate, f.departureTime, a1.name, a1.city, a1.country, a2.name, a2.city, a2.country, r.duration, s.text, p.first_name, p.last_name 
+                            FROM flight f, route r, airport a1, airport a2, status s, pilot p
+                            WHERE f.routeId = r.id AND r.originId=a1.id AND r.destinationId=a2.id AND f.statusId=s.id AND f.pilotId=p.id AND f.id=?
+                             '''
+            self.cur.execute(sql_select, (flightId,))
+
+            result = self.cur.fetchone()
+
+            print("-" * 80)            
+            print("{:<24}{:<24}".format("flight id",result[0]))
+            print("{:<24}{:<24}".format("departure date", result[1]))
+            print("{:<24}{:<24}".format("departure time", result[2]))            
+            print("{:<24}{:<24}".format("departure airport", result[3] + ", " + result[4] + ", " + result[5]))            
+            print("{:<24}{:<24}".format("arrival airport", result[6] + ", " + result[7] + ", " + result[8]))
+            print("{:<24}{:<24}".format("status", result[10]))
+            print("{:<24}{:<24}".format("pilot", result[11] + " " + result[12]))  
+            print("-" * 80)
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()

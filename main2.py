@@ -6,6 +6,8 @@ from dbtables.airportTable import AirportTable
 from dbtables.routeTable import RouteTable
 from dbtables.flightTable import FlightTable
 
+from pages.flightPage import FlightPage
+
 
 # - view all flights
 # - view flight by multiple criteria 
@@ -21,21 +23,23 @@ from dbtables.flightTable import FlightTable
 while True:
   print("\n Menu:")
   print("**********")
-  print(" 1. Add a new flight")
-  print(" 2. View flights")   # filter vs destination, status, departure date
-  print(" 3. Update flight")
-  print(" 4. Add a new pilot") 
-  print(" 5. View pilots")     # filter with availability / select pilot / see schedule
-  print(" 6. Assign pilot to flight")
-  print(" 7. Add a new destination (airport)")
-  print(" 8. View destination (airport) information")   # / update
-  print(" 9. Add a new flight route")                                                         #DONE
-  print(" 10. View flight routes")                                                            #DONE
-  print(" 11. Exit\n")
+  print(" 1. Flights")
+  print(" 2. Pilots")   # filter vs destination, status, departure date
+  print(" 3. Airports")
+  print(" 4. Routes")                                                           #DONE
+  print(" 5. Exit\n")
+
+
+#   print(" 5. View pilots")     # filter with availability / select pilot / see schedule
+#   print(" 6. Assign pilot to flight")
+#   print(" 7. Add a new destination (airport)")
+#   print(" 8. View destination (airport) information")   # / update
+#   print(" 9. Add a new flight route")                                                         #DONE
+#   print(" 10. View flight routes")  
 
 
 
-
+  flightPage = FlightPage()
 
   db_ops = DBOperations()
   pilot_ops = PilotTable()
@@ -45,7 +49,7 @@ while True:
 
   __choose_menu = int(input("Enter your choice: "))
   if __choose_menu == 1:
-    flight_ops.insert_new_flight()
+    flightPage.generalView()
   elif __choose_menu == 2:
     flight_ops.select_all_flights()
   elif __choose_menu == 3:
