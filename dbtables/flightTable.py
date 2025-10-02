@@ -37,7 +37,7 @@ class FlightTable:
 
 
     ###############################################################################################################################
-    def insert_new_flight(self):
+    def insert_new_flight(self):   #TODO: refresh this
         try:
             flight = Flight()
 
@@ -89,7 +89,7 @@ class FlightTable:
                              AND f.status_id=s.id 
                              AND a1.location_id=l1.id 
                              AND a2.location_id=l2.id
-                             AND f.departure_date > date('now')
+                             AND datetime(f.departure_date || ' ' || f.departure_time) >= datetime('now')                          
                              ORDER BY f.departure_date, f.departure_time ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
@@ -191,6 +191,35 @@ class FlightTable:
         finally:
             self.conn.close()
 
+
+    ###############################################################################################################################
+    def select_all_past_flights(self):
+        try:
+            self.get_connection()
+            self.cur.execute('''
+                            SELECT f.id AS id, f.departure_date AS "departure_date", f.departure_time AS "departure_time", 
+                             a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
+                             a2.name AS "destination_airport", l2.city AS "destination_city", l2.country AS "destination_country", 
+                             s.text AS "status" 
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2
+                            WHERE 
+                             f.departure_airport_id=a1.id 
+                             AND f.destination_airport_id=a2.id 
+                             AND f.status_id=s.id 
+                             AND a1.location_id=l1.id 
+                             AND a2.location_id=l2.id
+                             AND f.departure_date < date('now')
+                             AND f.departure_time < time('now')
+                             ORDER BY f.departure_date, f.departure_time DESC
+                             ''')
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
 
     ###############################################################################################################################
     def update_flight(self, flight_id, field_to_update, field_new_value):
