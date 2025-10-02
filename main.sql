@@ -20,7 +20,7 @@ CREATE TABLE flight (
     departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
     destination_airport_id INTEGER NOT NULL REFERENCES airport(id),
     status_id INTEGER NOT NULL REFERENCES status(id),
-    pilot_id INTEGER NOT NULL REFERENCES pilot(id),
+    pilot_id INTEGER REFERENCES pilot(id),
     departure_date DATE NOT NULL,
     departure_time TIME NOT NULL
 );

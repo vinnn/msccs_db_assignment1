@@ -103,21 +103,22 @@ class FlightTable:
     def select_one_flight(self, flight_id):
         try:
             self.get_connection()
+            # LEFT JOIN on pilot IN ORDER TO SHOW RESULTS EVEN IF NO PILOT ASSIGNED OR MATCHING
             self.cur.execute('''
                             SELECT f.id AS id, f.departure_date AS "departure_date", f.departure_time AS "departure_time", 
                              a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
                              a2.name AS "destination_airport", l2.city AS "destination_city", l2.country AS "destination_country", 
                              s.text AS "status", 
-                             p.first_name AS "pilot_first_name", p.last_name AS "pilot_last_name" 
-                            FROM flight f, airport a1, airport a2, status s, location l1, location l2, pilot p
-                            WHERE 
-                             f.departure_airport_id=a1.id 
+                             p.id AS "pilot_id", p.first_name AS "pilot_first_name", p.last_name AS "pilot_last_name" 
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2
+                             LEFT JOIN pilot p ON f.pilot_id=p.id
+                            WHERE
+                             f.id=?
+                             AND f.departure_airport_id=a1.id 
                              AND f.destination_airport_id=a2.id 
                              AND f.status_id=s.id 
                              AND a1.location_id=l1.id 
                              AND a2.location_id=l2.id
-                             AND f.pilot_id=p.id
-                             AND f.id=?
                              ''',
                              (flight_id,)
                              )
@@ -130,6 +131,24 @@ class FlightTable:
             print(e)
         finally:
             self.conn.close()
+
+
+    def update_flight(self, flight_id, field_to_update, field_new_value):
+
+        try:
+            self.get_connection()
+            query = f"UPDATE flight SET {field_to_update} = ? WHERE id= ?"
+            self.cur.execute(query, (field_new_value, flight_id,))
+            self.conn.commit()
+            return "successful update"
+
+        except Exception as e:
+            print(e)
+            return "failed update"
+        finally:
+            self.conn.close()
+
+
 
 
 
