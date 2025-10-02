@@ -12,7 +12,7 @@ class FlightPage:
 
         # selected_flightId = int(input("Select flight id (0 for exit): "))
 
-        selected_flightId = request_user_input_int("Select flight id (0 for exit): ")
+        selected_flightId = request_user_input_int("For details or changes, select flight id (0 for exit): ")
 
 
         self.detailView(selected_flightId)
