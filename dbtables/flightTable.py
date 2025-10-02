@@ -89,7 +89,7 @@ class FlightTable:
                              AND f.status_id=s.id 
                              AND a1.location_id=l1.id 
                              AND a2.location_id=l2.id
-                             AND datetime(f.departure_date || ' ' || f.departure_time) >= datetime('now')                          
+                             AND datetime(f.departure_date || ' ' || f.departure_time) > datetime('now', 'localtime')                          
                              ORDER BY f.departure_date, f.departure_time ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
@@ -163,7 +163,7 @@ class FlightTable:
             self.conn.close()
 
     ###############################################################################################################################
-    def select_flights_by_departure_airport(self, airport_id):    #TODO: merge with below
+    def select_flights_by_departure_airport(self, airport_id):
         try:
             self.get_connection()
             self.cur.execute('''
@@ -191,7 +191,6 @@ class FlightTable:
         finally:
             self.conn.close()
 
-
     ###############################################################################################################################
     def select_all_past_flights(self):
         try:
@@ -208,8 +207,7 @@ class FlightTable:
                              AND f.status_id=s.id 
                              AND a1.location_id=l1.id 
                              AND a2.location_id=l2.id
-                             AND f.departure_date < date('now')
-                             AND f.departure_time < time('now')
+                             AND datetime(f.departure_date || ' ' || f.departure_time) < datetime('now', 'localtime')     
                              ORDER BY f.departure_date, f.departure_time DESC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects

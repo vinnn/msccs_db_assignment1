@@ -77,7 +77,7 @@ class FlightPage:
         elif __user_input == "7": 
             return
         elif __user_input == "8": 
-            return
+            self.view_past_flights()
         elif __user_input == "9": 
             return        
         else:
@@ -438,9 +438,9 @@ class FlightPage:
 
             elif __user_input == "5":
                 print(f"------------------------------------------------------------ Enter new status: ")
-                selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: delayed, 2: cancelled): ", ["0","1","2"])
+                selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: departed, 2: landed, 3: delayed, 4: cancelled): ", ["0","1","2","3","4"])
 
-                print("replace with ", "on time" if selected == 0 else "delayed" if selected == 1 else "cancelled")
+                print("replace with ", "on time" if selected == "0" else "departed" if selected == "1" else "landed" if selected == "2" else "delayed" if selected == "3" else "cancelled")
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
