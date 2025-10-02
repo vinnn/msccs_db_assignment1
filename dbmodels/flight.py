@@ -1,20 +1,22 @@
 
     # id INTEGER PRIMARY KEY AUTOINCREMENT,
-    # routeId VARCHAR(10) NOT NULL REFERENCES route(id),
-    # statusId INTEGER NOT NULL REFERENCES status(id),
-    # pilotId INTEGER NOT NULL REFERENCES pilot(id),
-    # departureDate DATE NOT NULL,
-    # departureTime TIME NOT NULL
+    # departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
+    # destination_airport_id INTEGER NOT NULL REFERENCES airport(id),
+    # status_id INTEGER NOT NULL REFERENCES status(id),
+    # pilot_id INTEGER NOT NULL REFERENCES pilot(id),
+    # departure_date DATE NOT NULL,
+    # departure_time TIME NOT NULL
 
 class Flight:
 
     def __init__(self):
         self.id = None
-        self.routeId = None
-        self.statusId = 0
-        self.pilotId = None
-        self.departureDate = None
-        self.departureTime = None
+        self.departure_airport_id = None        
+        self.destination_airport_id = None       
+        self.status_id = 0
+        self.pilot_id = None
+        self.departure_date = None
+        self.departure_time = None
 
         # self.originId = None
         # self.destinationId = None  
@@ -30,22 +32,25 @@ class Flight:
         # self.pilotFirstName = None
         # self.pilotLastName = None
 
-    def set_routeId(self, routeId):
-        self.routeId = routeId
+    def set_departure_airport_id(self, departure_airport_id):
+        self.departure_airport_id = departure_airport_id
 
-    def set_statusId(self, statusId):
-        self.statusId = statusId
+    def set_destination_airport_id(self, destination_airport_id):
+        self.destination_airport_id = destination_airport_id
 
-    def set_pilotId(self, pilotId):
-        self.pilotId = pilotId
+    def set_status_id(self, status_id):
+        self.status_id = status_id
 
-    def set_departureDate(self, departureDate):
-        self.departureDate = departureDate
+    def set_pilot_id(self, pilot_id):
+        self.pilot_id = pilot_id
 
-    def set_departureTime(self, departureTime):
-        self.departureTime = departureTime
+    def set_departure_date(self, departure_date):
+        self.departuredeparture_dateDate = departure_date
+
+    def set_departure_time(self, departure_time):
+        self.departure_time = departure_time
 
     def __str__(self):     # this can then be called as :  str(pilot)
-        returnStr = self.routeId + "\n" + str(self.statusId) + "\n" + str(self.pilotId) + "\n" + self.departureDate + "\n" + self.departureTime 
+        returnStr = self.departure_airport_id + "\n" + self.destination_airport_id + "\n" + str(self.statusId) + "\n" + str(self.pilotId) + "\n" + self.departureDate + "\n" + self.departureTime 
         return returnStr
 

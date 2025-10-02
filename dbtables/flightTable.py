@@ -1,6 +1,6 @@
 import sqlite3
 from dbmodels.flight import Flight
-from dbtables.routeTable import RouteTable
+from dbtables.airportTable import AirportTable
 from dbtables.pilotTable import PilotTable
 
 class FlightTable:
@@ -38,13 +38,14 @@ class FlightTable:
             flight = Flight()
 
             # show route information (including ids) in order to create new flight
-            routeTable = RouteTable()
-            routeTable.select_all_routes()
+            airportTable = AirportTable()
+            airportTable.select_all_airports()
 
-            flight.set_routeId(input("Enter route id: "))
+            flight.set_departure_airport_id(input("Enter departure airport id: "))
+            flight.set_destination_airport_id(input("Enter destination airport id: "))
 
-            flight.set_departureDate(input("Enter flight detaprture date (YR-MM-DD): "))
-            flight.set_departureTime(input("Enter flight detaprture time (HR:MM:SS): "))
+            flight.set_departure_date(input("Enter flight detaprture date (YR-MM-DD): "))
+            flight.set_departure_time(input("Enter flight detaprture time (HR:MM:SS): "))
 
             # show pilot information (including ids) in order to create new flight
             pliotTable = PilotTable()
@@ -53,7 +54,7 @@ class FlightTable:
             flight.set_pilotId(input("Enter flight pilot id: "))
 
             self.get_connection()
-            sql_insert = "INSERT INTO flight (routeId, statusId, pilotId, departureDate, departureTime) VALUES (?,?,?,?,?)"
+            sql_insert = "INSERT INTO flight (departure_airport_id, destination_airport_id, status_id, pilot_id, departure_date, departure_time) VALUES (?,?,?,?,?,?)"
             self.cur.execute(sql_insert, tuple(str(flight).split("\n")))
 
             confirm = True if input("confirm creation (Y/N): ") == "Y" else False
@@ -73,9 +74,9 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT f.id, f.departureDate, f.departureTime, a1.name, a1.city, a1.country, a2.name, a2.city, a2.country, s.text 
-                            FROM flight f, route r, airport a1, airport a2, status s
-                            WHERE f.routeId = r.id AND r.originId=a1.id AND r.destinationId=a2.id AND f.statusId=s.id
+                            SELECT f.id, f.departure_date, f.departure_time, a1.name, l1.city, l1.country, a2.name, l2.city, l2.country, s.text 
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2
+                            WHERE f.departure_airport_id=a1.id AND f.destination_airport_id=a2.id AND f.status_id=s.id AND a1.location_id=l1.id AND a2.location_id=l2.id
                              ''')
             results = self.cur.fetchall()
 
