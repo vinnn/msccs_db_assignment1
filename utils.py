@@ -16,10 +16,10 @@ def request_user_input_int(prompt_msg, indent):
     return int_input
 
 
-def request_user_input_in_list(prompt_msg, indent, in_list):
+def request_user_input_in_list(prompt_msg, indent, in_list_str):
 
     # user_input is a string type therefore convert elements of in_list as strings for comparison
-    in_list_str = [str(s) for s in in_list]
+    # in_list_str = [str(s) for s in in_list]
 
     valid = False
     while not valid:
