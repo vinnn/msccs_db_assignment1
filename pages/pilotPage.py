@@ -1,13 +1,14 @@
 
 from dbtables.pilotTable import PilotTable
-
-
-pilotTable = PilotTable()
-
 from utils import request_user_input_int, request_user_input_in_list
 
 
 class PilotPage:
+
+    def __init__(self):
+        self.pilotTable = PilotTable()
+
+
     ###############################################################################################################################
     def viewPilotSelection(self):
         '''
@@ -16,22 +17,21 @@ class PilotPage:
 
         try:
             # get data from select query:
-            data = pilotTable.select_all_pilots()
+            data = self.pilotTable.select_all_pilots()
 
-            formatspecifier = "{:<6}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}"
-            print(formatspecifier.format("id", "first_name", "last_name", "email", "phone", "current_location_city", "current_location_country"))
-            print("-" * 60)
+            formatspecifier = "{:<6}{:<20}{:<20}{:<30}{:<20}{:<20}"
+            print(formatspecifier.format("id", "first_name", "last_name", "email", "phone", "current location"))
+            print("-" * 120)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
                                             row["first_name"][:18], 
                                             row["last_name"][:18], 
-                                            row["email"][:18],
+                                            row["email"],
                                             row["phone"][:18],
-                                            row["current_location_city"][:18],
-                                            row["current_location_country"][:18]
+                                            row["current_location_city"] + ", " + row["current_location_country"]
                                             ))
-            print("-" * 60)
+            print("-" * 120)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_ids_str = [str(r["id"]) for r in data] + ["0"]

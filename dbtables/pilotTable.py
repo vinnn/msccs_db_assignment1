@@ -26,6 +26,7 @@ class PilotTable:
     ############################################# 
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
+        self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)
         self.cur = self.conn.cursor()
 
 

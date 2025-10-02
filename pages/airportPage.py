@@ -1,13 +1,14 @@
 
 from dbtables.airportTable import AirportTable
-
-
-airportTable = AirportTable()
-
 from utils import request_user_input_int, request_user_input_in_list
 
 
 class AirportPage:
+
+    def __init__(self):
+        self.airportTable = AirportTable()
+
+
     ###############################################################################################################################
     def viewAirportSelection(self):
         '''
@@ -16,7 +17,7 @@ class AirportPage:
 
         try:
             # get data from select query:
-            data = airportTable.select_all_airports()
+            data = self.airportTable.select_all_airports()
 
             # display extracted data as a table:
             # print("----------------------")        

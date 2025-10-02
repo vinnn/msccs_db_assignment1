@@ -237,24 +237,18 @@ class FlightPage:
 
             elif __user_input == "6":
                 print(f"------------------------------------------------------------ Select new pilot:")
-
                 selected = self.pilotPage.viewPilotSelection()
-                print(selected)
-                # print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
+
+                print("replace with ", selected["first_name"] + ", " + selected["last_name"])
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-                # if __confirmation == "Y":
-                #     update_status = flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "destination_airport_id", selected["id"])
-                #     print(update_status)
-                #     self.viewDetailsOneFlight(flight_id)
-                # else:
-                #     print("cancelled update")
-                #     self.viewDetailsOneFlight(flight_id)
+                if __confirmation == "Y":
+                    update_status = flightTable.update_flight(flight_id, "pilot_id", selected["id"])
+                    print(update_status)
+                    self.viewDetailsOneFlight(flight_id)
+                else:
+                    print("cancelled update")
+                    self.viewDetailsOneFlight(flight_id)
             
-
-
-
-
-
             elif __user_input == "7":
                 return
             
