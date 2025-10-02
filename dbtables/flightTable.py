@@ -3,6 +3,9 @@ from dbmodels.flight import Flight
 from dbtables.airportTable import AirportTable
 from dbtables.pilotTable import PilotTable
 
+
+
+
 class FlightTable:
 
     sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS flight ( \
@@ -14,7 +17,7 @@ class FlightTable:
         departureTime TIME NOT NULL \
     );"
 
-    ############################################# 
+    ###############################################################################################################################
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
@@ -26,14 +29,14 @@ class FlightTable:
         finally:
             self.conn.close()
 
-    ############################################# 
+    ###############################################################################################################################
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)
         self.cur = self.conn.cursor()
 
 
-    ############################################# 
+    ###############################################################################################################################
     def insert_new_flight(self):
         try:
             flight = Flight()
@@ -70,7 +73,7 @@ class FlightTable:
         finally:
             self.conn.close()
 
-
+    ###############################################################################################################################
     def select_all_future_flights(self):
         try:
             self.get_connection()
@@ -87,6 +90,7 @@ class FlightTable:
                              AND a1.location_id=l1.id 
                              AND a2.location_id=l2.id
                              AND f.departure_date > date('now')
+                             ORDER BY f.departure_date, f.departure_time ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
@@ -97,9 +101,7 @@ class FlightTable:
         finally:
             self.conn.close()
 
-
-
-
+    ###############################################################################################################################
     def select_one_flight(self, flight_id):
         try:
             self.get_connection()
@@ -132,7 +134,65 @@ class FlightTable:
         finally:
             self.conn.close()
 
+    ###############################################################################################################################
+    def select_flights_by_departure_date(self, on_date):
+        try:
+            self.get_connection()
+            self.cur.execute('''
+                            SELECT f.id AS id, f.departure_date AS "departure_date", f.departure_time AS "departure_time", 
+                             a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
+                             a2.name AS "destination_airport", l2.city AS "destination_city", l2.country AS "destination_country", 
+                             s.text AS "status" 
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2
+                            WHERE 
+                             f.departure_airport_id=a1.id 
+                             AND f.destination_airport_id=a2.id 
+                             AND f.status_id=s.id 
+                             AND a1.location_id=l1.id 
+                             AND a2.location_id=l2.id
+                             AND f.departure_date = ?
+                             ORDER BY f.departure_time ASC
+                             ''', (on_date,))
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
 
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+    ###############################################################################################################################
+    def select_flights_by_departure_airport(self, airport_id):    #TODO: merge with below
+        try:
+            self.get_connection()
+            self.cur.execute('''
+                            SELECT f.id AS id, f.departure_date AS "departure_date", f.departure_time AS "departure_time", 
+                             a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
+                             a2.name AS "destination_airport", l2.city AS "destination_city", l2.country AS "destination_country", 
+                             s.text AS "status" 
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2
+                            WHERE 
+                             f.departure_airport_id=? 
+                             AND f.departure_airport_id=a1.id                              
+                             AND f.destination_airport_id=a2.id 
+                             AND f.status_id=s.id 
+                             AND a1.location_id=l1.id 
+                             AND a2.location_id=l2.id
+                             AND f.departure_date > date('now')
+                             ORDER BY f.departure_date, f.departure_time ASC
+                             ''', (airport_id,))
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+    ###############################################################################################################################
     def update_flight(self, flight_id, field_to_update, field_new_value):
 
         try:
@@ -148,11 +208,7 @@ class FlightTable:
         finally:
             self.conn.close()
 
-
-
-
-
-
+    ###############################################################################################################################
     def delete_flight(self, flight_id):
 
         try:
@@ -167,3 +223,6 @@ class FlightTable:
             return "failed deletion"
         finally:
             self.conn.close()
+
+
+
