@@ -26,13 +26,13 @@ CREATE TABLE flight (
 );
 
 INSERT INTO flight (departure_airport_id, destination_airport_id, status_id, pilot_id, departure_date, departure_time) VALUES
-(2, 1, 0, 4, '2025-09-30', '11:05:00'),
-(3, 1, 0, 6, '2025-10-03', '08:25:00'),
-(5, 4, 1, 9, '2025-10-03', '12:05:00'),
-(8, 9, 0, 5, '2025-10-04', '09:00:00'),
-(8, 4, 0, 4, '2025-10-10', '05:20:00'),
-(6, 3, 0, 8, '2025-10-12', '06:00:00'),
-(9, 2, 0, 14, '2025-10-30', '07:25:00');
+(2, 1, 0, 4, '2025-09-30', '11:05'),
+(3, 1, 0, 6, '2025-10-03', '08:25'),
+(5, 4, 1, 9, '2025-10-03', '12:05'),
+(8, 9, 0, 5, '2025-10-04', '09:00'),
+(8, 4, 0, 4, '2025-10-10', '05:20'),
+(6, 3, 0, 8, '2025-10-12', '06:00'),
+(9, 2, 0, 14, '2025-10-30', '07:25');
 
 
 
@@ -53,7 +53,7 @@ CREATE TABLE pilot (
     last_name VARCHAR(20) NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
     phone VARCHAR(16) UNIQUE NOT NULL,
-    current_location_id INTEGER NOT NULL REFERENCES location(id)
+    current_location_id INTEGER REFERENCES location(id)
 );
 
 INSERT INTO pilot (first_name, last_name, email, phone, current_location_id) VALUES

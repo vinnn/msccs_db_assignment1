@@ -28,50 +28,57 @@ class PilotTable:
         self.conn = sqlite3.connect("airline.db")
         self.cur = self.conn.cursor()
 
-    ############################################# 
-    def insert_new_pilot(self):
-        try:
-            self.get_connection()
-
-            pilot = Pilot()
-            pilot.set_first_name(input("Enter pilot first name: "))
-            pilot.set_last_name(input("Enter pilot last name: "))
-            pilot.set_email(input("Enter pilot email address: "))
-            pilot.set_phone(input("Enter pilot phone number: "))
-
-            sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
-            self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
-
-            confirm = True if input("confirm creation (Y/N): ") == "Y" else False
-            if confirm:
-                self.conn.commit()
-                print("Inserted data successfully")
-            else:
-                print("Cancelled insertion")
-
-        except Exception as e:
-            print(e)
-        finally:
-            self.conn.close()
-
 
     def select_all_pilots(self):
         try:
             self.get_connection()
-            self.cur.execute("SELECT * FROM pilot")
-            results = self.cur.fetchall()
-
-            headers = ["id","first name","last name", "email", "phone"]
-            print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*headers)) # *: unpack argument sequence            
-            # https://docs.python.org/2.7/library/string.html#format-specification-mini-language
-            print("-" * 90)
-            for row in results:
-                print("{:<6}{:<20}{:<20}{:<30}{:<16}".format(*row))   # *: unpack argument sequence
+            # LEFT JOIN for location IN ORDER TO SHOW RESULTS EVEN IF NO LOCATION MATCHING
+            self.cur.execute('''
+                            SELECT p.id AS id, p.first_name AS "first_name", p.last_name AS "last_name", p.email AS "email", p.phone AS "phone", l.city AS "current_location_city", l.country AS "current_location_country"
+                            FROM pilot p
+                             LEFT JOIN location l ON p.current_location_id=l.id 
+                             ''')
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
 
         except Exception as e:
             print(e)
         finally:
             self.conn.close()
+
+
+
+
+
+    ############################################# 
+    # def insert_new_pilot(self):
+    #     try:
+    #         self.get_connection()
+
+    #         pilot = Pilot()
+    #         pilot.set_first_name(input("Enter pilot first name: "))
+    #         pilot.set_last_name(input("Enter pilot last name: "))
+    #         pilot.set_email(input("Enter pilot email address: "))
+    #         pilot.set_phone(input("Enter pilot phone number: "))
+
+    #         sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
+    #         self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
+
+    #         confirm = True if input("confirm creation (Y/N): ") == "Y" else False
+    #         if confirm:
+    #             self.conn.commit()
+    #             print("Inserted data successfully")
+    #         else:
+    #             print("Cancelled insertion")
+
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close()
+
+
+
 
 
 

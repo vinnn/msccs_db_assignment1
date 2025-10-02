@@ -103,7 +103,7 @@ class FlightTable:
     def select_one_flight(self, flight_id):
         try:
             self.get_connection()
-            # LEFT JOIN on pilot IN ORDER TO SHOW RESULTS EVEN IF NO PILOT ASSIGNED OR MATCHING
+            # LEFT JOIN for pilot IN ORDER TO SHOW RESULTS EVEN IF NO PILOT ASSIGNED OR MATCHING
             self.cur.execute('''
                             SELECT f.id AS id, f.departure_date AS "departure_date", f.departure_time AS "departure_time", 
                              a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 

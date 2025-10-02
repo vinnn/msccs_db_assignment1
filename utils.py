@@ -1,4 +1,4 @@
-
+from datetime import datetime
 
 
 
@@ -8,12 +8,12 @@ def request_user_input_int(prompt_msg):
     while not valid:
         user_input = input(prompt_msg)
         try:
-            int_input = int(user_input)
+            validated_input = int(user_input)
             valid = True
         except ValueError:
             print("Please enter an integer value.")
 
-    return int_input
+    return validated_input
 
 
 def request_user_input_in_list(prompt_msg, in_list_str):
@@ -37,3 +37,30 @@ def request_user_input_in_list(prompt_msg, in_list_str):
 
 
 
+def request_user_input_date(prompt_msg):
+
+    valid = False
+    while not valid:
+        user_input = input(prompt_msg)
+        try:
+            validated_input = datetime.strptime(user_input, "%Y-%m-%d")
+            valid = True
+        except ValueError:
+            print("Please enter a valid date input.")
+
+    return validated_input
+
+
+
+def request_user_input_time(prompt_msg):
+
+    valid = False
+    while not valid:
+        user_input = input(prompt_msg)
+        try:
+            validated_input = datetime.strptime(user_input, "%H:%M")
+            valid = True
+        except ValueError:
+            print("Please enter a valid time input.")
+
+    return validated_input

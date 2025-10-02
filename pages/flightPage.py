@@ -1,17 +1,23 @@
 import os
+from datetime import datetime
+
 
 from dbtables.flightTable import FlightTable
 from pages.airportPage import AirportPage
+from pages.pilotPage import PilotPage
 
 flightTable = FlightTable()
 
-from utils import request_user_input_int, request_user_input_in_list
+from utils import request_user_input_int, request_user_input_in_list, request_user_input_date, request_user_input_time
 
 
 
 
 class FlightPage:
 
+    def __init__(self):
+        self.airportPage = AirportPage()
+        self.pilotPage = PilotPage()
 
     def viewMenu(self):
 
@@ -151,7 +157,7 @@ class FlightPage:
             if data["pilot_id"] is None:
                 print("{:<24}{:<24}".format("pilot", "None"))
             else:
-                print("{:<24}{:<24}".format("pilot", data["pilot_first_name"] + " " + data["pilot_last_name"]))  
+                print("{:<24}{:<24}".format("pilot", data["pilot_first_name"] + " " + data["pilot_last_name"]))
             print("------------------------------------------------------------- Make changes:")  
 
             # print("Make changes:")
@@ -168,33 +174,87 @@ class FlightPage:
             __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","M"])
 
             if __user_input == "0":
-                self.viewAllFutureFlights()                
+                self.viewAllFutureFlights()
+
             elif __user_input == "M":
-                self.viewMenu()                  
+                self.viewMenu()
+
             elif __user_input == "1":
-                return
-            elif __user_input == "2":
-                return
-            elif __user_input == "3":
-                print("------------------------------------------------------------ Select new departure airport:")
-                airportPage = AirportPage()
-                selected = airportPage.viewAirportSelection()
-                print("replace departure airport with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
-                __user_input = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-                if __user_input == "Y":
-                    update_status = flightTable.update_flight(flight_id, "departure_airport_id", selected["id"])
+                print(f"------------------------------------------------------------ Enter new departure date: ")
+                selected = request_user_input_date(">>> Enter new date (YYYY-MM-DD): ")
+
+                print("replace with ", selected.strftime("%Y-%m-%d"))
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = flightTable.update_flight(flight_id, "departure_date", selected.strftime("%Y-%m-%d"))
                     print(update_status)
-                    self.viewAllFutureFlights()
+                    self.viewDetailsOneFlight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewAllFutureFlights()
+                    self.viewDetailsOneFlight(flight_id)
 
-            elif __user_input == "4":
-                return
+            elif __user_input == "2":
+                print(f"------------------------------------------------------------ Enter new departure time: ")
+                selected = request_user_input_time(">>> Enter new time (HR:MM): ")
+
+                print("replace with ", selected.strftime("%H:%M"))
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = flightTable.update_flight(flight_id, "departure_time", selected.strftime("%H:%M"))
+                    print(update_status)
+                    self.viewDetailsOneFlight(flight_id)
+                else:
+                    print("cancelled update")
+                    self.viewDetailsOneFlight(flight_id)
+
+            elif __user_input == "3" or __user_input == "4":
+                print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'destination'} airport:")
+
+                selected = self.airportPage.viewAirportSelection()
+                print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "destination_airport_id", selected["id"])
+                    print(update_status)
+                    self.viewDetailsOneFlight(flight_id)
+                else:
+                    print("cancelled update")
+                    self.viewDetailsOneFlight(flight_id)
+
             elif __user_input == "5":
-                return
+                print(f"------------------------------------------------------------ Enter new status: ")
+                selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: delayed, 2: cancelled): ", ["0","1","2"])
+
+                print("replace with ", "on time" if selected == 0 else "delayed" if selected == 1 else "cancelled")
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = flightTable.update_flight(flight_id, "status_id", selected)
+                    print(update_status)
+                    self.viewDetailsOneFlight(flight_id)
+                else:
+                    print("cancelled update")
+                    self.viewDetailsOneFlight(flight_id)
+
             elif __user_input == "6":
-                return
+                print(f"------------------------------------------------------------ Select new pilot:")
+
+                selected = self.pilotPage.viewPilotSelection()
+                print(selected)
+                # print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                # if __confirmation == "Y":
+                #     update_status = flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "destination_airport_id", selected["id"])
+                #     print(update_status)
+                #     self.viewDetailsOneFlight(flight_id)
+                # else:
+                #     print("cancelled update")
+                #     self.viewDetailsOneFlight(flight_id)
+            
+
+
+
+
+
             elif __user_input == "7":
                 return
             
