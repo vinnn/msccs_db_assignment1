@@ -1,27 +1,31 @@
 import sqlite3
 
 from pages.flightPage import FlightPage
+from utils import request_user_input_in_list
 
 
+indent = " " * 2
 
 while True:
   print("\n******************************************************************************")
-  print("\t-------------")  
-  print("\tGENERAL MENU:")
-  print("\t-------------")
-  print("\t 1. Flights")
-  print("\t 2. Airports")
-  print("\t 3. Pilots")
-  print("\t-------------")
-  print("\t 0. Exit")
-  print("\t-------------")
+  print(indent + "-------------")  
+  print(indent + "GENERAL MENU:")
+  print(indent + "-------------")
+  print(indent + "1. Flights")
+  print(indent + "2. Airports")
+  print(indent + "3. Pilots")
+  print(indent + "4. Edit/Delete")
+  print(indent + "-------------")
+  print(indent + "0. Exit")
+  print(indent + "-------------")
 
   flightPage = FlightPage()
 
-  __choose_menu = int(input("\t>>> Enter selection: "))
-  if __choose_menu == 0:
+  __choose_menu = request_user_input_in_list(">>> Enter selection: ", indent, [0,1,2,3,4])
+
+  if __choose_menu == "0":
     exit(0)
-  if __choose_menu == 1:
+  if __choose_menu == "1":
     flightPage.viewMenu()
 #   elif __choose_menu == 2:
 #     flight_ops.select_all_flights()
@@ -44,4 +48,4 @@ while True:
 #   elif __choose_menu == 11:               # DONE
 #     exit(0)    
   else:
-    print("Invalid Choice")
+    print(indent + "Invalid Choice")
