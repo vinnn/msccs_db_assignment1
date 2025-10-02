@@ -250,8 +250,19 @@ class FlightPage:
                     self.viewDetailsOneFlight(flight_id)
             
             elif __user_input == "7":
-                return
-            
+                print(f"------------------------------------------------------------ Delete flight:")
+                __confirmation = request_user_input_in_list(">>> Confirm deletion ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    deletion_status = flightTable.delete_flight(flight_id)
+                    print(deletion_status)
+                    self.viewAllFutureFlights()
+                else:
+                    print("cancelled deletion")
+                    self.viewDetailsOneFlight(flight_id)            
+
+
+
+
         except Exception as e: # if exception, print + redirect to all flight menu page
             print("Error : " + str(e))   
             self.viewMenu() 

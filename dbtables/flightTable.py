@@ -153,3 +153,17 @@ class FlightTable:
 
 
 
+    def delete_flight(self, flight_id):
+
+        try:
+            self.get_connection()
+            query = f"DELETE FROM flight WHERE id= ?"
+            self.cur.execute(query, (flight_id,))
+            self.conn.commit()
+            return "successful deletion"
+
+        except Exception as e:
+            print(e)
+            return "failed deletion"
+        finally:
+            self.conn.close()
