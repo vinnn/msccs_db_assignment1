@@ -1,7 +1,7 @@
 import sqlite3
 
 
-from dbmodels.flight import Flight
+from dbmodels.flight2 import Flight
 from dbmodels.airport import Airport
 from dbmodels.route import Route
 

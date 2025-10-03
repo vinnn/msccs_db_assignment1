@@ -18,20 +18,6 @@ class Flight:
         self.departure_date = None
         self.departure_time = None
 
-        # self.originId = None
-        # self.destinationId = None  
-        # self.origin = None
-        # self.destinationId = None        
-        # self.destination = None
-        # self.departureDate = None
-        # self.departureTime = None
-        # self.arrivalDate = None
-        # self.arrivalTime = None
-        # self.status = None
-        # self.pilotId = None
-        # self.pilotFirstName = None
-        # self.pilotLastName = None
-
     def set_departure_airport_id(self, departure_airport_id):
         self.departure_airport_id = departure_airport_id
 
@@ -45,10 +31,19 @@ class Flight:
         self.pilot_id = pilot_id
 
     def set_departure_date(self, departure_date):
-        self.departuredeparture_dateDate = departure_date
+        self.departure_dateDate = departure_date
 
     def set_departure_time(self, departure_time):
         self.departure_time = departure_time
+
+    def set_duration(self, duration):
+        self.duration = duration
+
+    def set_destination_date(self, destination_date):
+        self.destination_date = destination_date
+
+    def set_destination_time(self, destination_time):
+        self.destination_time = destination_time
 
     def __str__(self):     # this can then be called as :  str(pilot)
         returnStr = self.departure_airport_id + "\n" + self.destination_airport_id + "\n" + str(self.statusId) + "\n" + str(self.pilotId) + "\n" + self.departureDate + "\n" + self.departureTime 
