@@ -107,6 +107,51 @@ class FlightTable:
         finally:
             self.conn.close()
 
+
+
+    ###############################################################################################################################
+    def select_all_flights_with_pilots(self):
+        try:
+            self.get_connection()
+
+            # formatting and create new columns
+            self.cur.execute('''
+                            SELECT f.id AS id, 
+                             date(f.departure_datetime) AS "departure_date", 
+                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                             a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
+                             a2.name AS "arrival_airport", l2.city AS "arrival_city", l2.country AS "arrival_country", 
+                             s.text AS "status",
+                             f.pilot_id AS "pilot_id",
+                             p.first_name AS "pilot_first_name",
+                             p.last_name AS "pilot_last_name"             
+                            FROM flight f, airport a1, airport a2, status s, location l1, location l2, pilot p
+                            WHERE 
+                             f.departure_airport_id=a1.id 
+                             AND f.arrival_airport_id=a2.id 
+                             AND f.status_id=s.id 
+                             AND a1.location_id=l1.id 
+                             AND a2.location_id=l2.id
+                             AND f.pilot_id=p.id
+                             AND f.departure_datetime > datetime('now', 'localtime')                          
+                             ORDER BY f.departure_datetime ASC
+                             ''')
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+
+
+
+
     ###############################################################################################################################
     def select_one_flight(self, flight_id):
         try:
