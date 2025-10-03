@@ -97,7 +97,7 @@ class FlightPage:
             data = self.flightTable.select_all_future_flights()
 
             # display extracted data as a table:
-            os.system('cls' if os.name == 'nt' else 'clear')            
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
             print("\n*************************************************************")
             print("************************************************************* PUBLIC FLIGHT SCHEDULE")  
             print("*************************************************************\n")
@@ -121,12 +121,12 @@ class FlightPage:
             for row in data:
                 print(formatspecifier.format(row["id"], 
                                             datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
-                                            datetime.strptime(row["departure_time"], "%H:%M:%S").strftime("%H:%M"),  
+                                            row["departure_time"],                                                     
                                             row["departure_airport"][:24], 
                                             row["departure_city"][:12], 
                                             row["departure_country"][:12],
-                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),          
-                                            datetime.strptime(row["arrival_time"], "%H:%M:%S").strftime("%H:%M"),
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["arrival_time"],                                               
                                             row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
@@ -366,12 +366,17 @@ class FlightPage:
             print("\n*************************************************************")
             print("************************************************************* FLIGHT DETAILS")   
             print("*************************************************************")
-            print("{:<24}{:<24}".format("flight id",data["id"]))
+            print("{:<24}{:<24}\n".format("flight id",data["id"]))
+            print("{:<24}{:<24}".format("departure airport", data["departure_airport"] + ", " + data["departure_city"] + ", " + data["departure_country"]))            
             print("{:<24}{:<24}".format("departure date", data["departure_date"]))
-            print("{:<24}{:<24}".format("departure time", data["departure_time"]))
-            print("{:<24}{:<24}".format("departure airport", data["departure_airport"] + ", " + data["departure_city"] + ", " + data["departure_country"]))
-            print("{:<24}{:<24}".format("destination airport", data["destination_airport"] + ", " + data["destination_city"] + ", " + data["destination_country"]))
+            print("{:<24}{:<24}\n".format("departure time", data["departure_time"]))
+
+            print("{:<24}{:<24}".format("arrival airport", data["arrival_airport"] + ", " + data["arrival_city"] + ", " + data["arrival_country"]))
+            print("{:<24}{:<24}".format("arrival date", data["arrival_date"]))
+            print("{:<24}{:<24}\n".format("arrival time", data["arrival_time"]))
+
             print("{:<24}{:<24}".format("status", data["status"]))
+            
             if data["pilot_id"] is None:
                 print("{:<24}{:<24}".format("pilot", "None"))
             else:
