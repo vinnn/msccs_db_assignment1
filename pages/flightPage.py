@@ -1,10 +1,12 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 from dbtables.flightTable import FlightTable
 from pages.airportPage import AirportPage
 from pages.pilotPage import PilotPage
+
+from constants import PILOT_AVAILABILITY_MARGIN_DAYS
 
 
 
@@ -538,12 +540,13 @@ class FlightPage:
                 print(f"------------------------------------------------------------ Select new pilot:")
 
 
-                from_datetime = datetime.strptime(data["departure_date"], "%Y-%m-%d").strftime("%Y-%m-%d %H:%M")
-                to_datetime = datetime.strptime(data["arrival_date"], "%Y-%m-%d").strftime("%Y-%m-%d %H:%M")                
-                selected = self.pilotPage.view_available_pilots_by_period(from_datetime, to_datetime)
+                from_datetime = datetime.strptime(data["departure_date"], "%Y-%m-%d") - timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
+                from_datetime_str = from_datetime.strftime("%Y-%m-%d %H:%M") 
 
-
-                # selected = self.pilotPage.viewPilotSelection()
+                to_datetime = datetime.strptime(data["arrival_date"], "%Y-%m-%d") + timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
+                to_datetime_str = to_datetime.strftime("%Y-%m-%d %H:%M") 
+                
+                selected = self.pilotPage.view_available_pilots_by_period(from_datetime_str, to_datetime_str)
 
                 print("replace with ", selected["first_name"] + ", " + selected["last_name"])
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])

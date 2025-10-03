@@ -51,57 +51,10 @@ class PilotTable:
 
     def select_all_pilots_available_by_period(self, from_datetime, to_datetime):
 
-        query_clash_or_free = '''
-                            SELECT f.id, f.pilot_id, f.departure_datetime AS "flight_from", f.arrival_datetime AS "flight_to",
-                                CASE 
-                                    WHEN (flight_from < from_datetime AND flight_to < from_datetime) OR (flight_from > to_datetime AND flight_to > to_datetime) 
-                                    THEN "yes"
-                                    ELSE "no"
-                                END AS "available"
-                            FROM flight f
-                            '''
-
-        query = '''
-                WITH availability AS (
-                    SELECT f.id AS flight_id, f.pilot_id AS pilot_id, f.departure_datetime AS "flight_from", f.arrival_datetime AS "flight_to",
-                        CASE 
-                            WHEN (flight_from < from_datetime AND flight_to < from_datetime) OR (flight_from > to_datetime AND flight_to > to_datetime) 
-                            THEN "yes"
-                            ELSE "no"
-                        END AS "available"
-                    FROM flight f
-                )
-                SELECT p.id, p.first_name, p.last_name
-                FROM pilot p
-                LEFT JOIN availability a ON p.id=a.pilot_id 
-                WHERE a.available="yes"
-                '''
-
-
-            # self.cur.execute('''
-            #     WITH availability AS (
-            #         SELECT f.id, f.pilot_id, 
-            #                  f.departure_datetime, 
-            #                  strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)),
-            #             CASE 
-            #                 WHEN (f.departure_datetime < ? AND strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < ?) 
-            #                  OR (f.departure_datetime > ? AND strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) > ?) 
-            #                 THEN "yes"
-            #                 ELSE "no"
-            #             END AS "available"
-            #         FROM flight f
-            #     )
-            #     SELECT DISTINCT p.id, p.first_name, p.last_name, p.email, p.phone
-            #     FROM pilot p
-            #     LEFT JOIN availability a ON p.id=a.pilot_id
-            #     WHERE a.available="yes"
-            #     ORDER BY p.id ASC
-            # ''', (from_datetime, from_datetime, to_datetime, to_datetime))
-
-
         try:
             self.get_connection()
-            # LEFT JOIN for location IN ORDER TO SHOW RESULTS EVEN IF NO LOCATION MATCHING
+            # create a table of all flights that show if clash with the period
+            # then select only the pilots of flights that have no clash 
             self.cur.execute('''     
                 SELECT p.id, p.first_name, p.last_name, p.email, p.phone
                 FROM pilot p
