@@ -102,33 +102,37 @@ class FlightPage:
             print("************************************************************* PUBLIC FLIGHT SCHEDULE")  
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<20}{:<26}{:<16}{:<16}{:<20}{:<26}{:<16}{:<16}{:<12}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}"
             print(formatspecifier.format("id",
-                                        "departure", 
+                                        "departure",
+                                        "time", 
                                         "from airport", 
                                         "city", 
                                         "country", 
-                                        "arrival",                  
+                                        "arrival",
+                                        "time",
                                         "at airport", 
                                         "city", 
                                         "country", 
                                         "status"
                                         ))
-            print("-" * 170)
+            print("-" * 175)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
-                                            datetime.strptime(row["departure_datetime"], "%Y-%m-%d %H:%M").strftime("%d-%b-%Y %H:%M"), 
+                                            datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            datetime.strptime(row["departure_time"], "%H:%M:%S").strftime("%H:%M"),  
                                             row["departure_airport"][:24], 
                                             row["departure_city"][:12], 
                                             row["departure_country"][:12],
-                                            datetime.strptime(row["arrival_datetime"], "%Y-%m-%d %H:%M").strftime("%d-%b-%Y %H:%M"),
-                                            row["arrival_airport"][:24], 
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),          
+                                            datetime.strptime(row["arrival_time"], "%H:%M:%S").strftime("%H:%M"),
+                                            row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
                                             row["status"]
                                             ))
-            print("-" * 170)
+            print("-" * 175)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]

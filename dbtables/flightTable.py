@@ -79,10 +79,12 @@ class FlightTable:
             self.get_connection()
 
             #  datetime(datetime(f.departure_date || ' ' || f.departure_time), '+' || f.duration) AS 
+            # strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_datetime",
 
             self.cur.execute('''
-                            SELECT f.id AS id, f.departure_datetime AS "departure_datetime", f.duration AS "duration", 
-                             strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_datetime",
+                            SELECT f.id AS id, date(f.departure_datetime) AS "departure_date", time(f.departure_datetime) AS "departure_time",
+                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                             strftime('%H:%M:%S', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
                              a1.name AS "departure_airport", l1.city AS "departure_city", l1.country AS "departure_country", 
                              a2.name AS "arrival_airport", l2.city AS "arrival_city", l2.country AS "arrival_country", 
                              s.text AS "status" 
