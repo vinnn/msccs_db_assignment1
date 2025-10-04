@@ -109,6 +109,7 @@ class FlightPage:
         try:
             # get data from select query:
             data = self.flightTable.select_all_future_flights()
+            print(data)
 
             # display extracted data as a table:
             os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page

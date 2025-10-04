@@ -40,6 +40,8 @@ class FlightTable:
             self.get_connection()
 
             # formatting and create new columns
+            # - LEFT JOIN the pilot table so that we have all rows of the flight table. And the column 'pilot' will contain 
+            # the pilot ids in the pilot table, or None if not found (eg if a pilot has been deleted) 
             self.cur.execute('''
                             SELECT f.id AS id, 
                              date(f.departure_datetime) AS "departure_date", 
@@ -49,13 +51,14 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
+                             p.id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s
+                             LEFT JOIN pilot p ON f.pilot_id = p.id
                             WHERE 
                              f.departure_airport_id=a1.id 
                              AND f.arrival_airport_id=a2.id 
                              AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now', 'localtime')                          
+                             AND f.departure_datetime > datetime('now', 'localtime')          
                              ORDER BY f.departure_datetime ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
@@ -150,8 +153,9 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s, pilot p
+                             p.id AS "pilot"
+                            FROM flight f, airport a1, airport a2, status s
+                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
                             WHERE 
                              f.departure_airport_id=a1.id 
                              AND f.arrival_airport_id=a2.id 
@@ -182,8 +186,9 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
+                             p.id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s
+                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
                             WHERE 
                              f.departure_airport_id=? 
                              AND f.departure_airport_id=a1.id                              
@@ -214,8 +219,9 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
+                             p.id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s
+                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
                             WHERE 
                              f.arrival_airport_id=? 
                              AND f.departure_airport_id=a1.id                              
@@ -246,8 +252,9 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
+                             p.id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s
+                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
                             WHERE 
                              f.departure_airport_id=a1.id 
                              AND f.arrival_airport_id=a2.id 
