@@ -16,7 +16,6 @@ while True:
   print("1. Flights")
   print("2. Pilots")
   print("3. Airports")
-  print("4. Edit/Delete")
   print("-------------")
   print("E. Exit")
   print("-------------")
@@ -24,7 +23,7 @@ while True:
   flightPage = FlightPage()
   pilotPage = PilotPage()
 
-  __user_input = request_user_input_in_list(">>> Enter selection: ", ["1","2","3","4","E"])
+  __user_input = request_user_input_in_list(">>> Enter selection: ", ["1","2","3","E"])
 
   if __user_input == "E":
     exit(0)

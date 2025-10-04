@@ -454,7 +454,7 @@ class FlightPage:
             data = self.flightTable.select_all_future_unassigned_flights()
 
             # display extracted data as a table:
-            # os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
             print("\n*************************************************************")
             print("************************************************************* ALL SCHEDULED FLIGHTS")  
             print("*************************************************************\n")
@@ -633,7 +633,8 @@ class FlightPage:
             print("5. Change duration")
             print("6. Change status")
             print("7. Assign/Change pilot")
-            print("8. Delete flight")            
+            print("8. Unassign current pilot")            
+            print("9. Delete flight")            
             print("0. to go back")
             print("M. to main menu")
             print("----------------------")
@@ -657,6 +658,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
             elif __user_input == "2":
@@ -671,6 +673,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
             elif __user_input == "3" or __user_input == "4":
@@ -685,6 +688,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
             elif __user_input == "5":
@@ -699,6 +703,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
 
@@ -714,6 +719,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
             elif __user_input == "7":
@@ -733,9 +739,29 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
-            
+
             elif __user_input == "8":
+                print(f"------------------------------------------------------------ Unassign current pilot:")
+
+                if data["pilot_id"] is None:
+                    print("invalid action (no pilot assigned)")
+                    __ = input("(press Enter)")
+                    self.view_details_one_flight(flight_id)
+                else:
+                    print("unassign pilot : ", data["pilot_first_name"] + ", " + data["pilot_last_name"] + " (id=" + str(data["pilot_id"]) + ")")
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)
+                        print(update_status)
+                        self.view_details_one_flight(flight_id)
+                    else:
+                        print("cancelled update")
+                        __ = input("(press Enter)")                        
+                        self.view_details_one_flight(flight_id)
+            
+            elif __user_input == "9":
                 print(f"------------------------------------------------------------ Delete flight:")
                 __confirmation = request_user_input_in_list(">>> Confirm deletion ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
@@ -744,6 +770,7 @@ class FlightPage:
                     self.parentView()  # go back to previous view
                 else:
                     print("cancelled deletion")
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)            
 
 

@@ -323,7 +323,6 @@ class PilotPage:
             # redirect as per user selection:
             if __user_input =="0" :
                 return
-                # self.viewMenu() 
             else:
                 selected_row = [a for a in data if a["id"]==int(__user_input)][0]
                 return selected_row
