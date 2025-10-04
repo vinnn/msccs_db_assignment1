@@ -24,7 +24,7 @@ class FlightPage:
 
         os.system('cls' if os.name == 'nt' else 'clear')
         print("\n*************************************************************")
-        print("************************************************************* FLIGHTS")   
+        print("************************************************************* FLIGHTS") 
         print("*************************************************************")
         print("----------------------")
         print("SCHEDULED FLIGHTS :")
@@ -34,14 +34,14 @@ class FlightPage:
         print("3. Filter by departure airport")   # add pilot status
         print("4. Filter by arrival airport")   # add pilot status
         print("5. Unassigned flights")
-        print("6. Create new flight")        
-        print("----------------------")  
-        print("PAST FLIGHTS :")       
+        print("6. Create new flight")
         print("----------------------")
-        print("7. All past flights")  
+        print("PAST FLIGHTS :")
+        print("----------------------")
+        print("7. All past flights")
         print("8. Statistics")
         print("----------------------")
-        print("0. to go back")  
+        print("0. to go back")
         print("M. to main menu")
         print("----------------------")
 
@@ -51,7 +51,7 @@ class FlightPage:
             return
         
         elif __user_input == "0":
-            self.parent_view()
+            return
         
         elif __user_input == "1":
             self.view_all_scheduled_flights()
@@ -716,14 +716,13 @@ class FlightPage:
         '''
         display form for flight creation
         '''
-        # self.parent_view = self.view_create_flight # to go back to this view when user goes back from detail view
-        print(self.parent_view)
         self.parent_view = self.view_menu 
-        # print(self.parent_view)
+
         try:
             data = {}
 
-            while True:
+            complete = False
+            while not complete:
                 os.system('cls' if os.name == 'nt' else 'clear')
 
                 print("\n*************************************************************")
@@ -840,20 +839,18 @@ class FlightPage:
                     else:
                         self.parent_view
 
-
                 else:
                     __confirmation = request_user_input_in_list(">>> Confirm flight creation ? (Y/N): ", ["Y","N"])
-
                     if __confirmation == "Y":
                         creation_status = self.flightTable.create_flight(data)
                         print(creation_status)
                         __ = input("(press Enter)")
-                        self.view_menu()  
                     else:
                         print("cancelled creation")
                         __ = input("(press Enter)")
-                        self.view_menu()
-
+                    complete = True                   
+                        
+            self.view_menu()
 
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           

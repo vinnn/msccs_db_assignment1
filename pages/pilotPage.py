@@ -335,12 +335,13 @@ class PilotPage:
         '''
         display form for pilot creation
         '''
-        self.parent_view = self.view_create_pilot # to go back to this view when user goes back from detail view
+        self.parent_view = self.view_menu # to go back to this view when user goes back from detail view
 
         try:
             data = {}
 
-            while True:
+            complete = False
+            while not complete:
                 os.system('cls' if os.name == 'nt' else 'clear')
 
                 print("\n*************************************************************")
@@ -352,7 +353,6 @@ class PilotPage:
                 print("{:<24}{:<24}\n".format("email address", data["email"] if "email" in data else ""))
                 print("{:<24}{:<24}\n".format("phone no", data["phone"] if "phone" in data else ""))
 
-
                 if "first_name" not in data:
                     print("------------------------------------------------------------- Enter first name:")  
                     selected = request_user_input_name(">>> Enter first name: ")
@@ -363,7 +363,6 @@ class PilotPage:
                     else:
                         self.parent_view
 
-
                 elif "last_name" not in data:
                     print("------------------------------------------------------------- Enter last name:")  
                     selected = request_user_input_name(">>> Enter last name: ")
@@ -373,7 +372,6 @@ class PilotPage:
                         data["last_name"] = selected
                     else:
                         self.parent_view
-
 
                 elif "email" not in data:
                     print("------------------------------------------------------------- Enter email:")  
@@ -392,7 +390,6 @@ class PilotPage:
                         data["email"] = selected
                     else:
                         self.parent_view
-
 
                 elif "phone" not in data:
                     print("------------------------------------------------------------- Enter phone:")
@@ -414,38 +411,23 @@ class PilotPage:
 
                 else:
                     __confirmation = request_user_input_in_list(">>> Confirm pilot creation ? (Y/N): ", ["Y","N"])
-
                     if __confirmation == "Y":
                         creation_status = self.pilotTable.create_pilot(data)
                         print(creation_status)
-                        __ = input("(press Enter)")
-                        self.view_menu()  
+                        __ = input("(press Enter)") 
                     else:
                         print("cancelled creation")
                         __ = input("(press Enter)")
-                        self.view_menu()
+                    complete = True
 
+            self.view_menu()
 
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
 
 
-    # def is_phone_existing(self, phone):
-
-    #     try:
-    #         # get data from select query:
-    #         data = self.pilotTable.select_all_phone()  # list of the phone no of all pilots in the db
-    #         if phone in data:
-    #             return True
-    #         else:
-    #             return False
-
-    #     except Exception as e: # if exception, print + redirect to menu page
-    #         print("Error : " + str(e))           
-    #         self.view_menu() 
-
-
+    # ###############################################################################################################################
     def is_value_existing_in_db(self, value_to_check, col_name):
 
         try:

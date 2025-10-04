@@ -140,10 +140,6 @@ class PilotTable:
             self.conn.close()
 
 
-
-
-
-
     ###############################################################################################################################
     def create_pilot(self, data):
         try:
@@ -166,26 +162,7 @@ class PilotTable:
             self.conn.close()
 
 
-
-
-
-    # def select_all_phone(self):
-    #     try:
-    #         self.get_connection()
-    #         self.cur.execute('''
-    #                         SELECT phone FROM pilot
-    #                         ''')
-    #         rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
-    #         results = [dict(row)["phone"] for row in rows]   # transform query results as list of dictionaries with column names as keys
-    #         return results  # returns the list of all the phone nos
-
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.conn.close()
-
-
-
+    # ###############################################################################################################################
     def select_all_values_from_col(self, col_name):
         try:
             self.get_connection()
@@ -198,34 +175,6 @@ class PilotTable:
             print(e)
         finally:
             self.conn.close()
-
-
-
-    ###############################################################################################################################
-    # def insert_new_pilot(self):
-    #     try:
-    #         self.get_connection()
-
-    #         pilot = Pilot()
-    #         pilot.set_first_name(input("Enter pilot first name: "))
-    #         pilot.set_last_name(input("Enter pilot last name: "))
-    #         pilot.set_email(input("Enter pilot email address: "))
-    #         pilot.set_phone(input("Enter pilot phone number: "))
-
-    #         sql_insert = "INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
-    #         self.cur.execute(sql_insert, tuple(str(pilot).split("\n")))
-
-    #         confirm = True if input("confirm creation (Y/N): ") == "Y" else False
-    #         if confirm:
-    #             self.conn.commit()
-    #             print("Inserted data successfully")
-    #         else:
-    #             print("Cancelled insertion")
-
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.conn.close()
 
 
 

@@ -67,7 +67,8 @@ CREATE TABLE pilot (
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
-    phone VARCHAR(16) UNIQUE NOT NULL
+    phone VARCHAR(16) UNIQUE NOT NULL,
+    UNIQUE(first_name, last_name)
 );
 
 INSERT INTO pilot (first_name, last_name, email, phone) VALUES
