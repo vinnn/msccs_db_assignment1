@@ -573,6 +573,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_date", selected.strftime("%Y-%m-%d"))
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -588,6 +589,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_time", selected.strftime("%H:%M"))
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -603,6 +605,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "arrival_airport_id", selected["id"])
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -618,6 +621,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "duration", selected.strftime("%H:%M"))
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -634,6 +638,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -654,6 +659,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "pilot_id", selected["id"])
                     print(update_status)
+                    __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -673,6 +679,7 @@ class FlightPage:
                     if __confirmation == "Y":
                         update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)
                         print(update_status)
+                        __ = input("(press Enter)")
                         self.view_details_one_flight(flight_id)
                     else:
                         print("cancelled update")
@@ -685,6 +692,7 @@ class FlightPage:
                 if __confirmation == "Y":
                     deletion_status = self.flightTable.delete_flight(flight_id)
                     print(deletion_status)
+                    __ = input("(press Enter)")
                     self.parent_view()  # go back to previous view
                 else:
                     print("cancelled deletion")
