@@ -372,5 +372,19 @@ class FlightTable:
         finally:
             self.conn.close()
 
+    ###############################################################################################################################
+    def create_flight(self, data):
 
+        try:
+            self.get_connection()
+            query = f"INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES (?,?,?,?,?,?)"
+            self.cur.execute(query, (data["departure_airport_id"], data["arrival_airport_id"], data["status_id"], data["pilot_id"], data["departure_datetime"].strftime("%Y-%m-%d %H:%M") , data["duration"], ))
+            self.conn.commit()
+            return "successful creation"
+
+        except Exception as e:
+            print(e)
+            return "failed creation"
+        finally:
+            self.conn.close()
 

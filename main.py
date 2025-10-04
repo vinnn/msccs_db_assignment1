@@ -38,3 +38,8 @@ while True:
 #     pilot_ops.insert_new_pilot()  
   else:
     print("Invalid Choice")
+
+
+
+# ASSUMPTIONS:
+# - flight duration max is 24HRS
