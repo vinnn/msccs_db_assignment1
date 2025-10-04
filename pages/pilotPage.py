@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 from dbtables.pilotTable import PilotTable
-from utils import request_user_input_int, request_user_input_in_list, request_user_input_name, request_user_input_email, request_user_input_phone
+from utils import request_user_input_int, request_user_input_in_list, request_user_input_name, request_user_input_email, request_user_input_phone, request_user_input_date
 
 from constants import PILOT_AVAILABILITY_MARGIN_DAYS
 
@@ -13,7 +13,8 @@ class PilotPage:
 
         self.pilotTable = PilotTable()
         self.parentView = self.view_menu
-
+        self.page_selected_datetime_from = None
+        self.page_selected_datetime_to = None
 
     def view_menu(self):
 
@@ -34,12 +35,26 @@ class PilotPage:
 
         if __user_input == "M":
             return
+        
         elif __user_input == "0":
-            return        
+            return
+        
         elif __user_input == "1":
             self.view_all_pilots()
+
         elif __user_input == "2":
-            return
+            # user selected departure date:
+            selected_datetime_from = request_user_input_date(">>> Enter period start date (YYYY-MM-DD): ")
+            selected_datetime_to = request_user_input_date(">>> Enter period end date (YYYY-MM-DD): ")            
+            if selected_datetime_from is not None and selected_datetime_to is not None:
+                self.page_selected_datetime_from = selected_datetime_from #.strftime("%Y-%m-%d %H:%M:%S")
+                self.page_selected_datetime_to = selected_datetime_to #.strftime("%Y-%m-%d %H:%M:%S")                
+                self.view_pilots_available_in_period()
+            else: 
+                self.view_menu()
+
+
+
         elif __user_input == "3":
             return
         elif __user_input == "4":
@@ -103,6 +118,57 @@ class PilotPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
+    ###############################################################################################################################
+    def view_pilots_available_in_period(self):
+        '''
+        display information for pilots available during the period [page_selected_datetime_from, page_selected_datetime_to]
+        + prompt user to select one pilot for details or make changes
+        '''
+        self.parentView = self.view_pilots_available_in_period # to go back to this view when user goes back from detail view
+
+        try:
+            # get data from select query:
+            data = self.pilotTable.select_all_pilots_available_by_period(self.page_selected_datetime_from, self.page_selected_datetime_to)
+
+            # display extracted data as a table:
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
+            print("\n*************************************************************")
+            print("************************************************************* ALL PILOTS")  
+            print("*************************************************************\n")
+
+            formatspecifier = "{:<6}{:<26}{:<26}{:<26}{:<14}"
+            print(formatspecifier.format("id",
+                                        "first name",
+                                        "last name", 
+                                        "email", 
+                                        "phone"
+                                        ))
+            print("-" * 175)
+
+            for row in data:
+                print(formatspecifier.format(row["id"], 
+                                            row["first_name"],                                                     
+                                            row["last_name"], 
+                                            row["email"], 
+                                            row["phone"]
+                                            ))
+            print("-" * 175)
+
+            # get list of pilot id options from the table (add "0" for 'go back' option):
+            list_pilot_ids_str = [str(r["id"]) for r in data] + ["0"]
+            
+            # prompt the user to select an option: 
+            __user_input = request_user_input_in_list(">>> For details and changes, select pilot id (0 to go back): ", list_pilot_ids_str)
+
+            # redirect as per user selection:
+            if __user_input =="0" :
+                self.view_menu() 
+            else:
+                self.view_details_one_pilot(int(__user_input))
+
+        except Exception as e: # if exception, print + redirect to menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
 
 
 

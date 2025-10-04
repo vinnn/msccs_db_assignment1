@@ -36,8 +36,8 @@ SELECT f.id AS "id", f.pilot_id AS "pilot_id",
             f.departure_datetime AS "departure_datetime", 
             strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_datetime",
     CASE 
-        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-12 06:00"
-            OR f.departure_datetime > "2025-10-12 17:00"
+        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-01 00:00"
+            OR f.departure_datetime > "2025-10-06 00:00"
         THEN 0
         ELSE 1
     END AS "clash"
