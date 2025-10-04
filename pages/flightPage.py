@@ -119,7 +119,7 @@ class FlightPage:
             print("************************************************************* ALL SCHEDULED FLIGHTS")  
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
             print(formatspecifier.format("id",
                                         "departure",
                                         "time", 
@@ -131,9 +131,10 @@ class FlightPage:
                                         "at airport", 
                                         "city", 
                                         "country", 
-                                        "status"
+                                        "status",
+                                        "pilot"
                                         ))
-            print("-" * 175)
+            print("-" * 185)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
@@ -147,9 +148,10 @@ class FlightPage:
                                             row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
-                                            row["status"]
+                                            row["status"],
+                                            "assigned" if row["pilot"] is not None else "None",  
                                             ))
-            print("-" * 175)
+            print("-" * 185)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -630,7 +632,7 @@ class FlightPage:
             print("4. Change arrival airport")
             print("5. Change duration")
             print("6. Change status")
-            print("7. Change pilot")
+            print("7. Assign/Change pilot")
             print("8. Delete flight")            
             print("0. to go back")
             print("M. to main menu")
@@ -716,12 +718,9 @@ class FlightPage:
 
             elif __user_input == "7":
                 print(f"------------------------------------------------------------ Select new pilot:")
-
-
-                from_datetime = datetime.strptime(data["departure_date"], "%Y-%m-%d") - timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
+                from_datetime = datetime.strptime(f"{data['departure_date']} {data['departure_time']}", "%Y-%m-%d %H:%M") - timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
                 from_datetime_str = from_datetime.strftime("%Y-%m-%d %H:%M") 
-
-                to_datetime = datetime.strptime(data["arrival_date"], "%Y-%m-%d") + timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
+                to_datetime = datetime.strptime(f"{data['arrival_date']} {data['arrival_time']}", "%Y-%m-%d %H:%M") + timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
                 to_datetime_str = to_datetime.strftime("%Y-%m-%d %H:%M") 
                 
                 selected = self.pilotPage.view_available_pilots_by_period(from_datetime_str, to_datetime_str)

@@ -36,8 +36,8 @@ SELECT f.id AS "id", f.pilot_id AS "pilot_id",
             f.departure_datetime AS "departure_datetime", 
             strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_datetime",
     CASE 
-        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-03 21:50"
-            OR f.departure_datetime > "2025-10-04 08:50"
+        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-12 06:00"
+            OR f.departure_datetime > "2025-10-12 17:00"
         THEN 0
         ELSE 1
     END AS "clash"
@@ -53,8 +53,8 @@ SELECT f.id AS "id", f.pilot_id AS "pilot_id",
             f.departure_datetime AS "departure_datetime", 
             strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_datetime",
     CASE 
-        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-03 21:50"
-            OR f.departure_datetime > "2025-10-04 08:50"
+        WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-12 06:00"
+            OR f.departure_datetime > "2025-10-12 17:00"
         THEN 0
         ELSE 1
     END AS "clash"
@@ -72,8 +72,8 @@ WHERE p.id NOT IN (
     (
         SELECT f.pilot_id AS "pilot_id",
             CASE 
-                WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-03 21:50"
-                    OR f.departure_datetime > "2025-10-04 08:50"
+                WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < "2025-10-12 06:00"
+                    OR f.departure_datetime > "2025-10-12 17:00"
                 THEN 0
                 ELSE 1
             END AS "clash"
@@ -81,6 +81,7 @@ WHERE p.id NOT IN (
         GROUP BY f.pilot_id
         HAVING SUM(clash)>0
     )
+    WHERE pilot_id IS NOT NULL
 );
 
 

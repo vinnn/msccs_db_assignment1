@@ -49,7 +49,10 @@ class PilotTable:
 
     ###############################################################################################################################
     def select_all_pilots_available_by_period(self, from_datetime, to_datetime):
-
+        # print(from_datetime)
+        # print(type(from_datetime))
+        # print(to_datetime)
+        # print(type(to_datetime))
         try:
             self.get_connection()
             # create a table of all flights that show if clash with the period
@@ -71,6 +74,7 @@ class PilotTable:
                         GROUP BY f.pilot_id
                         HAVING SUM(clash)>0
                     )
+                    WHERE pilot_id IS NOT NULL
                 )
             ''', (from_datetime, to_datetime))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
