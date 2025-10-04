@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS flight;
 DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS pilot;
 DROP TABLE IF EXISTS airport;
-DROP TABLE IF EXISTS location;
+
 
 
 
@@ -65,21 +65,20 @@ CREATE TABLE pilot (
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
-    phone VARCHAR(16) UNIQUE NOT NULL,
-    current_location_id INTEGER REFERENCES location(id)
+    phone VARCHAR(16) UNIQUE NOT NULL
 );
 
-INSERT INTO pilot (first_name, last_name, email, phone, current_location_id) VALUES
-('Steve', 'Lewis', 's.lewis@yesairways', '0849384738202', 4),
-('Josh', 'Tambo', 'j.tambo@yesairways', '0849389873642', 6),
-('Sylvie', 'Aritin', 's.aritin@yesairways', '0839876462737', 9),
-('Joseph', 'Dimst', 'j.dimst@yesairways', '0898346493877', 12),
-('Aruna', 'Reno', 'a.reno@yesairways', '0837648376438', 3),
-('Bill', 'Farr', 'b.farr@yesairways', '0852374203846', 4),
-('Max', 'Himtas', 'm.himtas@yesairways', '0899846288872', 5),
-('Bob', 'Hewitt', 'b.hewitt@yesairways', '0852837698379', 2),
-('Marina', 'Bens', 'm.bens@yesairways', '0823876349879', 2),
-('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880', 4);
+INSERT INTO pilot (first_name, last_name, email, phone) VALUES
+('Steve', 'Lewis', 's.lewis@yesairways', '0849384738202'),
+('Josh', 'Tambo', 'j.tambo@yesairways', '0849389873642'),
+('Sylvie', 'Aritin', 's.aritin@yesairways', '0839876462737'),
+('Joseph', 'Dimst', 'j.dimst@yesairways', '0898346493877'),
+('Aruna', 'Reno', 'a.reno@yesairways', '0837648376438'),
+('Bill', 'Farr', 'b.farr@yesairways', '0852374203846'),
+('Max', 'Himtas', 'm.himtas@yesairways', '0899846288872'),
+('Bob', 'Hewitt', 'b.hewitt@yesairways', '0852837698379'),
+('Marina', 'Bens', 'm.bens@yesairways', '0823876349879'),
+('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880');
 
 
 
@@ -87,49 +86,38 @@ INSERT INTO pilot (first_name, last_name, email, phone, current_location_id) VAL
 CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(40) NOT NULL,
-    location_id INTEGER NOT NULL REFERENCES location(id)
-);
-
-INSERT INTO airport (name, location_id) VALUES
-('Haneda Airport', 1),
-('Heathrow Airport', 2),
-('International Airport', 3),
-('Schiphol Airport', 4),
-('Frankfurt Airport', 5),
-('Changi Airport', 6),
-('Incheon International Airport', 7),
-('OR Tambo International Airport', 8),
-('Sydney Airport', 9),
-('International Airport', 10),
-('Toronto Pearson International Airport', 11),
-('International Airport', 12),
-('International Airport', 13),
-('JFK Airport', 14),
-('Humberto Delgado Airport', 15);
-
-
-
-
-CREATE TABLE location (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
     city VARCHAR(20) NOT NULL,
     country VARCHAR(20) NOT NULL,
     weather VARCHAR(20)
 );
 
-INSERT INTO location (city, country, weather) VALUES
-('Tokyo', 'Japan',''),
-('London', 'United Kingdom',''),
-('Hong Kong', 'Hong Kong',''),
-('Amsterdam', 'Netherlands', 'cloudy'),
-('Frankfurt', 'Germany', 'sunny'),
-('Singapore', 'Singapore',''),
-('Seoul', 'South Korea',''),
-('Johannesburg', 'South Africa',''),
-('Sydney', 'Australia',''),
-('Kuala Lumpur', 'Malaysia',''),
-('Toronto', 'Canada',''),
-('Chennai', 'India', 'very hot'),
-('Cairo', 'Egypt',''),
-('New York', 'United States',''),
-('Lisbon', 'Portugal', 'rainy');
+INSERT INTO airport (name, city, country, weather) VALUES
+('Haneda Airport','Tokyo', 'Japan',''),
+('Heathrow Airport','London', 'United Kingdom',''),
+('International Airport','Hong Kong', 'Hong Kong',''),
+('Schiphol Airport','Amsterdam', 'Netherlands', 'cloudy'),
+('Frankfurt Airport','Frankfurt', 'Germany', 'sunny'),
+('Changi Airport','Singapore', 'Singapore',''),
+('Incheon International Airport','Seoul', 'South Korea',''),
+('OR Tambo International Airport','Johannesburg', 'South Africa',''),
+('Sydney Airport','Sydney', 'Australia',''),
+('International Airport','Kuala Lumpur', 'Malaysia',''),
+('Toronto Pearson International Airport','Toronto', 'Canada',''),
+('International Airport','Chennai', 'India', 'very hot'),
+('International Airport','Cairo', 'Egypt',''),
+('JFK Airport','New York', 'United States',''),
+('Humberto Delgado Airport','Lisbon', 'Portugal', 'rainy');
+
+
+
+
+
+
+
+
+
+
+
+
+
+

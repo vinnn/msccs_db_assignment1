@@ -11,7 +11,7 @@ class AirportTable:
         weather VARCHAR(20) NOT NULL \
     );"
 
-    ############################################# 
+    ###############################################################################################################################
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
@@ -23,19 +23,19 @@ class AirportTable:
         finally:
             self.conn.close()
 
-    ############################################# 
+    ###############################################################################################################################
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)      
         self.cur = self.conn.cursor()
 
+    ###############################################################################################################################
     def select_all_airports(self):
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT a.id AS id, a.name AS "name", l.city AS "city", l.country AS "country"
-                            FROM airport a, location l
-                            WHERE a.location_id=l.id 
+                            SELECT a.id AS id, a.name AS "name", a.city AS "city", a.country AS "country"
+                            FROM airport a
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys

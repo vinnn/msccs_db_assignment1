@@ -10,9 +10,10 @@ class AirportPage:
 
 
     ###############################################################################################################################
-    def viewAirportSelection(self):
+    def view_airport_selection(self): 
         '''
         display all airport options
+        + prompt user to select an airport id
         '''
 
         try:
@@ -47,6 +48,7 @@ class AirportPage:
                 # self.viewMenu() 
             else:
                 selected_airport = [a for a in data if a["id"]==int(__user_input)][0]
+                print(selected_airport)
                 return selected_airport
                 # self.viewDetailsOneFlight(int(__user_input))
 
