@@ -1,12 +1,248 @@
+import os
+from datetime import datetime, timedelta
 
 from dbtables.pilotTable import PilotTable
-from utils import request_user_input_int, request_user_input_in_list
+from utils import request_user_input_int, request_user_input_in_list, request_user_input_name, request_user_input_email, request_user_input_phone
+
+from constants import PILOT_AVAILABILITY_MARGIN_DAYS
 
 
 class PilotPage:
 
     def __init__(self):
+
         self.pilotTable = PilotTable()
+        self.parentView = self.view_menu
+
+
+    def view_menu(self):
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\n*************************************************************")
+        print("************************************************************* PILOTS")   
+        print("*************************************************************")
+        print("1. All pilots")
+        print("2. Pilots available for period")
+        print("3. Create new pilot")
+        print("4. Statistics")        
+        print("----------------------")
+        print("0. to go back")  
+        print("M. to main menu")
+        print("----------------------")
+
+        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","M"])
+
+        if __user_input == "M":
+            return
+        elif __user_input == "0":
+            return        
+        elif __user_input == "1":
+            self.view_all_pilots()
+        elif __user_input == "2":
+            return
+        elif __user_input == "3":
+            return
+        elif __user_input == "4":
+            return     
+        else:
+            print("Invalid Choice")   
+
+
+
+
+
+    ###############################################################################################################################
+    def view_all_pilots(self):
+        '''
+        display information for all pilots
+        + prompt user to select one pilot for details or make changes
+        '''
+        self.parentView = self.view_all_pilots # to go back to this view when user goes back from detail view
+
+        try:
+            # get data from select query:
+            data = self.pilotTable.select_all_pilots()
+
+            # display extracted data as a table:
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
+            print("\n*************************************************************")
+            print("************************************************************* ALL PILOTS")  
+            print("*************************************************************\n")
+
+            formatspecifier = "{:<6}{:<26}{:<26}{:<26}{:<14}"
+            print(formatspecifier.format("id",
+                                        "first name",
+                                        "last name", 
+                                        "email", 
+                                        "phone"
+                                        ))
+            print("-" * 175)
+
+            for row in data:
+                print(formatspecifier.format(row["id"], 
+                                            row["first_name"],                                                     
+                                            row["last_name"], 
+                                            row["email"], 
+                                            row["phone"]
+                                            ))
+            print("-" * 175)
+
+            # get list of pilot id options from the table (add "0" for 'go back' option):
+            list_pilot_ids_str = [str(r["id"]) for r in data] + ["0"]
+            
+            # prompt the user to select an option: 
+            __user_input = request_user_input_in_list(">>> For details and changes, select pilot id (0 to go back): ", list_pilot_ids_str)
+
+            # redirect as per user selection:
+            if __user_input =="0" :
+                self.view_menu() 
+            else:
+                self.view_details_one_pilot(int(__user_input))
+
+        except Exception as e: # if exception, print + redirect to menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
+
+
+
+
+
+    ###############################################################################################################################
+    def view_details_one_pilot(self, pilot_id):
+        '''
+        display details for one pilot
+        + menu for editing/deleting the pilot
+        + prompt user for menu selection
+        '''
+
+        try:
+            data = self.pilotTable.select_one_pilot(pilot_id)
+            
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\n*************************************************************")
+            print("************************************************************* PILOT DETAILS")   
+            print("*************************************************************")
+            print("{:<24}{:<24}\n".format("pilot id",data["id"]))
+            print("{:<24}{:<24}".format("first name", data["first_name"]))            
+            print("{:<24}{:<24}".format("last name", data["last_name"]))
+            print("{:<24}{:<24}".format("email", data["email"]))
+            print("{:<24}{:<24}".format("phone", data["phone"]))
+
+            print("------------------------------------------------------------- Make changes:")  
+            print("1. Change first name")
+            print("2. Change last name")
+            print("3. Change email")
+            print("4. Change phone")
+            print("5. Delete pilot")
+            print("0. to go back")
+            print("M. to main menu")
+            print("----------------------")
+            __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","M"])
+
+            if __user_input == "0":
+                self.parentView() # go back to previous view
+
+            elif __user_input == "M":
+                self.view_menu() # go back to menu
+
+            elif __user_input == "1":
+                print(f"------------------------------------------------------------ Enter new first name: ")
+                selected = request_user_input_name(">>> Enter new first name: ")
+
+                print("replace with ", selected)
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = self.pilotTable.update_pilot(pilot_id, "first_name", selected)
+                    print(update_status)
+                    self.view_details_one_pilot(pilot_id)
+                else:
+                    print("cancelled update")
+                    self.view_details_one_pilot(pilot_id)
+
+            elif __user_input == "2":
+                print(f"------------------------------------------------------------ Enter new last name: ")
+                selected = request_user_input_name(">>> Enter new last name: ")
+
+                print("replace with ", selected)
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = self.pilotTable.update_pilot(pilot_id, "last_name", selected)
+                    print(update_status)
+                    self.view_details_one_pilot(pilot_id)
+                else:
+                    print("cancelled update")
+                    self.view_details_one_pilot(pilot_id)
+
+            elif __user_input == "3":
+                print(f"------------------------------------------------------------ Enter new email: ")
+                selected = request_user_input_email(">>> Enter new email address: ")
+
+                print("replace with ", selected)
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = self.pilotTable.update_pilot(pilot_id, "email", selected)
+                    print(update_status)
+                    self.view_details_one_pilot(pilot_id)
+                else:
+                    print("cancelled update")
+                    self.view_details_one_pilot(pilot_id)
+
+            elif __user_input == "4":
+                print(f"------------------------------------------------------------ Enter new phone: ")
+                selected = request_user_input_phone(">>> Enter new phone number: ")
+
+                print("replace with ", selected)
+                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    update_status = self.pilotTable.update_pilot(pilot_id, "phone", selected)
+                    print(update_status)
+                    self.view_details_one_pilot(pilot_id)
+                else:
+                    print("cancelled update")
+                    self.view_details_one_pilot(pilot_id)
+            
+            elif __user_input == "5":
+                print(f"------------------------------------------------------------ Delete pilot:")
+                __confirmation = request_user_input_in_list(">>> Confirm deletion ? (Y/N): ", ["Y","N"])
+                if __confirmation == "Y":
+                    deletion_status = self.pilotTable.delete_pilot(pilot_id)
+                    print(deletion_status)
+                    self.parentView()  # go back to previous view
+                else:
+                    print("cancelled deletion")
+                    self.view_details_one_pilot(pilot_id)            
+
+
+
+
+        except Exception as e: # if exception, print + redirect to all flight menu page
+            print("Error : " + str(e))   
+            self.view_menu() 
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     ###############################################################################################################################

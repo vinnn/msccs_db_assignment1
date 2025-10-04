@@ -21,11 +21,11 @@ class FlightPage:
         self.flightTable = FlightTable()
         self.airportPage = AirportPage()
         self.pilotPage = PilotPage()
-        self.parentView = self.viewMenu
+        self.parentView = self.view_menu
         self.view_flights_by_date_selected_date = None # as an instance variable to enable easier navigation to parent views
         self.view_flights_by_departure_airport_selected_airport_id = None
 
-    def viewMenu(self):
+    def view_menu(self):
 
         os.system('cls' if os.name == 'nt' else 'clear')
         print("\n*************************************************************")
@@ -144,13 +144,13 @@ class FlightPage:
 
             # redirect as per user selection:
             if __user_input =="0" :
-                self.viewMenu() 
+                self.view_menu() 
             else:
-                self.viewDetailsOneFlight(int(__user_input))
+                self.view_details_one_flight(int(__user_input))
 
-        except Exception as e: # if exception, print + redirect to flight menu page
+        except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
-            self.viewMenu() 
+            self.view_menu() 
 
 
     ###############################################################################################################################
@@ -216,13 +216,13 @@ class FlightPage:
 
             # redirect as per user selection:
             if __user_input =="0" :
-                self.viewMenu() 
+                self.view_menu() 
             else:
-                self.viewDetailsOneFlight(int(__user_input))
+                self.view_details_one_flight(int(__user_input))
 
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
-            self.viewMenu() 
+            self.view_menu() 
 
 
 
@@ -286,7 +286,7 @@ class FlightPage:
             if __user_input =="0" :
                 self.viewMenu() 
             else:
-                self.viewDetailsOneFlight(int(__user_input))
+                self.view_details_one_flight(int(__user_input))
 
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
@@ -352,7 +352,7 @@ class FlightPage:
             if __user_input =="0" :
                 self.viewMenu() 
             else:
-                self.viewDetailsOneFlight(int(__user_input))
+                self.view_details_one_flight(int(__user_input))
 
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
@@ -414,7 +414,7 @@ class FlightPage:
             if __user_input =="0" :
                 self.viewMenu() 
             else:
-                self.viewDetailsOneFlight(int(__user_input))
+                self.view_details_one_flight(int(__user_input))
 
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
@@ -429,7 +429,7 @@ class FlightPage:
 
 
     ###############################################################################################################################
-    def viewDetailsOneFlight(self, flight_id):
+    def view_details_one_flight(self, flight_id):
         '''
         display details of one flight
         + menu for editing/deleting the flight
@@ -478,7 +478,7 @@ class FlightPage:
                 self.parentView() # go back to previous view
 
             elif __user_input == "M":
-                self.viewMenu()
+                self.view_menu()
 
             elif __user_input == "1":
                 print(f"------------------------------------------------------------ Enter new departure date: ")
@@ -489,10 +489,10 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_date", selected.strftime("%Y-%m-%d"))
                     print(update_status)
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
 
             elif __user_input == "2":
                 print(f"------------------------------------------------------------ Enter new departure time: ")
@@ -503,10 +503,10 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_time", selected.strftime("%H:%M"))
                     print(update_status)
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
 
             elif __user_input == "3" or __user_input == "4":
                 print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'destination'} airport:")
@@ -517,10 +517,10 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "destination_airport_id", selected["id"])
                     print(update_status)
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
 
             elif __user_input == "5":
                 print(f"------------------------------------------------------------ Enter new status: ")
@@ -531,10 +531,10 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
                     print(update_status)
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
 
             elif __user_input == "6":
                 print(f"------------------------------------------------------------ Select new pilot:")
@@ -553,10 +553,10 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "pilot_id", selected["id"])
                     print(update_status)
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
-                    self.viewDetailsOneFlight(flight_id)
+                    self.view_details_one_flight(flight_id)
             
             elif __user_input == "7":
                 print(f"------------------------------------------------------------ Delete flight:")
@@ -568,14 +568,14 @@ class FlightPage:
                     self.parentView()  # go back to previous view
                 else:
                     print("cancelled deletion")
-                    self.viewDetailsOneFlight(flight_id)            
+                    self.view_details_one_flight(flight_id)            
 
 
 
 
         except Exception as e: # if exception, print + redirect to all flight menu page
             print("Error : " + str(e))   
-            self.viewMenu() 
+            self.view_menu() 
 
 
    
