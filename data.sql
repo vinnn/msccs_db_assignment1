@@ -71,16 +71,16 @@ CREATE TABLE pilot (
 );
 
 INSERT INTO pilot (first_name, last_name, email, phone) VALUES
-('Steve', 'Lewis', 's.lewis@yesairways', '0849384738202'),
-('Josh', 'Tambo', 'j.tambo@yesairways', '0849389873642'),
-('Sylvie', 'Aritin', 's.aritin@yesairways', '0839876462737'),
-('Joseph', 'Dimst', 'j.dimst@yesairways', '0898346493877'),
-('Aruna', 'Reno', 'a.reno@yesairways', '0837648376438'),
-('Bill', 'Farr', 'b.farr@yesairways', '0852374203846'),
-('Max', 'Himtas', 'm.himtas@yesairways', '0899846288872'),
-('Bob', 'Hewitt', 'b.hewitt@yesairways', '0852837698379'),
-('Marina', 'Bens', 'm.bens@yesairways', '0823876349879'),
-('Luigi', 'Piagiolo', 'l.piagiolo@yesairways', '0898354932880');
+('Steve', 'Lewis', 's.lewis@yesairways.co', '0849384738202'),
+('Josh', 'Tambo', 'j.tambo@yesairways.co', '0849389873642'),
+('Sylvie', 'Aritin', 's.aritin@yesairways.co', '0839876462737'),
+('Joseph', 'Dimst', 'j.dimst@yesairways.co', '0898346493877'),
+('Aruna', 'Reno', 'a.reno@yesairways.co', '0837648376438'),
+('Bill', 'Farr', 'b.farr@yesairways.co', '0852374203846'),
+('Max', 'Himtas', 'm.himtas@yesairways.co', '0899846288872'),
+('Bob', 'Hewitt', 'b.hewitt@yesairways.co', '0852837698379'),
+('Marina', 'Bens', 'm.bens@yesairways.co', '0823876349879'),
+('Luigi', 'Piagiolo', 'l.piagiolo@yesairways.co', '0898354932880');
 
 
 

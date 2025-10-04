@@ -6,8 +6,6 @@ from pages.pilotPage import PilotPage
 from utils import request_user_input_in_list
 
 
-
-
 while True:
   os.system('cls' if os.name == 'nt' else 'clear')  
   print("\n*************************************************************")

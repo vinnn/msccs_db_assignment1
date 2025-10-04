@@ -9,8 +9,6 @@ from constants import PILOT_AVAILABILITY_MARGIN_DAYS
 from utils import request_user_input_int, request_user_input_in_list, request_user_input_date, request_user_input_time
 
 
-
-
 class FlightPage:
 
     def __init__(self):
@@ -20,7 +18,6 @@ class FlightPage:
         self.parent_view = self.view_menu
         self.page_selected_datetime = None # as an instance variable to enable easier navigation to parent views
         self.page_selected_airport_id = None
-        self.temp_flight_data = {}
 
     ###############################################################################################################################
     def view_menu(self):
@@ -54,7 +51,7 @@ class FlightPage:
             return
         
         elif __user_input == "0":
-            return
+            self.parent_view()
         
         elif __user_input == "1":
             self.view_all_scheduled_flights()
@@ -719,18 +716,15 @@ class FlightPage:
         '''
         display form for flight creation
         '''
-        self.parent_view = self.view_create_flight # to go back to this view when user goes back from detail view
-
+        # self.parent_view = self.view_create_flight # to go back to this view when user goes back from detail view
+        print(self.parent_view)
+        self.parent_view = self.view_menu 
+        # print(self.parent_view)
         try:
-            confirmed = False
+            data = {}
 
-            self.temp_flight_data = {}
-
-
-            while not confirmed:
+            while True:
                 os.system('cls' if os.name == 'nt' else 'clear')
-
-                data = self.temp_flight_data
 
                 print("\n*************************************************************")
                 print("************************************************************* NEW FLIGHT")   
@@ -760,11 +754,8 @@ class FlightPage:
                         data["departure_airport"] = selected["name"]
                         data["departure_city"] = selected["city"]
                         data["departure_country"] = selected["country"]
-
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
-
 
                 elif "departure_date" not in data:
                     print("------------------------------------------------------------- Enter departure date:")  
@@ -774,11 +765,8 @@ class FlightPage:
                     __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                     if __confirmation == "Y":
                         data["departure_date"] = selected.strftime("%Y-%m-%d")
-
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
-
 
                 elif "departure_time" not in data:
                     print("------------------------------------------------------------- Enter departure time:")  
@@ -789,8 +777,6 @@ class FlightPage:
                     if __confirmation == "Y":
                         data["departure_time"] = selected.strftime("%H:%M")
                         data["departure_datetime"] = datetime.strptime(f"{data['departure_date']} {data['departure_time']}", "%Y-%m-%d %H:%M")
-
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
 
@@ -805,8 +791,6 @@ class FlightPage:
                         data["arrival_airport"] = selected["name"]
                         data["arrival_city"] = selected["city"]
                         data["arrival_country"] = selected["country"]
-
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
 
@@ -822,8 +806,6 @@ class FlightPage:
                         data["arrival_date"] = arrival_datetime.strftime("%Y-%m-%d")
                         data["arrival_time"] = arrival_datetime.strftime("%H:%M")                        
                         data["duration"] = selected.strftime("%H:%M")
-
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
 
@@ -837,9 +819,6 @@ class FlightPage:
                     if __confirmation == "Y":
                         data["status_id"] = selected
                         data["status"] = status
-
-                        self.temp_flight_data = data
-
                     else:
                         self.parent_view
 
@@ -858,23 +837,17 @@ class FlightPage:
                         data["pilot_id"] = selected["id"]
                         data["pilot_first_name"] = selected["first_name"]
                         data["pilot_last_name"] = selected["last_name"]
-                        self.temp_flight_data = data
                     else:
                         self.parent_view
 
 
                 else:
-
-                    # print(data)
-
                     __confirmation = request_user_input_in_list(">>> Confirm flight creation ? (Y/N): ", ["Y","N"])
 
                     if __confirmation == "Y":
                         creation_status = self.flightTable.create_flight(data)
                         print(creation_status)
                         __ = input("(press Enter)")
-
-                        self.temp_flight_data = {}
                         self.view_menu()  
                     else:
                         print("cancelled creation")

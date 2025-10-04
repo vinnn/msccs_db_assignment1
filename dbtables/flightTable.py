@@ -300,9 +300,6 @@ class FlightTable:
     def create_flight(self, data):
 
         try:
-
-
-
             self.get_connection()
             query = f"INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES (?,?,?,?,?,?)"
             self.cur.execute(query, 

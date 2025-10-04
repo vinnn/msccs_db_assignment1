@@ -48,7 +48,7 @@ class AirportPage:
                 return None
             else:
                 selected_airport = [a for a in data if a["id"]==int(__user_input)][0]
-                print(selected_airport)
+                # print(selected_airport)
                 return selected_airport
                 # self.viewDetailsOneFlight(int(__user_input))
 
@@ -95,7 +95,7 @@ class AirportPage:
                 return None
             else:
                 selected_airport = [a for a in data if a["id"]==int(__user_input)][0]
-                print(selected_airport)
+                # print(selected_airport)
                 return selected_airport
                 # self.viewDetailsOneFlight(int(__user_input))
 
@@ -142,7 +142,7 @@ class AirportPage:
                 return None
             else:
                 selected_airport = [a for a in data if a["id"]==int(__user_input)][0]
-                print(selected_airport)
+                # print(selected_airport)
                 return selected_airport
                 # self.viewDetailsOneFlight(int(__user_input))
 

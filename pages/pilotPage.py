@@ -56,7 +56,8 @@ class PilotPage:
 
 
         elif __user_input == "3":
-            return
+            self.view_create_pilot()
+
         elif __user_input == "4":
             return     
         else:
@@ -169,8 +170,6 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
-
 
 
     ###############################################################################################################################
@@ -286,74 +285,6 @@ class PilotPage:
             self.view_menu() 
 
 
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ###############################################################################################################################
-    def viewPilotSelection(self):
-        '''
-        display all pilot options
-        '''
-
-        try:
-            # get data from select query:
-            data = self.pilotTable.select_all_pilots()
-
-            formatspecifier = "{:<6}{:<20}{:<20}{:<30}{:<20}{:<20}"
-            print(formatspecifier.format("id", "first_name", "last_name", "email", "phone", "current location"))
-            print("-" * 120)
-
-            for row in data:
-                print(formatspecifier.format(row["id"], 
-                                            row["first_name"][:18], 
-                                            row["last_name"][:18], 
-                                            row["email"],
-                                            row["phone"][:18],
-                                            row["current_location_city"] + ", " + row["current_location_country"]
-                                            ))
-            print("-" * 120)
-
-            # get list of flight id options from the table (add "0" for 'go back' option):
-            list_ids_str = [str(r["id"]) for r in data] + ["0"]
-            
-            # prompt the user to select an option: 
-            __user_input = request_user_input_in_list(">>> Select pilot id (0 to go back): ", list_ids_str)
-            
-            # redirect as per user selection:
-            if __user_input =="0" :
-                return
-                # self.viewMenu() 
-            else:
-                selected_row = [a for a in data if a["id"]==int(__user_input)][0]
-                return selected_row
-
-        except Exception as e: # if exception, print + redirect to flight menu page
-            print("Error : " + str(e))           
-            # self.viewMenu() 
-
-
 
     ###############################################################################################################################
     def view_available_pilots_by_period(self, from_datetime, to_datetime):
@@ -397,3 +328,134 @@ class PilotPage:
             print("Error : " + str(e))           
             # self.viewMenu() 
 
+
+
+    # ###############################################################################################################################
+    def view_create_pilot(self):
+        '''
+        display form for pilot creation
+        '''
+        self.parent_view = self.view_create_pilot # to go back to this view when user goes back from detail view
+
+        try:
+            data = {}
+
+            while True:
+                os.system('cls' if os.name == 'nt' else 'clear')
+
+                print("\n*************************************************************")
+                print("************************************************************* NEW PILOT")   
+                print("*************************************************************")
+
+                print("{:<24}{:<24}".format("first name", data["first_name"] if "first_name" in data else ""))
+                print("{:<24}{:<24}".format("last name", data["last_name"] if "last_name" in data else ""))
+                print("{:<24}{:<24}\n".format("email address", data["email"] if "email" in data else ""))
+                print("{:<24}{:<24}\n".format("phone no", data["phone"] if "phone" in data else ""))
+
+
+                if "first_name" not in data:
+                    print("------------------------------------------------------------- Enter first name:")  
+                    selected = request_user_input_name(">>> Enter first name: ")
+                    print("selected first name: ", selected)
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["first_name"] = selected
+                    else:
+                        self.parent_view
+
+
+                elif "last_name" not in data:
+                    print("------------------------------------------------------------- Enter last name:")  
+                    selected = request_user_input_name(">>> Enter last name: ")
+                    print("selected last name: ", selected)
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["last_name"] = selected
+                    else:
+                        self.parent_view
+
+
+                elif "email" not in data:
+                    print("------------------------------------------------------------- Enter email:")  
+
+                    valid = False
+                    while not valid:
+                        selected = request_user_input_email(">>> Enter email adress: ")
+                        if self.is_value_existing_in_db(selected, "email"): # check if the email is already in the db
+                            print('email address already exists. Please try again')
+                        else:
+                            valid = True
+                    
+                    print("selected email address: ", selected)
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["email"] = selected
+                    else:
+                        self.parent_view
+
+
+                elif "phone" not in data:
+                    print("------------------------------------------------------------- Enter phone:")
+
+                    valid = False
+                    while not valid:
+                        selected = request_user_input_phone(">>> Enter phone number: ")
+                        if self.is_value_existing_in_db(selected, "phone"): # check if the phone is already in the db                        
+                            print('phone number already exists. Please try again')
+                        else:
+                            valid = True
+
+                    print("selected phone no: ", selected)
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["phone"] = selected
+                    else:
+                        self.parent_view
+
+                else:
+                    __confirmation = request_user_input_in_list(">>> Confirm pilot creation ? (Y/N): ", ["Y","N"])
+
+                    if __confirmation == "Y":
+                        creation_status = self.pilotTable.create_pilot(data)
+                        print(creation_status)
+                        __ = input("(press Enter)")
+                        self.view_menu()  
+                    else:
+                        print("cancelled creation")
+                        __ = input("(press Enter)")
+                        self.view_menu()
+
+
+        except Exception as e: # if exception, print + redirect to menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
+
+
+    # def is_phone_existing(self, phone):
+
+    #     try:
+    #         # get data from select query:
+    #         data = self.pilotTable.select_all_phone()  # list of the phone no of all pilots in the db
+    #         if phone in data:
+    #             return True
+    #         else:
+    #             return False
+
+    #     except Exception as e: # if exception, print + redirect to menu page
+    #         print("Error : " + str(e))           
+    #         self.view_menu() 
+
+
+    def is_value_existing_in_db(self, value_to_check, col_name):
+
+        try:
+            # get data from select query:
+            data = self.pilotTable.select_all_values_from_col(col_name)  # list of the phone no of all pilots in the db
+            if value_to_check in data:
+                return True
+            else:
+                return False
+
+        except Exception as e: # if exception, print + redirect to menu page
+            print("Error : " + str(e))           
+            self.view_menu() 

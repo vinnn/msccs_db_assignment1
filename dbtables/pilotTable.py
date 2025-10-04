@@ -141,6 +141,66 @@ class PilotTable:
 
 
 
+
+
+
+    ###############################################################################################################################
+    def create_pilot(self, data):
+        try:
+            self.get_connection()
+            query = f"INSERT INTO pilot (first_name, last_name, email, phone) VALUES (?,?,?,?)"
+            self.cur.execute(query, 
+                             (data["first_name"], 
+                              data["last_name"], 
+                              data["email"], 
+                              data["phone"]
+                              )
+                            )
+            self.conn.commit()
+            return "successful creation"
+
+        except Exception as e:
+            print(e)
+            return "failed creation"
+        finally:
+            self.conn.close()
+
+
+
+
+
+    # def select_all_phone(self):
+    #     try:
+    #         self.get_connection()
+    #         self.cur.execute('''
+    #                         SELECT phone FROM pilot
+    #                         ''')
+    #         rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+    #         results = [dict(row)["phone"] for row in rows]   # transform query results as list of dictionaries with column names as keys
+    #         return results  # returns the list of all the phone nos
+
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.conn.close()
+
+
+
+    def select_all_values_from_col(self, col_name):
+        try:
+            self.get_connection()
+            self.cur.execute(f"SELECT {col_name} FROM pilot")
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row)[col_name] for row in rows]   # transform query results as list of dictionaries with column names as keys         
+            return results  # returns the list of all the phone nos
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+
+
     ###############################################################################################################################
     # def insert_new_pilot(self):
     #     try:
