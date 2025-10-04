@@ -1,5 +1,4 @@
 import sqlite3
-from dbmodels.airport import Airport
 
 class AirportTable:
 
@@ -77,7 +76,6 @@ class AirportTable:
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
-            print(results)
             return results
 
         except Exception as e:

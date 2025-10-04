@@ -1,5 +1,4 @@
 import sqlite3
-from dbmodels.pilot import Pilot
 
 class PilotTable:
 

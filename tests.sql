@@ -89,3 +89,4 @@ SELECT * FROM pilot;
 DELETE FROM pilot WHERE id=10;
 
 
+SELECT * FROM flight;

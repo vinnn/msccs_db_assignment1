@@ -13,13 +13,15 @@ DROP TABLE IF EXISTS airport;
 
 
 
+-- type of pilot_id, particularly enforced, because this can be null (if a pilot is not assigned)
+-- we want to control that this id is either an integer or the NULL value (nothing else):
 
 CREATE TABLE flight (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
     arrival_airport_id INTEGER NOT NULL REFERENCES airport(id),
-    status_id INTEGER NOT NULL REFERENCES status(id),
-    pilot_id INTEGER REFERENCES pilot(id),
+    status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id),
+    pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id),
     departure_datetime DATETIME,
     duration TIME NOT NULL
 );
@@ -32,19 +34,19 @@ INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_i
 (7, 9, 0, 9, '2025-10-04 12:05', '11:00'),
 (7, 4, 0, 8, '2025-10-04 08:35', '11:00'),
 (5, 3, 0, 3, '2025-10-04 18:10', '11:00'),
-(4, 3, 0, 4, '2025-10-04 16:05', '11:00'),
+(4, 3, 0, NULL, '2025-10-04 16:05', '11:00'),
 (3, 7, 0, 2, '2025-10-05 05:35', '11:00'),
 (1, 4, 0, 4, '2025-10-05 05:05', '11:00'),
-(9, 4, 0, 7, '2025-10-05 21:50', '11:00'), 
+(9, 4, 0, NULL, '2025-10-05 21:50', '11:00'), 
 (5, 7, 0, 4, '2025-10-05 08:20', '11:00'), 
 (8, 2, 0, 3, '2025-10-05 12:05', '11:00'),
 (6, 2, 0, 5, '2025-10-05 11:10', '11:00'),
 (3, 1, 0, 5, '2025-10-08 16:05', '11:00'),
-(3, 4, 0, 9, '2025-10-08 08:30', '11:00'),
+(3, 4, 0, NULL, '2025-10-08 08:30', '11:00'),
 (5, 4, 0, 9, '2025-10-08 18:35', '11:00'),
 (8, 9, 0, 5, '2025-10-04 09:00', '11:00'),
 (8, 4, 0, 4, '2025-10-10 05:20', '11:00'),
-(6, 3, 0, 8, '2025-10-12 06:00', '11:00'),
+(6, 3, 0, NULL, '2025-10-12 06:00', '11:00'),
 (9, 2, 0, 9, '2025-10-30 07:25', '11:00');
 
 

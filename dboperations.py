@@ -1,9 +1,9 @@
 import sqlite3
 
 
-from dbmodels.flight2 import Flight
-from dbmodels.airport import Airport
-from dbmodels.route import Route
+# from dbmodels.flight2 import Flight
+# from dbmodels.airport import Airport
+# from dbmodels.route import Route
 
 # flights
 # - date
