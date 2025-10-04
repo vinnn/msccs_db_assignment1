@@ -34,44 +34,6 @@ class FlightTable:
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)
         self.cur = self.conn.cursor()
 
-
-    ###############################################################################################################################
-    # def insert_new_flight(self):   #TODO: refresh this
-    #     try:
-    #         flight = Flight()
-
-    #         # show route information (including ids) in order to create new flight
-    #         airportTable = AirportTable()
-    #         airportTable.select_all_airports()
-
-    #         flight.set_departure_airport_id(input("Enter departure airport id: "))
-    #         flight.set_arrival_airport_id(input("Enter arrival airport id: "))
-
-    #         flight.set_departure_date(input("Enter flight detaprture date (YR-MM-DD): "))
-    #         flight.set_departure_time(input("Enter flight detaprture time (HR:MM:SS): "))
-
-    #         # show pilot information (including ids) in order to create new flight
-    #         pliotTable = PilotTable()
-    #         pliotTable.select_all_pilots()
-
-    #         flight.set_pilotId(input("Enter flight pilot id: "))
-
-    #         self.get_connection()
-    #         sql_insert = "INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_date, departure_time) VALUES (?,?,?,?,?,?)"
-    #         self.cur.execute(sql_insert, tuple(str(flight).split("\n")))
-
-    #         confirm = True if input("confirm creation (Y/N): ") == "Y" else False
-    #         if confirm:
-    #             self.conn.commit()
-    #             print("Inserted data successfully")
-    #         else:
-    #             print("Cancelled insertion")
-
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.conn.close()
-
     ###############################################################################################################################
     def select_all_future_flights(self):
         try:
@@ -104,48 +66,6 @@ class FlightTable:
             print(e)
         finally:
             self.conn.close()
-
-
-
-    ###############################################################################################################################
-    # def select_all_flights_with_pilots(self):
-    #     try:
-    #         self.get_connection()
-
-    #         # formatting and create new columns
-    #         self.cur.execute('''
-    #                         SELECT f.id AS id,
-    #                          date(f.departure_datetime) AS "departure_date",
-    #                          strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-    #                          strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-    #                          strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",              
-    #                          a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
-    #                          a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-    #                          s.text AS "status",
-    #                          f.pilot_id AS "pilot_id",
-    #                          p.first_name AS "pilot_first_name",
-    #                          p.last_name AS "pilot_last_name"
-    #                         FROM flight f, airport a1, airport a2, status s, pilot p
-    #                         WHERE
-    #                          f.departure_airport_id=a1.id
-    #                          AND f.arrival_airport_id=a2.id
-    #                          AND f.status_id=s.id
-    #                          AND f.pilot_id=p.id
-    #                          AND f.departure_datetime > datetime('now', 'localtime')
-    #                          ORDER BY f.departure_datetime ASC
-    #                          ''')
-    #         rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
-    #         results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
-    #         return results
-
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.conn.close()
-
-
-
-
 
     ###############################################################################################################################
     def select_all_future_unassigned_flights(self):
@@ -226,11 +146,11 @@ class FlightTable:
                              date(f.departure_datetime) AS "departure_date", 
                              strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
                              strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
+                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot_id"
+                             f.pilot_id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s, pilot p
                             WHERE 
                              f.departure_airport_id=a1.id 
@@ -258,18 +178,18 @@ class FlightTable:
                              date(f.departure_datetime) AS "departure_date", 
                              strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
                              strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",   
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
+                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot_id"
-                            FROM flight f, airport a1, airport a2, status s, pilot p
+                             f.pilot_id AS "pilot"
+                            FROM flight f, airport a1, airport a2, status s
                             WHERE 
                              f.departure_airport_id=? 
                              AND f.departure_airport_id=a1.id                              
                              AND f.arrival_airport_id=a2.id 
                              AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now')
+                             AND f.departure_datetime > datetime('now', 'localtime')
                              ORDER BY f.departure_datetime ASC
                              ''', (airport_id,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
@@ -291,18 +211,18 @@ class FlightTable:
                              date(f.departure_datetime) AS "departure_date", 
                              strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
                              strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",   
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
+                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot_id"
-                            FROM flight f, airport a1, airport a2, status s, pilot p
+                             f.pilot_id AS "pilot"
+                            FROM flight f, airport a1, airport a2, status s
                             WHERE 
                              f.arrival_airport_id=? 
                              AND f.departure_airport_id=a1.id                              
                              AND f.arrival_airport_id=a2.id 
                              AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now')
+                             AND f.departure_datetime > datetime('now', 'localtime')
                              ORDER BY f.departure_datetime ASC
                              ''', (airport_id,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
@@ -376,9 +296,20 @@ class FlightTable:
     def create_flight(self, data):
 
         try:
+
+
+
             self.get_connection()
             query = f"INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES (?,?,?,?,?,?)"
-            self.cur.execute(query, (data["departure_airport_id"], data["arrival_airport_id"], data["status_id"], data["pilot_id"], data["departure_datetime"].strftime("%Y-%m-%d %H:%M") , data["duration"], ))
+            self.cur.execute(query, 
+                             (int(data["departure_airport_id"]), 
+                              int(data["arrival_airport_id"]), 
+                              int(data["status_id"]), 
+                              int(data["pilot_id"]), 
+                              data["departure_datetime"].strftime("%Y-%m-%d %H:%M") , 
+                              data["duration"], 
+                              )
+                            )
             self.conn.commit()
             return "successful creation"
 

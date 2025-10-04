@@ -170,23 +170,24 @@ class FlightPage:
 
 
     ###############################################################################################################################
-    def view_flights_with_pilots(self):
+    def view_flights_by_datetime(self):
         '''
-        display all flights with pilot info
+        display all flights departing on a certain date
+        + prompt user to select one flight for details or make changes
         '''
-        # self.parent_view = self.view_all_scheduled_flights # to go back to this view when user goes back from detail view
+        self.parent_view = self.view_flights_by_datetime # to go back to this view when user goes back from detail view
 
         try:
             # get data from select query:
-            data = self.flightTable.select_all_flights_with_pilots()
+            data = self.flightTable.select_flights_by_departure_datetime(self.page_selected_datetime)
 
             # display extracted data as a table:
-            os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
+            os.system('cls' if os.name == 'nt' else 'clear')
             print("\n*************************************************************")
-            print("************************************************************* FLIGHTS")  
+            print("************************************************************* FLIGHTS BY DEPARTURE DATE")   
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<6}{:<14}{:<14}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
             print(formatspecifier.format("id",
                                         "departure",
                                         "time", 
@@ -199,11 +200,9 @@ class FlightPage:
                                         "city", 
                                         "country", 
                                         "status",
-                                        "pilot id",
-                                        "first name",
-                                        "last name"
+                                        "pilot"
                                         ))
-            print("-" * 175)
+            print("-" * 185)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
@@ -218,78 +217,9 @@ class FlightPage:
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
                                             row["status"],
-                                            row["pilot_id"],
-                                            row["pilot_first_name"],
-                                            row["pilot_last_name"]
+                                            "assigned" if row["pilot"] is not None else "None",  
                                             ))
-            print("-" * 175)
-
-            # get list of flight id options from the table (add "0" for 'go back' option):
-            list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
-            
-            # prompt the user to select an option: 
-            __user_input = request_user_input_in_list(">>> For details and changes, select flight id (0 to go back): ", list_flight_ids_str)
-
-            # redirect as per user selection:
-            if __user_input =="0" :
-                self.view_menu() 
-            else:
-                self.view_details_one_flight(int(__user_input))
-
-        except Exception as e: # if exception, print + redirect to flight menu page
-            print("Error : " + str(e))           
-            self.view_menu() 
-
-
-    ###############################################################################################################################
-    def view_flights_by_datetime(self):
-        '''
-        display all flights departing on a certain date
-        + prompt user to select one flight for details or make changes
-        '''
-        self.parent_view = self.view_flights_by_datetime # to go back to this view when user goes back from detail view
-
-        try:
-            # get data from select query:
-
-            print(self.page_selected_datetime)
-            data = self.flightTable.select_flights_by_departure_datetime(self.page_selected_datetime)
-
-            # display extracted data as a table:
-            # os.system('cls' if os.name == 'nt' else 'clear')            
-            print("\n*************************************************************")
-            print("************************************************************* FLIGHTS BY DEPARTURE DATE")   
-            print("*************************************************************\n")
-
-            formatspecifier = "{:<6}{:<16}{:<8}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}{:<6}"
-            print(formatspecifier.format("id",
-                                        "departure date", 
-                                        "time", 
-                                        "from airport", 
-                                        "city", 
-                                        "country", 
-                                        "to airport", 
-                                        "city", 
-                                        "country", 
-                                        "status",
-                                        "pilot"
-                                        ))
-            print("-" * 150)
-
-            for row in data:
-                print(formatspecifier.format(row["id"], 
-                                            row["departure_date"][:10], 
-                                            row["departure_time"][:8], 
-                                            row["departure_airport"][:16], 
-                                            row["departure_city"][:12], 
-                                            row["departure_country"][:12], 
-                                            row["arrival_airport"][:16], 
-                                            row["arrival_city"][:12], 
-                                            row["arrival_country"][:12], 
-                                            row["status"],
-                                            row["pilot_id"]
-                                            ))
-            print("-" * 150)
+            print("-" * 185)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -326,35 +256,39 @@ class FlightPage:
             print("************************************************************* FLIGHTS BY DEPARTURE AIRPORT")   
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<16}{:<8}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}{:<6}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
             print(formatspecifier.format("id",
-                                        "departure date", 
+                                        "departure",
                                         "time", 
                                         "from airport", 
                                         "city", 
                                         "country", 
-                                        "to airport", 
+                                        "arrival",
+                                        "time",
+                                        "at airport", 
                                         "city", 
                                         "country", 
                                         "status",
                                         "pilot"
                                         ))
-            print("-" * 150)
+            print("-" * 185)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
-                                            row["departure_date"][:10], 
-                                            row["departure_time"][:8], 
-                                            row["departure_airport"][:16], 
+                                            datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["departure_time"],                                                     
+                                            row["departure_airport"][:24], 
                                             row["departure_city"][:12], 
-                                            row["departure_country"][:12], 
-                                            row["arrival_airport"][:16], 
+                                            row["departure_country"][:12],
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["arrival_time"],                                               
+                                            row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
                                             row["status"],
-                                            row["pilot_id"]
+                                            "assigned" if row["pilot"] is not None else "None",  
                                             ))
-            print("-" * 150)
+            print("-" * 185)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -392,35 +326,39 @@ class FlightPage:
             print("************************************************************* FLIGHTS BY ARRIVAL AIRPORT")   
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<16}{:<8}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}{:<6}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
             print(formatspecifier.format("id",
-                                        "departure date", 
+                                        "departure",
                                         "time", 
                                         "from airport", 
                                         "city", 
                                         "country", 
-                                        "to airport", 
+                                        "arrival",
+                                        "time",
+                                        "at airport", 
                                         "city", 
                                         "country", 
                                         "status",
                                         "pilot"
                                         ))
-            print("-" * 150)
+            print("-" * 185)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
-                                            row["departure_date"][:10], 
-                                            row["departure_time"][:8], 
-                                            row["departure_airport"][:16], 
+                                            datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["departure_time"],                                                     
+                                            row["departure_airport"][:24], 
                                             row["departure_city"][:12], 
-                                            row["departure_country"][:12], 
-                                            row["arrival_airport"][:16], 
+                                            row["departure_country"][:12],
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["arrival_time"],                                               
+                                            row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
                                             row["status"],
-                                            row["pilot_id"]
+                                            "assigned" if row["pilot"] is not None else "None",  
                                             ))
-            print("-" * 150)
+            print("-" * 185)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -618,7 +556,7 @@ class FlightPage:
             print("0. to go back")
             print("M. to main menu")
             print("----------------------")
-            __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8","M"])
+            __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8","9","M"])
 
             if __user_input == "0":
                 self.parent_view() # go back to previous view
@@ -759,127 +697,6 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to all flight menu page
             print("Error : " + str(e))   
             self.view_menu() 
-
-
-    # ###############################################################################################################################
-    # def view_create_flight(self):
-    #     '''
-    #     display form for flight creation
-    #     '''
-    #     self.parent_view = self.view_create_flight # to go back to this view when user goes back from detail view
-
-    #     try:
-    #         confirmed = False
-
-    #         # data = {
-    #         #     'id': "",
-    #         #     'departure_airport_id': "",
-    #         #     'departure_airport': "",
-    #         #     'departure_city':"",
-    #         #     'departure_country':"",
-    #         #     'arrival_airport_id': "",
-    #         #     'arrival_airport': "",
-    #         #     'arrival_city':"",
-    #         #     'arrival_country':"",
-    #         #     'status_id': "",
-    #         #     'status': "",                
-    #         #     'pilot_id': "",
-    #         #     'pilot_first_name':"",
-    #         #     'pilot_last_name':"",
-    #         #     'departure_datetime': "",
-    #         #     'departure_date':"",
-    #         #     'departure_time':"",
-    #         #     'duration': "",
-    #         # }
-    #         data = {}
-
-
-    #         while not confirmed:
-    #             os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
-
-    #             print("\n*************************************************************")
-    #             print("************************************************************* NEW FLIGHT")   
-    #             print("*************************************************************")
-    #             # print("{:<24}{:<24}\n".format("flight id", data["id"] if data["id"] is not None else ""))
-
-    #             # print("fff" + data["departure_airport_id"] is None)
-    #             departure_airport = data["departure_airport"] + ", " + data["departure_city"] + ", " + data["departure_country"] if "departure_airport_id" in data else ""
-    #             print("{:<24}{:<24}".format("departure airport", departure_airport))            
-    #             print("{:<24}{:<24}".format("departure date", data["departure_date"] if "departure_date" in data else ""))
-    #             print("{:<24}{:<24}\n".format("departure time", data["departure_time"] if "departure_time" in data else ""))
-
-    #             arrival_airport = data["arrival_airport"] + ", " + data["arrival_city"] + ", " + data["arrival_country"] if "arrival_airport" in data else ""
-    #             print("{:<24}{:<24}\n".format("arrival airport", arrival_airport))
-
-    #             print("{:<24}{:<24}\n".format("flight duration", data["duration"] if "duration" in data else ""))
-
-    #             print("{:<24}{:<24}".format("status", data["status"] if "status" in data else ""))
-                
-
-    #             pilot = data["pilot_first_name"] + ", " + data["pilot_last_name"] if "pilot_id" in data else ""
-    #             print("{:<24}{:<24}\n\n".format("pilot", pilot))
-
-
-    #             if "departure_airport_id" not in data:
-    #                 print("------------------------------------------------------------- Enter departure airport:")  
-
-    #                 selected = self.airportPage.view_all_airport_selection()
-    #                 print(selected)
-    #                 print("selected departure airport : ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
-    #                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #                 if __confirmation == "Y":
-    #                     data["departure_airport_id"] = selected["id"]
-    #                     data["departure_airport"] = selected["name"]
-    #                     data["departure_city"] = selected["city"]
-    #                     data["departure_country"] = selected["country"]
-    #                 else:
-    #                     self.parent_view
-
-
-
-    #             if "departure_date" not in data:
-    #                 print("------------------------------------------------------------- Enter departure date:")  
-
-    #                 selected = request_user_input_date(">>> Enter date (YYYY-MM-DD): ")
-    #                 print(selected)
-    #                 print("selected departure date ", selected)
-    #                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #                 if __confirmation == "Y":
-    #                     data["departure_date"] = selected
-    #                 else:
-    #                     self.parent_view
-
-
-
-
-
-    #                 # id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #                 # departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
-    #                 # arrival_airport_id INTEGER NOT NULL REFERENCES airport(id),
-    #                 # status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id),
-    #                 # pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id),
-    #                 # departure_datetime DATETIME,
-    #                 # duration TIME NOT NULL
-
-
-
-
-
-
-
-
-
-
-
-
-    #     except Exception as e: # if exception, print + redirect to menu page
-    #         print("Error : " + str(e))           
-    #         self.view_menu() 
-
-
 
 
     # ###############################################################################################################################
@@ -1033,7 +850,7 @@ class FlightPage:
 
                 else:
 
-                    print(data)
+                    # print(data)
 
                     __confirmation = request_user_input_in_list(">>> Confirm flight creation ? (Y/N): ", ["Y","N"])
 
@@ -1054,216 +871,4 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
-
-    # ###############################################################################################################################
-    # def view_create_flight(self):
-    #     '''
-    #     display details of one flight
-    #     + menu for editing/deleting the flight
-    #     + prompt user for menu selection
-    #     '''
-
-    #     try:
-    #         # data = self.temp_flight_data
-
-
-    #         data = {
-    #             'id': "",
-    #             'departure_airport_id': "",
-    #             'departure_airport': "",
-    #             'departure_city':"",
-    #             'departure_country':"",
-    #             'arrival_airport_id': "",
-    #             'arrival_airport': "",
-    #             'arrival_city':"",
-    #             'arrival_country':"",
-    #             'status_id': "",
-    #             'status': "",                
-    #             'pilot_id': "",
-    #             'pilot_first_name':"",
-    #             'pilot_last_name':"",
-    #             'departure_datetime': "",
-    #             'departure_date':"",
-    #             'departure_time':"",
-    #             'duration': "",
-    #         }
-
-            
-    #         os.system('cls' if os.name == 'nt' else 'clear')
-    #         print("\n*************************************************************")
-    #         print("************************************************************* NEW FLIGHT")   
-    #         print("*************************************************************")
-    #         print("{:<24}{:<24}\n".format("flight id",data["id"]))
-    #         print("{:<24}{:<24}".format("departure airport", data["departure_airport"] + ", " + data["departure_city"] + ", " + data["departure_country"]))            
-    #         print("{:<24}{:<24}".format("departure date", data["departure_date"]))
-    #         print("{:<24}{:<24}\n".format("departure time", data["departure_time"]))
-
-    #         print("{:<24}{:<24}".format("arrival airport", data["arrival_airport"] + ", " + data["arrival_city"] + ", " + data["arrival_country"]))
-    #         print("{:<24}{:<24}".format("arrival date", data["arrival_date"]))
-    #         print("{:<24}{:<24}\n".format("arrival time", data["arrival_time"]))
-
-    #         print("{:<24}{:<24}\n".format("flight duration", data["duration"]))
-
-    #         print("{:<24}{:<24}".format("status", data["status"]))
-            
-    #         if data["pilot_id"] is None:
-    #             print("{:<24}{:<24}".format("pilot", "None"))
-    #         else:
-    #             print("{:<24}{:<24}".format("pilot", data["pilot_first_name"] + " " + data["pilot_last_name"]))
-    #         print("------------------------------------------------------------- Make changes:")  
-
-    #         # print("Make changes:")
-    #         print("1. Add departure date")
-    #         print("2. Add departure time")
-    #         print("3. Add departure airport")
-    #         print("4. Add arrival airport")
-    #         print("5. Add duration")
-    #         print("6. Add status")
-    #         print("7. Assign pilot")       
-    #         print("8. Confirm new flight")            
-    #         print("0. to go back")
-    #         print("M. to main menu")
-    #         print("----------------------")
-    #         __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8","M"])
-
-    #         if __user_input == "0":
-    #             self.parent_view() # go back to previous view
-
-    #         elif __user_input == "M":
-    #             self.view_menu()
-
-    #         elif __user_input == "1":
-    #             print(f"------------------------------------------------------------ Enter new departure date: ")
-    #             selected = request_user_input_date(">>> Enter new date (YYYY-MM-DD): ")
-
-    #             print("replace with ", selected.strftime("%Y-%m-%d"))
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "departure_date", selected.strftime("%Y-%m-%d"))
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")                    
-    #                 self.view_details_one_flight(flight_id)
-
-    #         elif __user_input == "2":
-    #             print(f"------------------------------------------------------------ Enter new departure time: ")
-    #             selected = request_user_input_time(">>> Enter new time (HR:MM): ")
-
-    #             print("replace with ", selected.strftime("%H:%M"))
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "departure_time", selected.strftime("%H:%M"))
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")                    
-    #                 self.view_details_one_flight(flight_id)
-
-    #         elif __user_input == "3" or __user_input == "4":
-    #             print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'arrival'} airport:")
-
-    #             selected = self.airportPage.view_all_airport_selection()
-    #             print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "arrival_airport_id", selected["id"])
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")                    
-    #                 self.view_details_one_flight(flight_id)
-
-    #         elif __user_input == "5":
-    #             print(f"------------------------------------------------------------ Enter new duration: ")
-    #             selected = request_user_input_time(">>> Enter new time (HR:MM): ")
-
-    #             print("replace with ", selected.strftime("%H:%M"))
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "duration", selected.strftime("%H:%M"))
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")                    
-    #                 self.view_details_one_flight(flight_id)
-
-
-    #         elif __user_input == "6":
-    #             print(f"------------------------------------------------------------ Enter new status: ")
-    #             selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: departed, 2: landed, 3: delayed, 4: cancelled): ", ["0","1","2","3","4"])
-
-    #             print("replace with ", "on time" if selected == "0" else "departed" if selected == "1" else "landed" if selected == "2" else "delayed" if selected == "3" else "cancelled")
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")                    
-    #                 self.view_details_one_flight(flight_id)
-
-    #         elif __user_input == "7":
-    #             print(f"------------------------------------------------------------ Select new pilot:")
-    #             from_datetime = datetime.strptime(f"{data['departure_date']} {data['departure_time']}", "%Y-%m-%d %H:%M") - timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
-    #             from_datetime_str = from_datetime.strftime("%Y-%m-%d %H:%M") 
-    #             to_datetime = datetime.strptime(f"{data['arrival_date']} {data['arrival_time']}", "%Y-%m-%d %H:%M") + timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
-    #             to_datetime_str = to_datetime.strftime("%Y-%m-%d %H:%M") 
-                
-    #             selected = self.pilotPage.view_available_pilots_by_period(from_datetime_str, to_datetime_str)
-
-    #             print("replace with ", selected["first_name"] + ", " + selected["last_name"])
-    #             __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 update_status = self.flightTable.update_flight(flight_id, "pilot_id", selected["id"])
-    #                 print(update_status)
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("cancelled update")
-    #                 __ = input("(press Enter)")
-    #                 self.view_details_one_flight(flight_id)
-
-    #         elif __user_input == "8":
-    #             print(f"------------------------------------------------------------ Unassign current pilot:")
-
-    #             if data["pilot_id"] is None:
-    #                 print("invalid action (no pilot assigned)")
-    #                 __ = input("(press Enter)")
-    #                 self.view_details_one_flight(flight_id)
-    #             else:
-    #                 print("unassign pilot : ", data["pilot_first_name"] + ", " + data["pilot_last_name"] + " (id=" + str(data["pilot_id"]) + ")")
-    #                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-    #                 if __confirmation == "Y":
-    #                     update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)
-    #                     print(update_status)
-    #                     self.view_details_one_flight(flight_id)
-    #                 else:
-    #                     print("cancelled update")
-    #                     __ = input("(press Enter)")                        
-    #                     self.view_details_one_flight(flight_id)
-            
-    #         elif __user_input == "9":
-    #             print(f"------------------------------------------------------------ Delete flight:")
-    #             __confirmation = request_user_input_in_list(">>> Confirm deletion ? (Y/N): ", ["Y","N"])
-    #             if __confirmation == "Y":
-    #                 deletion_status = self.flightTable.delete_flight(flight_id)
-    #                 print(deletion_status)
-    #                 self.parent_view()  # go back to previous view
-    #             else:
-    #                 print("cancelled deletion")
-    #                 __ = input("(press Enter)")
-    #                 self.view_details_one_flight(flight_id)            
-
-
-
-
-    #     except Exception as e: # if exception, print + redirect to all flight menu page
-    #         print("Error : " + str(e))   
-    #         self.view_menu() 
 
