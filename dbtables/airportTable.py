@@ -29,6 +29,26 @@ class AirportTable:
         self.cur = self.conn.cursor()
 
     ###############################################################################################################################
+    def select_all_airports(self):
+        '''
+        fetch all the airports     
+        '''
+        try:
+            self.get_connection()
+            self.cur.execute('''
+                            SELECT a.id AS id, a.name AS "name", a.city AS "city", a.country AS "country"
+                            FROM airport a
+                             ''')
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+    ###############################################################################################################################
     def select_all_departure_airports(self):
         '''
         fetch all the airports from where at least one flight is departing

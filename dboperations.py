@@ -1,17 +1,6 @@
 import sqlite3
 
 
-# from dbmodels.flight2 import Flight
-# from dbmodels.airport import Airport
-# from dbmodels.route import Route
-
-# flights
-# - date
-# - time
-# - status
-# - route
-
-
 # TODO: db.rollback
 
 
@@ -52,9 +41,6 @@ class DBOperations:
             self.conn = sqlite3.connect("airline.db")
             self.cur = self.conn.cursor()
             self.cur.execute(self.sql_create_if_not_exist_table_schedule)
-            #   self.cur.execute('''SELECT * FROM pilot''')
-            #   result = self.cur.fetchone()
-            #   print(result)
             self.conn.commit()
         except Exception as e:
             print(e)

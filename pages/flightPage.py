@@ -1,15 +1,11 @@
 import os
 from datetime import datetime, timedelta
 
-
 from dbtables.flightTable import FlightTable
 from pages.airportPage import AirportPage
 from pages.pilotPage import PilotPage
 
 from constants import PILOT_AVAILABILITY_MARGIN_DAYS
-
-
-
 from utils import request_user_input_int, request_user_input_in_list, request_user_input_date, request_user_input_time
 
 
@@ -92,9 +88,11 @@ class FlightPage:
             self.view_all_unassigned_scheduled_flights()
 
         elif __user_input == "6": 
-            return
+            self.view_create_flight()
+
         elif __user_input == "7": 
             self.view_past_flights()
+
         elif __user_input == "8": 
             return        
         else:
@@ -510,18 +508,6 @@ class FlightPage:
             self.view_menu() 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     ###############################################################################################################################
     def view_past_flights(self):
         '''
@@ -582,13 +568,6 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
-
-
-
-
-
-
 
 
     ###############################################################################################################################
@@ -679,7 +658,7 @@ class FlightPage:
             elif __user_input == "3" or __user_input == "4":
                 print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'arrival'} airport:")
 
-                selected = self.airportPage.view_airport_selection()
+                selected = self.airportPage.view_all_airport_selection()
                 print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
@@ -781,4 +760,124 @@ class FlightPage:
             self.view_menu() 
 
 
-   
+    ###############################################################################################################################
+    def view_create_flight(self):
+        '''
+        display form for flight creation
+        '''
+        self.parentView = self.view_create_flight # to go back to this view when user goes back from detail view
+
+        try:
+            confirmed = False
+
+            # data = {
+            #     'id': "",
+            #     'departure_airport_id': "",
+            #     'departure_airport': "",
+            #     'departure_city':"",
+            #     'departure_country':"",
+            #     'arrival_airport_id': "",
+            #     'arrival_airport': "",
+            #     'arrival_city':"",
+            #     'arrival_country':"",
+            #     'status_id': "",
+            #     'status': "",                
+            #     'pilot_id': "",
+            #     'pilot_first_name':"",
+            #     'pilot_last_name':"",
+            #     'departure_datetime': "",
+            #     'departure_date':"",
+            #     'departure_time':"",
+            #     'duration': "",
+            # }
+            data = {}
+
+
+            while not confirmed:
+                os.system('cls' if os.name == 'nt' else 'clear')
+
+
+
+                print("\n*************************************************************")
+                print("************************************************************* NEW FLIGHT")   
+                print("*************************************************************")
+                # print("{:<24}{:<24}\n".format("flight id", data["id"] if data["id"] is not None else ""))
+
+                # print("fff" + data["departure_airport_id"] is None)
+                departure_airport = data["departure_airport"] + ", " + data["departure_city"] + ", " + data["departure_country"] if "departure_airport_id" in data else ""
+                print("{:<24}{:<24}".format("departure airport", departure_airport))            
+                print("{:<24}{:<24}".format("departure date", data["departure_date"] if "departure_date" in data else ""))
+                print("{:<24}{:<24}\n".format("departure time", data["departure_time"] if "departure_time" in data else ""))
+
+                arrival_airport = data["arrival_airport"] + ", " + data["arrival_city"] + ", " + data["arrival_country"] if "arrival_airport" in data else ""
+                print("{:<24}{:<24}\n".format("arrival airport", arrival_airport))
+
+                print("{:<24}{:<24}\n".format("flight duration", data["duration"] if "duration" in data else ""))
+
+                print("{:<24}{:<24}".format("status", data["status"] if "status" in data else ""))
+                
+
+                pilot = data["pilot_first_name"] + ", " + data["pilot_last_name"] if "pilot_id" in data else ""
+                print("{:<24}{:<24}\n\n".format("pilot", pilot))
+
+
+                if "departure_airport_id" not in data:
+                    print("------------------------------------------------------------- Enter departure airport:")  
+
+                    selected = self.airportPage.view_all_airport_selection()
+                    print(selected)
+                    print("selected departure airport : ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["departure_airport_id"] = selected["id"]
+                        data["departure_airport"] = selected["name"]
+                        data["departure_city"] = selected["city"]
+                        data["departure_country"] = selected["country"]
+                    else:
+                        self.parentView
+
+
+
+                if "departure_date" not in data:
+                    print("------------------------------------------------------------- Enter departure date:")  
+
+                    selected = request_user_input_date(">>> Enter date (YYYY-MM-DD): ")
+                    print(selected)
+                    print("selected departure date ", selected)
+                    __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
+                    if __confirmation == "Y":
+                        data["departure_date"] = selected
+                    else:
+                        self.parentView
+
+
+
+
+
+                    # id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    # departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
+                    # arrival_airport_id INTEGER NOT NULL REFERENCES airport(id),
+                    # status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id),
+                    # pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id),
+                    # departure_datetime DATETIME,
+                    # duration TIME NOT NULL
+
+
+
+
+
+
+
+
+
+
+
+
+        except Exception as e: # if exception, print + redirect to menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
+
+
+
+
+
