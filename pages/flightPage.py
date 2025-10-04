@@ -22,6 +22,7 @@ class FlightPage:
         self.page_selected_airport_id = None
         self.temp_flight_data = {}
 
+    ###############################################################################################################################
     def view_menu(self):
 
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -464,33 +465,39 @@ class FlightPage:
             print("************************************************************* PAST FLIGHTS")  
             print("*************************************************************\n")
 
-            formatspecifier = "{:<6}{:<18}{:<14}{:<20}{:<16}{:<16}{:<20}{:<16}{:<16}{:<12}"
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
             print(formatspecifier.format("id",
-                                        "departure date", 
+                                        "departure",
                                         "time", 
                                         "from airport", 
                                         "city", 
                                         "country", 
-                                        "to airport", 
+                                        "arrival",
+                                        "time",
+                                        "at airport", 
                                         "city", 
                                         "country", 
-                                        "status"
+                                        "status",
+                                        "pilot"
                                         ))
-            print("-" * 150)
+            print("-" * 185)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
-                                            row["departure_date"][:10], 
-                                            row["departure_time"][:10], 
-                                            row["departure_airport"][:16], 
+                                            datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["departure_time"],                                                     
+                                            row["departure_airport"][:24], 
                                             row["departure_city"][:12], 
-                                            row["departure_country"][:12], 
-                                            row["arrival_airport"][:16], 
+                                            row["departure_country"][:12],
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["arrival_time"],                                               
+                                            row["arrival_airport"][:24],                                             
                                             row["arrival_city"][:12], 
                                             row["arrival_country"][:12], 
-                                            row["status"]
+                                            row["status"],
+                                            "assigned" if row["pilot"] is not None else "None",  
                                             ))
-            print("-" * 150)
+            print("-" * 185)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
