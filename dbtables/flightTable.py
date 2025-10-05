@@ -58,8 +58,8 @@ class FlightTable:
                              f.departure_airport_id=a1.id 
                              AND f.arrival_airport_id=a2.id 
                              AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now', 'localtime')          
-                             ORDER BY f.departure_datetime ASC
+                             AND datetime(f.departure_datetime) > datetime('now', 'localtime')          
+                             ORDER BY datetime(f.departure_datetime) ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
@@ -306,7 +306,6 @@ class FlightTable:
 
     ###############################################################################################################################
     def create_flight(self, data):
-
         try:
             self.get_connection()
             query = f"INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES (?,?,?,?,?,?)"
@@ -327,4 +326,68 @@ class FlightTable:
             return "failed creation"
         finally:
             self.conn.close()
+
+    ###############################################################################################################################
+    def select_nb_status_ytd_pc(self, status_id):
+        try:
+            self.get_connection()
+            self.cur.execute(f"""
+                    SELECT 
+                    CASE 
+                        WHEN (
+                            SELECT COUNT(*) FROM flight f 
+                                WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                            ) = 0 
+                        THEN NULL
+                        ELSE (
+                            SELECT COUNT(*) FROM flight f 
+                                WHERE f.status_id={status_id}
+                                AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                            ) * 1.0 
+                            / (
+                            SELECT COUNT(*) FROM flight f 
+                                WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                            )
+                        END AS result_pc;            
+            """)
+            
+            row = self.cur.fetchone()  # query results as list of sqlite3 Row objects
+            result = dict(row)
+            return result["result_pc"]
+
+        except Exception as e:
+            print(e)
+            return "failed select"
+        finally:
+            self.conn.close()
+
+
+
+    ###############################################################################################################################
+    def select_nb_unassigned_scheduled_flights(self):
+        try:
+            self.get_connection()
+            self.cur.execute(f"""
+                    SELECT COUNT(f.id) AS result_nb
+                    FROM flight f, airport a1, airport a2, status s
+                    LEFT JOIN pilot p ON p.id=f.pilot_id
+                    WHERE
+                        f.departure_airport_id=a1.id
+                        AND f.arrival_airport_id=a2.id
+                        AND f.status_id=s.id
+                        AND (f.pilot_id IS NULL OR p.id IS NULL)
+                        AND datetime(f.departure_datetime) > datetime('now', 'localtime')
+                        ORDER BY f.departure_datetime ASC;          
+            """)
+            
+            row = self.cur.fetchone()  # query results as list of sqlite3 Row objects
+            result = dict(row)
+            return result["result_nb"]
+
+        except Exception as e:
+            print(e)
+            return "failed select"
+        finally:
+            self.conn.close()
+
 

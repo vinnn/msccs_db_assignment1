@@ -434,3 +434,44 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
+
+
+
+
+    ###############################################################################################################################
+    # def view_stats(self):
+    #     '''
+    #     display stats for pilots
+    #     '''
+
+    #     try:
+    #         # get data from select queries:
+    #         data = {}
+    #         data["delayed_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(1)
+    #         print(data)
+    #         data["cancelled_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(2)  
+    #         print(data)
+    #         data["nb_unassigned_scheduled_flights"] = self.flightTable.select_nb_unassigned_scheduled_flights()
+    #         print(data)
+
+    #         # display extracted data as a table:
+    #         os.system('cls' if os.name == 'nt' else 'clear')            
+    #         print("\n*************************************************************")
+    #         print("************************************************************* FLIGHT STATISTICS")  
+    #         print("*************************************************************\n")
+
+    #         print("-" * 55)
+    #         print("{:<46}{:<24}\n".format("YTD flights delayed % : ", f"{data['delayed_ytd_pc'] * 100 :.1f}"))
+    #         print("{:<46}{:<24}\n".format("YTD flights cancelled % : ", f"{data['cancelled_ytd_pc'] * 100 :.1f}"))
+    #         print("{:<46}{:<24}".format("Nb of unassigned scheduled flights : ", f"{data['nb_unassigned_scheduled_flights'] :.0f}"))               
+    #         print("-" * 55)
+
+    #         __ = input("(press Enter)") 
+    #         self.view_menu() 
+
+    #     except Exception as e: # if exception, print + redirect to flight menu page
+    #         print("Error : " + str(e))           
+    #         self.view_menu() 
+
+
+

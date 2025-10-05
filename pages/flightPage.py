@@ -89,7 +89,8 @@ class FlightPage:
             self.view_past_flights()
 
         elif __user_input == "8": 
-            return        
+            self.view_stats()
+
         else:
             print("Invalid Choice")   
 
@@ -632,9 +633,9 @@ class FlightPage:
 
             elif __user_input == "6":
                 print(f"------------------------------------------------------------ Enter new status: ")
-                selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: departed, 2: landed, 3: delayed, 4: cancelled): ", ["0","1","2","3","4"])
+                selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: delayed, 2: cancelled): ", ["0","1","2"])
 
-                print("replace with ", "on time" if selected == "0" else "departed" if selected == "1" else "landed" if selected == "2" else "delayed" if selected == "3" else "cancelled")
+                print("replace with ", "on time" if selected == "0" else "delayed" if selected == "1" else "cancelled")
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
@@ -708,7 +709,7 @@ class FlightPage:
             self.view_menu() 
 
 
-    # ###############################################################################################################################
+    ###############################################################################################################################
     def view_create_flight(self):
         '''
         display form for flight creation
@@ -808,8 +809,8 @@ class FlightPage:
                 elif "status_id" not in data:
                     print("------------------------------------------------------------- Enter flight status:")  
 
-                    selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: departed, 2: landed, 3: delayed, 4: cancelled): ", ["0","1","2","3","4"])
-                    status = "on time" if selected == "0" else "departed" if selected == "1" else "landed" if selected == "2" else "delayed" if selected == "3" else "cancelled"
+                    selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: delayed, 2: cancelled): ", ["0","1","2"])
+                    status = "on time" if selected == "0" else "delayed" if selected == "1" else "cancelled"
                     print("selected status : " + status)
                     __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                     if __confirmation == "Y":
@@ -852,5 +853,45 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
+
+
+    ###############################################################################################################################
+    def view_stats(self):
+        '''
+        display stats for past and schedule flights
+        '''
+        # self.parent_view = self.view_past_flights # to go back to this view when user goes back from detail view
+
+        try:
+            # get data from select queries:
+            data = {}
+            data["delayed_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(1)
+            print(data)
+            data["cancelled_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(2)  
+            print(data)
+            data["nb_unassigned_scheduled_flights"] = self.flightTable.select_nb_unassigned_scheduled_flights()
+            print(data)
+
+            # display extracted data as a table:
+            os.system('cls' if os.name == 'nt' else 'clear')            
+            print("\n*************************************************************")
+            print("************************************************************* FLIGHT STATISTICS")  
+            print("*************************************************************\n")
+
+            print("-" * 55)
+            print("{:<46}{:<24}\n".format("YTD flights delayed % : ", f"{data['delayed_ytd_pc'] * 100 :.1f}"))
+            print("{:<46}{:<24}\n".format("YTD flights cancelled % : ", f"{data['cancelled_ytd_pc'] * 100 :.1f}"))
+            print("{:<46}{:<24}".format("Nb of unassigned scheduled flights : ", f"{data['nb_unassigned_scheduled_flights'] :.0f}"))               
+            print("-" * 55)
+
+            __ = input("(press Enter)") 
+            self.view_menu() 
+
+        except Exception as e: # if exception, print + redirect to flight menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
+
+
+
 
 
