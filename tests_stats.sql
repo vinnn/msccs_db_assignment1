@@ -9,7 +9,8 @@
 SELECT COUNT(f.id) 
 FROM flight f
 WHERE f.status_id=1
-    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'));
+    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+    AND datetime(f.departure_datetime) < datetime('now');
 
 
 -- % delayed flights this year to date
@@ -19,16 +20,19 @@ SELECT
     WHEN (
         SELECT COUNT(*) FROM flight f 
             WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+            AND datetime(f.departure_datetime) < datetime('now');
         ) = 0 
     THEN NULL
     ELSE (
         SELECT COUNT(*) FROM flight f 
             WHERE f.status_id=1
             AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+            AND datetime(f.departure_datetime) < datetime('now');
          ) * 1.0 
         / (
         SELECT COUNT(*) FROM flight f 
             WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+            AND datetime(f.departure_datetime) < datetime('now');
         )
     END AS delayed_ytd_pc;
 
@@ -39,7 +43,8 @@ SELECT
 SELECT COUNT(f.id) 
 FROM flight f
 WHERE f.status_id=2
-    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'));
+    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+    AND datetime(f.departure_datetime) < datetime('now');;
 
 
 -- number of scheduled unassigned flights
@@ -57,19 +62,46 @@ WHERE
 
 
 
+-- pilot flight_hours_ytd
+-- for a pilot_id=1
+SELECT SUM(f.duration)
+FROM flight f
+WHERE f.pilot_id =1
+    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+    AND datetime(f.departure_datetime) < datetime('now')
+-- above just adds the hours it seems
 
 
 
+-- pilot flight_time_ytd
+-- for a pilot_id=1
+SELECT SUM(CAST(strftime('%H', f.duration) AS INTEGER)) +
+SUM(CAST(strftime('%M', f.duration) AS INTEGER)) / 60 AS HOURS,
+SUM(CAST(strftime('%M', f.duration) AS INTEGER)) % 60 AS MINS
+FROM flight f
+WHERE f.pilot_id =1
+    AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+    AND datetime(f.departure_datetime) < datetime('now')
+-- above adds sum of hours and sum of minutes
 
 
 
-
-
-
-
-
-
-
+-- pilots flight_time_ytd
+SELECT id, first_name, last_name, hours, mins, nb_flights
+FROM pilot p
+LEFT JOIN ( 
+    SELECT f.pilot_id AS pilot_id, 
+    SUM(CAST(strftime('%H', f.duration) AS INTEGER)) +
+    SUM(CAST(strftime('%M', f.duration) AS INTEGER)) / 60 AS hours,
+    SUM(CAST(strftime('%M', f.duration) AS INTEGER)) % 60 AS mins,
+    COUNT(f.id) AS nb_flights
+    FROM flight f
+    WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+        AND datetime(f.departure_datetime) < datetime('now')
+    GROUP BY f.pilot_id
+)
+ON p.id=pilot_id
+ORDER BY id ASC
 
 
 

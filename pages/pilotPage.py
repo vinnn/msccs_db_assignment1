@@ -53,7 +53,7 @@ class PilotPage:
             self.view_create_pilot()
 
         elif __user_input == "4":
-            return     
+            self.view_stats()     
         else:
             print("Invalid Choice")   
 
@@ -439,39 +439,61 @@ class PilotPage:
 
 
     ###############################################################################################################################
-    # def view_stats(self):
-    #     '''
-    #     display stats for pilots
-    #     '''
+    def view_stats(self):
+        '''
+        display stats for pilots
+        '''
 
-    #     try:
-    #         # get data from select queries:
-    #         data = {}
-    #         data["delayed_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(1)
-    #         print(data)
-    #         data["cancelled_ytd_pc"] = self.flightTable.select_nb_status_ytd_pc(2)  
-    #         print(data)
-    #         data["nb_unassigned_scheduled_flights"] = self.flightTable.select_nb_unassigned_scheduled_flights()
-    #         print(data)
+        try:
+            # # get data from select query:
+            data = self.pilotTable.select_flight_stats_ytd()
 
-    #         # display extracted data as a table:
-    #         os.system('cls' if os.name == 'nt' else 'clear')            
-    #         print("\n*************************************************************")
-    #         print("************************************************************* FLIGHT STATISTICS")  
-    #         print("*************************************************************\n")
+            # display extracted data as a table:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\n*************************************************************")
+            print("*************************************************************  PILOT STATISTICS")  
+            print("*************************************************************\n")
 
-    #         print("-" * 55)
-    #         print("{:<46}{:<24}\n".format("YTD flights delayed % : ", f"{data['delayed_ytd_pc'] * 100 :.1f}"))
-    #         print("{:<46}{:<24}\n".format("YTD flights cancelled % : ", f"{data['cancelled_ytd_pc'] * 100 :.1f}"))
-    #         print("{:<46}{:<24}".format("Nb of unassigned scheduled flights : ", f"{data['nb_unassigned_scheduled_flights'] :.0f}"))               
-    #         print("-" * 55)
+            formatspecifier = "{:<6}{:<26}{:<26}{:<26}{:<26}"
+            print(formatspecifier.format("id",
+                                        "first name",
+                                        "last name", 
+                                        "flight time YTD", 
+                                        "number of flights YTD"
+                                        ))
+            print("-" * 175)
 
-    #         __ = input("(press Enter)") 
-    #         self.view_menu() 
+            for row in data:
 
-    #     except Exception as e: # if exception, print + redirect to flight menu page
-    #         print("Error : " + str(e))           
-    #         self.view_menu() 
+                if row["nb_flights"] is not None:
+                    row["hours"] = str(row["hours"])
+                    if row["mins"] < 10:
+                        row["mins"] = "0" + str(row["mins"])
+                    else:
+                        row["mins"] = str(row["mins"])
+
+                    print(formatspecifier.format(str(row["id"]), 
+                                                row["first_name"],                                                     
+                                                row["last_name"], 
+                                                row["hours"] + ":" + row["mins"], 
+                                                row["nb_flights"]
+                                                ))
+                else:
+                    print(formatspecifier.format(str(row["id"]), 
+                                                row["first_name"],                                                     
+                                                row["last_name"], 
+                                                'None', 
+                                                'None'
+                                                ))                    
+
+            print("-" * 175)
+
+            __ = input("(press Enter)") 
+            self.view_menu() 
+
+        except Exception as e: # if exception, print + redirect to flight menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
 
 
 

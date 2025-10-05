@@ -177,7 +177,37 @@ class PilotTable:
             self.conn.close()
 
 
+    ###############################################################################################################################
+    def select_flight_stats_ytd(self):
+        try:
+            self.get_connection()
+            self.cur.execute(f"""
+                    SELECT id, first_name, last_name, hours, mins, nb_flights
+                    FROM pilot p
+                    LEFT JOIN ( 
+                        SELECT f.pilot_id AS pilot_id, 
+                        SUM(CAST(strftime('%H', f.duration) AS INTEGER)) +
+                        SUM(CAST(strftime('%M', f.duration) AS INTEGER)) / 60 AS hours,
+                        SUM(CAST(strftime('%M', f.duration) AS INTEGER)) % 60 AS mins,
+                        COUNT(f.id) AS nb_flights
+                        FROM flight f
+                        WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                            AND datetime(f.departure_datetime) < datetime('now')
+                        GROUP BY f.pilot_id
+                    )
+                    ON p.id=pilot_id
+                    ORDER BY id ASC
+            """)
+            
+            rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
+            results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
+            return results
 
+        except Exception as e:
+            print(e)
+            return "failed select"
+        finally:
+            self.conn.close()
 
 
 

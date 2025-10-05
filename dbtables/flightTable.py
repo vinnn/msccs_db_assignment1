@@ -337,20 +337,23 @@ class FlightTable:
                         WHEN (
                             SELECT COUNT(*) FROM flight f 
                                 WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                                AND datetime(f.departure_datetime) < datetime('now')
                             ) = 0 
                         THEN NULL
                         ELSE (
                             SELECT COUNT(*) FROM flight f 
                                 WHERE f.status_id={status_id}
                                 AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                                AND datetime(f.departure_datetime) < datetime('now')
                             ) * 1.0 
                             / (
                             SELECT COUNT(*) FROM flight f 
                                 WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
+                                AND datetime(f.departure_datetime) < datetime('now')
                             )
                         END AS result_pc;            
             """)
-            
+
             row = self.cur.fetchone()  # query results as list of sqlite3 Row objects
             result = dict(row)
             return result["result_pc"]
