@@ -42,15 +42,11 @@ class FlightPage:
         print("8. Statistics")
         print("----------------------")
         print("0. to go back")
-        print("M. to main menu")
         print("----------------------")
 
         __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8", "M"])
 
-        if __user_input == "M":
-            return
-        
-        elif __user_input == "0":
+        if __user_input == "0":
             return
         
         elif __user_input == "1":

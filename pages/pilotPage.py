@@ -28,15 +28,11 @@ class PilotPage:
         print("4. Statistics")        
         print("----------------------")
         print("0. to go back")  
-        print("M. to main menu")
         print("----------------------")
 
         __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","M"])
 
-        if __user_input == "M":
-            return
-        
-        elif __user_input == "0":
+        if __user_input == "0":
             return
         
         elif __user_input == "1":
@@ -52,8 +48,6 @@ class PilotPage:
                 self.view_pilots_available_in_period()
             else: 
                 self.view_menu()
-
-
 
         elif __user_input == "3":
             self.view_create_pilot()
@@ -118,6 +112,7 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
+
 
     ###############################################################################################################################
     def view_pilots_available_in_period(self):
@@ -285,7 +280,6 @@ class PilotPage:
             self.view_menu() 
 
 
-
     ###############################################################################################################################
     def view_available_pilots_by_period(self, from_datetime, to_datetime):
         '''
@@ -327,7 +321,6 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             # self.viewMenu() 
-
 
 
     # ###############################################################################################################################

@@ -3,6 +3,7 @@ import os
 
 from pages.flightPage import FlightPage
 from pages.pilotPage import PilotPage
+from pages.airportPage import AirportPage
 from utils import request_user_input_in_list
 
 
@@ -20,6 +21,7 @@ while True:
 
   flightPage = FlightPage()
   pilotPage = PilotPage()
+  airportPage = AirportPage()
 
   __user_input = request_user_input_in_list(">>> Enter selection: ", ["1","2","3","E"])
 
@@ -29,8 +31,8 @@ while True:
     flightPage.view_menu()
   elif __user_input == "2":
     pilotPage.view_menu()
-#     flight_ops.select_all_flights()
-#   elif __user_input == "3":
+  elif __user_input == "3":
+    airportPage.view_menu()
 #     db_ops.select_all()
 #   elif __user_input == "4":
 #     pilot_ops.insert_new_pilot()  

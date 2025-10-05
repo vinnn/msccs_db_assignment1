@@ -75,7 +75,6 @@ class AirportTable:
         finally:
             self.conn.close()
 
-
     ###############################################################################################################################
     def select_all_arrival_airports(self):
         '''
@@ -102,3 +101,77 @@ class AirportTable:
             print(e)
         finally:
             self.conn.close()
+
+    ###############################################################################################################################
+    def select_one_airport(self, airport_id):
+        try:
+            self.get_connection()
+            self.cur.execute('''
+                            SELECT id, name, city, country
+                            FROM airport
+                            WHERE id=?
+                             ''',
+                             (airport_id,)
+                             )
+            
+            row = self.cur.fetchone()  # query result as sqlite3 Row object
+            result = dict(row) if row is not None else None  # transform query result as dictionary with column names as keys
+            return result
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.conn.close()
+
+    ###############################################################################################################################
+    def update_airport(self, id, field_to_update, field_new_value):
+
+        try:
+            self.get_connection()
+            query = f"UPDATE airport SET {field_to_update} = ? WHERE id= ?"
+            self.cur.execute(query, (field_new_value, id,))
+            self.conn.commit()
+            return "successful update"
+
+        except Exception as e:
+            print(e)
+            return "failed update"
+        finally:
+            self.conn.close()
+
+    ###############################################################################################################################
+    def delete_airport(self, id):
+
+        try:
+            self.get_connection()
+            query = f"DELETE FROM airport WHERE id= ?"
+            self.cur.execute(query, (id,))
+            self.conn.commit()
+            return "successful deletion"
+
+        except Exception as e:
+            print(e)
+            return "failed deletion"
+        finally:
+            self.conn.close()
+
+    ###############################################################################################################################
+    def create_airport(self, data):
+        try:
+            self.get_connection()
+            query = f"INSERT INTO airport (name, city, country) VALUES (?,?,?)"
+            self.cur.execute(query, 
+                             (data["name"],
+                              data["city"],
+                              data["country"]
+                              )
+                            )
+            self.conn.commit()
+            return "successful creation"
+
+        except Exception as e:
+            print(e)
+            return "failed creation"
+        finally:
+            self.conn.close()
+
