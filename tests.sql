@@ -158,3 +158,8 @@ WHERE
     f.pilot_id=7
     AND datetime(f.departure_datetime) > datetime('now', 'localtime')
     ORDER BY f.departure_datetime ASC
+
+
+
+
+DELETE FROM pilot WHERE id=1

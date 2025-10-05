@@ -251,9 +251,11 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "first_name", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
 
             elif __user_input == "2":
@@ -265,9 +267,11 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "last_name", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
 
             elif __user_input == "3":
@@ -279,9 +283,11 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "email", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
 
             elif __user_input == "4":
@@ -293,9 +299,11 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "phone", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)
             
             elif __user_input == "5":
@@ -304,9 +312,11 @@ class PilotPage:
                 if __confirmation == "Y":
                     deletion_status = self.pilotTable.delete_pilot(pilot_id)
                     print(deletion_status)
+                    __ = input("(press Enter)") 
                     self.parentView()  # go back to previous view
                 else:
                     print("cancelled deletion")
+                    __ = input("(press Enter)") 
                     self.view_details_one_pilot(pilot_id)            
 
 

@@ -263,9 +263,11 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "name", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
 
             elif __user_input == "2":
@@ -277,9 +279,11 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "city", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
 
             elif __user_input == "3":
@@ -291,9 +295,11 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "country", selected)
                     print(update_status)
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)
 
             elif __user_input == "4":
@@ -302,12 +308,12 @@ class AirportPage:
                 if __confirmation == "Y":
                     deletion_status = self.airportTable.delete_airport(airport_id)
                     print(deletion_status)
+                    __ = input("(press Enter)") 
                     self.parentView()  # go back to previous view
                 else:
                     print("cancelled deletion")
+                    __ = input("(press Enter)") 
                     self.view_details_one_airport(airport_id)  
-
-
 
 
         except Exception as e: # if exception, print + redirect to all flight menu page

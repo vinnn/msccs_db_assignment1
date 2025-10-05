@@ -2,18 +2,21 @@ import sqlite3
 
 class AirportTable:
 
-    sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS airport ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        name VARCHAR(20) NOT NULL, \
-        city VARCHAR(20) NOT NULL, \
-        country VARCHAR(20) NOT NULL, \
-        weather VARCHAR(20) NOT NULL \
-    );"
+    sql_create_if_not_exist_table = """
+            CREATE TABLE IF NOT EXISTS airport (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name VARCHAR(40) NOT NULL,
+                city VARCHAR(20) NOT NULL,
+                country VARCHAR(20) NOT NULL,
+                weather VARCHAR(20)
+            );
+        """
 
     ###############################################################################################################################
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
+            self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html
             self.cur = self.conn.cursor()
             self.cur.execute(self.sql_create_if_not_exist_table)
             self.conn.commit()
@@ -25,6 +28,7 @@ class AirportTable:
     ###############################################################################################################################
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
+        self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)      
         self.cur = self.conn.cursor()
 
@@ -150,8 +154,8 @@ class AirportTable:
             return "successful deletion"
 
         except Exception as e:
-            print(e)
-            return "failed deletion"
+            # print(e)
+            return "failed deletion (delete first any connected flight)"
         finally:
             self.conn.close()
 

@@ -2,18 +2,21 @@ import sqlite3
 
 class PilotTable:
 
-    sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS pilot ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        first_name VARCHAR(20) NOT NULL, \
-        last_name VARCHAR(20) NOT NULL, \
-        email VARCHAR(30) UNIQUE NOT NULL, \
-        phone VARCHAR(16) UNIQUE NOT NULL \
-    );"
+    sql_create_if_not_exist_table = """
+        CREATE TABLE IF NOT EXISTS pilot (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            first_name VARCHAR(20) NOT NULL,
+            last_name VARCHAR(20) NOT NULL,
+            email VARCHAR(30) UNIQUE NOT NULL,
+            phone VARCHAR(16) UNIQUE NOT NULL,
+            UNIQUE(first_name, last_name)
+    );"""
 
     ###############################################################################################################################
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
+            self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html
             self.cur = self.conn.cursor()
             self.cur.execute(self.sql_create_if_not_exist_table)
             self.conn.commit()
@@ -25,6 +28,7 @@ class PilotTable:
     ###############################################################################################################################
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
+        self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html        
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)
         self.cur = self.conn.cursor()
 
@@ -132,8 +136,8 @@ class PilotTable:
             return "successful deletion"
 
         except Exception as e:
-            print(e)
-            return "failed deletion"
+            # print(e)
+            return "failed deletion (delete first any assigned flight)"
         finally:
             self.conn.close()
 

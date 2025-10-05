@@ -16,15 +16,36 @@ DROP TABLE IF EXISTS airport;
 -- type of pilot_id, particularly enforced, because this can be null (if a pilot is not assigned)
 -- we want to control that this id is either an integer or the NULL value (nothing else):
 
+-- CREATE TABLE flight (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     departure_airport_id INTEGER NOT NULL,
+--     arrival_airport_id INTEGER NOT NULL,
+--     status_id INTEGER CHECK(status_id IN (0,1,2,3,4)),
+--     pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer'),
+--     departure_datetime DATETIME,
+--     duration TIME NOT NULL,
+--     FOREIGN KEY (departure_airport_id) REFERENCES airport(id) ON DELETE RESTRICT,
+--     FOREIGN KEY (arrival_airport_id) REFERENCES airport(id) ON DELETE RESTRICT,
+--     FOREIGN KEY (status_id) REFERENCES status(id) ON DELETE RESTRICT,
+--     FOREIGN KEY (pilot_id) REFERENCES pilot(id) ON DELETE RESTRICT
+-- );
+
+
 CREATE TABLE flight (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    departure_airport_id INTEGER NOT NULL REFERENCES airport(id),
-    arrival_airport_id INTEGER NOT NULL REFERENCES airport(id),
-    status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id),
-    pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id),
+    departure_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
+    arrival_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
+    status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id) ON DELETE RESTRICT,
+    pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id) ON DELETE RESTRICT,
     departure_datetime DATETIME,
     duration TIME NOT NULL
 );
+
+
+-- foreign keys defined as follow will not allow DELETE RESTRICT TO WORK..
+-- status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id) ON DELETE RESTRICT
+-- => need explicit --- ACTUALLY NOT NEEDED....
+
 
 -- insert flights in the past in 2024
 INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES

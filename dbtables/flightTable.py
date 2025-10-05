@@ -7,19 +7,23 @@ from dbtables.pilotTable import PilotTable
 
 class FlightTable:
 
-    sql_create_if_not_exist_table = "CREATE TABLE IF NOT EXISTS flight ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        routeId VARCHAR(10) NOT NULL REFERENCES route(id), \
-        statusId INTEGER NOT NULL REFERENCES status(id), \
-        pilotId INTEGER NOT NULL REFERENCES pilot(id), \
-        departureDatetime DATETIME NOT NULL, \
-        duration TIME NOT NULL \
-    );"   #TODO: update
+    sql_create_if_not_exist_table = """
+        CREATE TABLE IF NOT EXISTS flight (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            departure_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
+            arrival_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
+            status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id) ON DELETE RESTRICT,
+            pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id) ON DELETE RESTRICT,
+            departure_datetime DATETIME,
+            duration TIME NOT NULL
+        );
+    """
 
     ###############################################################################################################################
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
+            self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html            
             self.cur = self.conn.cursor()
             self.cur.execute(self.sql_create_if_not_exist_table)
             self.conn.commit()
@@ -31,6 +35,7 @@ class FlightTable:
     ###############################################################################################################################
     def get_connection(self):
         self.conn = sqlite3.connect("airline.db")
+        self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html
         self.conn.row_factory = sqlite3.Row # to obtain query results as Row objects (that can easily be converted into dictionaries)
         self.cur = self.conn.cursor()
 
