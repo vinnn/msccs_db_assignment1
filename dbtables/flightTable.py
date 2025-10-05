@@ -85,13 +85,14 @@ class FlightTable:
                              a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
                              a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
                              s.text AS "status",
-                             f.pilot_id AS "pilot"
+                             p.id AS "pilot"
                             FROM flight f, airport a1, airport a2, status s
+                            LEFT JOIN pilot p ON p.id=f.pilot_id
                             WHERE
                              f.departure_airport_id=a1.id
                              AND f.arrival_airport_id=a2.id
                              AND f.status_id=s.id
-                             AND f.pilot_id IS NULL
+                             AND (f.pilot_id IS NULL OR p.id IS NULL)
                              AND f.departure_datetime > datetime('now', 'localtime')
                              ORDER BY f.departure_datetime ASC
                              ''')
