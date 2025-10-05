@@ -19,6 +19,7 @@ class FlightPage:
         self.parent_view = self.view_menu
         self.page_selected_datetime = None # as an instance variable to enable easier navigation to parent views
         self.page_selected_airport_id = None
+        self.page_selected_pilot_id = None
 
     ###############################################################################################################################
     def view_menu(self):
@@ -34,13 +35,14 @@ class FlightPage:
         print("2. Filter by departure date")
         print("3. Filter by departure airport")
         print("4. Filter by arrival airport")
-        print("5. Unassigned flights")
-        print("6. Create new flight")
+        print("5. Filter by pilot")
+        print("6. Unassigned flights")        
+        print("7. Create new flight")
         print("----------------------")
         print("PAST FLIGHTS :")
         print("----------------------")
-        print("7. All past flights")
-        print("8. Statistics")
+        print("8. All past flights")
+        print("9. Statistics")
         print("----------------------")
         print("0. to go back")
         print("----------------------")
@@ -81,15 +83,24 @@ class FlightPage:
                 self.view_menu()
 
         elif __user_input == "5": 
-            self.view_all_unassigned_scheduled_flights()
+            # show all pilots + get user selected pilot id:
+            selected = self.pilotPage.view_all_pilots_selection()
+            if selected is not None:
+                self.page_selected_pilot_id = selected["id"]
+                self.view_flights_by_pilot()
+            else: # if user selected 0 to go back
+                self.view_menu()
 
         elif __user_input == "6": 
-            self.view_create_flight()
+            self.view_all_unassigned_scheduled_flights()
 
         elif __user_input == "7": 
-            self.view_past_flights()
+            self.view_create_flight()
 
         elif __user_input == "8": 
+            self.view_past_flights()
+
+        elif __user_input == "9": 
             self.view_stats()
 
         else:
@@ -369,6 +380,79 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             self.view_menu() 
+
+
+
+    ###############################################################################################################################
+    def view_flights_by_pilot(self):
+        '''
+        display all flights for a certain pilot
+        + prompt user to select one flight for details or make changes
+        '''
+
+        try:
+            # get data from select query:
+            data = self.flightTable.select_flights_by_pilot(self.page_selected_pilot_id)
+
+            # display extracted data as a table:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\n*************************************************************")
+            print("************************************************************* FLIGHTS BY ARRIVAL AIRPORT")   
+            print("*************************************************************\n")
+
+            formatspecifier = "{:<6}{:<14}{:<8}{:<26}{:<16}{:<16}{:<14}{:<8}{:<26}{:<16}{:<16}{:<12}{:<12}"
+            print(formatspecifier.format("id",
+                                        "departure",
+                                        "time", 
+                                        "from airport", 
+                                        "city", 
+                                        "country", 
+                                        "arrival",
+                                        "time",
+                                        "at airport", 
+                                        "city", 
+                                        "country", 
+                                        "status",
+                                        "pilot"
+                                        ))
+            print("-" * 185)
+
+            for row in data:
+                print(formatspecifier.format(row["id"], 
+                                            datetime.strptime(row["departure_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["departure_time"],                                                     
+                                            row["departure_airport"][:24], 
+                                            row["departure_city"][:12], 
+                                            row["departure_country"][:12],
+                                            datetime.strptime(row["arrival_date"], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                                            row["arrival_time"],                                               
+                                            row["arrival_airport"][:24],                                             
+                                            row["arrival_city"][:12], 
+                                            row["arrival_country"][:12], 
+                                            row["status"],
+                                            "assigned" if row["pilot"] is not None else "None",  
+                                            ))
+            print("-" * 185)
+
+            # get list of flight id options from the table (add "0" for 'go back' option):
+            list_flight_ids_str = [str(r["id"]) for r in data] + ["0"]
+            
+            # prompt the user to select an option: 
+            __user_input = request_user_input_in_list(">>> For details and changes, select flight id (0 to go back): ", list_flight_ids_str)
+
+            # redirect as per user selection:
+            if __user_input =="0" :
+                self.view_menu() 
+            else:
+                self.parent_view = self.view_flights_by_arrival_airport # to go back to this view when user goes back from detail view
+                self.view_details_one_flight(int(__user_input))
+
+        except Exception as e: # if exception, print + redirect to flight menu page
+            print("Error : " + str(e))           
+            self.view_menu() 
+
+
+
 
     ###############################################################################################################################
     def view_all_unassigned_scheduled_flights(self):
