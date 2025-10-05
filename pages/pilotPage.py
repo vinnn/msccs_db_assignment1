@@ -1,11 +1,6 @@
 import os
-from datetime import datetime, timedelta
-
 from dbtables.pilotTable import PilotTable
-from utils import request_user_input_int, request_user_input_in_list, request_user_input_name, request_user_input_email, request_user_input_phone, request_user_input_date
-
-from constants import PILOT_AVAILABILITY_MARGIN_DAYS
-
+from utils import request_user_input_in_list, request_user_input_name, request_user_input_email, request_user_input_phone, request_user_input_date
 
 class PilotPage:
 
@@ -16,6 +11,7 @@ class PilotPage:
         self.page_selected_datetime_from = None
         self.page_selected_datetime_to = None
 
+    ###############################################################################################################################
     def view_menu(self):
 
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -56,10 +52,6 @@ class PilotPage:
             self.view_stats()     
         else:
             print("Invalid Choice")   
-
-
-
-
 
     ###############################################################################################################################
     def view_all_pilots(self):
@@ -113,7 +105,6 @@ class PilotPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_pilots_available_in_period(self):
         '''
@@ -165,7 +156,6 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
 
     ###############################################################################################################################
     def view_details_one_pilot(self, pilot_id):
@@ -279,7 +269,6 @@ class PilotPage:
             print("Error : " + str(e))   
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_available_pilots_by_period(self, from_datetime, to_datetime):
         '''
@@ -321,7 +310,6 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             # self.viewMenu() 
-
 
     # ###############################################################################################################################
     def view_create_pilot(self):
@@ -419,7 +407,6 @@ class PilotPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     # ###############################################################################################################################
     def is_value_existing_in_db(self, value_to_check, col_name):
 
@@ -434,9 +421,6 @@ class PilotPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
-
-
 
     ###############################################################################################################################
     def view_stats(self):
@@ -461,7 +445,7 @@ class PilotPage:
                                         "flight time YTD", 
                                         "number of flights YTD"
                                         ))
-            print("-" * 175)
+            print("-" * 110)
 
             for row in data:
 
@@ -486,7 +470,7 @@ class PilotPage:
                                                 'None'
                                                 ))                    
 
-            print("-" * 175)
+            print("-" * 110)
 
             __ = input("(press Enter)") 
             self.view_menu() 

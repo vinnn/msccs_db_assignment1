@@ -166,7 +166,6 @@ class FlightTable:
                              ''', (on_datetime,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
-            # print(results)
             return results
 
         except Exception as e:
@@ -363,8 +362,6 @@ class FlightTable:
             return "failed select"
         finally:
             self.conn.close()
-
-
 
     ###############################################################################################################################
     def select_nb_unassigned_scheduled_flights(self):

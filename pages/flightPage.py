@@ -6,11 +6,12 @@ from pages.airportPage import AirportPage
 from pages.pilotPage import PilotPage
 
 from constants import PILOT_AVAILABILITY_MARGIN_DAYS
-from utils import request_user_input_int, request_user_input_in_list, request_user_input_date, request_user_input_time
+from utils import request_user_input_in_list, request_user_input_date, request_user_input_time
 
 
 class FlightPage:
 
+    ###############################################################################################################################
     def __init__(self):
         self.flightTable = FlightTable()
         self.airportPage = AirportPage()
@@ -29,10 +30,10 @@ class FlightPage:
         print("----------------------")
         print("SCHEDULED FLIGHTS :")
         print("----------------------")
-        print("1. Flight schedule")   # add pilot status
-        print("2. Filter by departure date")   # add pilot status
-        print("3. Filter by departure airport")   # add pilot status
-        print("4. Filter by arrival airport")   # add pilot status
+        print("1. Flight schedule")
+        print("2. Filter by departure date")
+        print("3. Filter by departure airport")
+        print("4. Filter by arrival airport")
         print("5. Unassigned flights")
         print("6. Create new flight")
         print("----------------------")
@@ -44,7 +45,7 @@ class FlightPage:
         print("0. to go back")
         print("----------------------")
 
-        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8", "M"])
+        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8"])
 
         if __user_input == "0":
             return
@@ -93,7 +94,6 @@ class FlightPage:
 
         else:
             print("Invalid Choice")   
-
 
     ###############################################################################################################################
     def view_all_scheduled_flights(self):
@@ -164,7 +164,6 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_flights_by_datetime(self):
         '''
@@ -232,7 +231,6 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
 
     ###############################################################################################################################
     def view_flights_by_departure_airport(self):
@@ -303,7 +301,6 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_flights_by_arrival_airport(self):
         '''
@@ -373,7 +370,6 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_all_unassigned_scheduled_flights(self):
         '''
@@ -442,7 +438,6 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_past_flights(self):
         '''
@@ -509,7 +504,6 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
 
     ###############################################################################################################################
     def view_details_one_flight(self, flight_id):
@@ -708,7 +702,6 @@ class FlightPage:
             print("Error : " + str(e))   
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_create_flight(self):
         '''
@@ -854,14 +847,11 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_stats(self):
         '''
         display stats for past and schedule flights
         '''
-        # self.parent_view = self.view_past_flights # to go back to this view when user goes back from detail view
-
         try:
             # get data from select queries:
             data = {}

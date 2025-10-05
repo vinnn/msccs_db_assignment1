@@ -1,17 +1,15 @@
 import os
 from dbtables.airportTable import AirportTable
-from utils import request_user_input_int, request_user_input_in_list, request_user_input_name
+from utils import request_user_input_in_list, request_user_input_name
 
 
 class AirportPage:
 
     def __init__(self):
-
         self.airportTable = AirportTable()
         self.parentView = self.view_menu
-        # self.page_selected_datetime_from = None
-        # self.page_selected_datetime_to = None
 
+    ###############################################################################################################################
     def view_menu(self):
 
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -20,12 +18,11 @@ class AirportPage:
         print("*************************************************************")
         print("1. All airports")
         print("2. Create new airport")
-        print("3. Statistics")        
         print("----------------------")
         print("0. to go back")  
         print("----------------------")
 
-        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","M"])
+        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","M"])
 
         if __user_input == "0":
             return
@@ -35,16 +32,9 @@ class AirportPage:
 
         elif __user_input == "2":
             self.view_create_airport()
-
-        elif __user_input == "3":
-            # self.view_create_airport()
-            return
  
         else:
             print("Invalid Choice")  
-
-
-
 
     ###############################################################################################################################
     def view_all_airports(self):
@@ -96,7 +86,6 @@ class AirportPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
     ###############################################################################################################################
     def view_all_airport_selection(self): 
         '''
@@ -143,7 +132,6 @@ class AirportPage:
             print("Error : " + str(e))           
             return None
         
-
     ###############################################################################################################################
     def view_departure_airport_selection(self): 
         '''
@@ -187,7 +175,6 @@ class AirportPage:
             print("Error : " + str(e))           
             return None
 
-
     ###############################################################################################################################
     def view_arrival_airport_selection(self): 
         '''
@@ -230,7 +217,6 @@ class AirportPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             return None
-
 
     ###############################################################################################################################
     def view_details_one_airport(self, airport_id):
@@ -328,7 +314,6 @@ class AirportPage:
             print("Error : " + str(e))   
             self.view_menu() 
 
-
     # ###############################################################################################################################
     def view_create_airport(self):
         '''
@@ -406,13 +391,4 @@ class AirportPage:
         except Exception as e: # if exception, print + redirect to menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
-
-
-
-
-
-
-
-
 

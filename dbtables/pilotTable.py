@@ -105,7 +105,6 @@ class PilotTable:
         finally:
             self.conn.close()
 
-
     ###############################################################################################################################
     def update_pilot(self, id, field_to_update, field_new_value):
 
@@ -122,7 +121,6 @@ class PilotTable:
         finally:
             self.conn.close()
 
-
     ###############################################################################################################################
     def delete_pilot(self, id):
 
@@ -138,7 +136,6 @@ class PilotTable:
             return "failed deletion"
         finally:
             self.conn.close()
-
 
     ###############################################################################################################################
     def create_pilot(self, data):
@@ -161,7 +158,6 @@ class PilotTable:
         finally:
             self.conn.close()
 
-
     # ###############################################################################################################################
     def select_all_values_from_col(self, col_name):
         try:
@@ -175,7 +171,6 @@ class PilotTable:
             print(e)
         finally:
             self.conn.close()
-
 
     ###############################################################################################################################
     def select_flight_stats_ytd(self):
