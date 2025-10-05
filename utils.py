@@ -35,6 +35,19 @@ def request_user_input_in_list(prompt_msg, in_list_str):
     return validated_input
 
 
+def request_user_input_datetime(prompt_msg):
+
+    valid = False
+    while not valid:
+        user_input = input(prompt_msg)
+        try:
+            validated_input = datetime.strptime(user_input, "%Y-%m-%d %H:%M")
+            valid = True
+        except ValueError:
+            print("Please enter a valid date-time input.")
+
+    return validated_input
+
 
 def request_user_input_date(prompt_msg):
 

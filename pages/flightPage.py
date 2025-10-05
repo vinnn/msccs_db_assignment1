@@ -6,7 +6,7 @@ from pages.airportPage import AirportPage
 from pages.pilotPage import PilotPage
 
 from constants import PILOT_AVAILABILITY_MARGIN_DAYS
-from utils import request_user_input_in_list, request_user_input_date, request_user_input_time
+from utils import request_user_input_in_list, request_user_input_date, request_user_input_time, request_user_input_datetime
 
 
 class FlightPage:
@@ -381,8 +381,6 @@ class FlightPage:
             print("Error : " + str(e))           
             self.view_menu() 
 
-
-
     ###############################################################################################################################
     def view_flights_by_pilot(self):
         '''
@@ -450,9 +448,6 @@ class FlightPage:
         except Exception as e: # if exception, print + redirect to flight menu page
             print("Error : " + str(e))           
             self.view_menu() 
-
-
-
 
     ###############################################################################################################################
     def view_all_unassigned_scheduled_flights(self):
@@ -624,15 +619,14 @@ class FlightPage:
             print("------------------------------------------------------------- Make changes:")  
 
             # print("Make changes:")
-            print("1. Change departure date")
-            print("2. Change departure time")
-            print("3. Change departure airport")
-            print("4. Change arrival airport")
-            print("5. Change duration")
-            print("6. Change status")
-            print("7. Assign/Change pilot")
-            print("8. Unassign current pilot")            
-            print("9. Delete flight")            
+            print("1. Change departure date/time")
+            print("2. Change departure airport")
+            print("3. Change arrival airport")
+            print("4. Change duration")
+            print("5. Change status")
+            print("6. Assign/Change pilot")
+            print("7. Unassign current pilot")            
+            print("8. Delete flight")            
             print("0. to go back")
             print("M. to main menu")
             print("----------------------")
@@ -645,38 +639,24 @@ class FlightPage:
                 self.view_menu()
 
             elif __user_input == "1":
-                print(f"------------------------------------------------------------ Enter new departure date: ")
-                selected = request_user_input_date(">>> Enter new date (YYYY-MM-DD): ")
+                print(f"------------------------------------------------------------ Enter new departure date/time: ")
+                selected = request_user_input_datetime(">>> Enter new day and time (YYYY-MM-DD HR:MM): ")
 
-                print("replace with ", selected.strftime("%Y-%m-%d"))
+                print("replace with ", selected.strftime("%Y-%m-%d %H:%M"))
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
-                    update_status = self.flightTable.update_flight(flight_id, "departure_date", selected.strftime("%Y-%m-%d"))
-                    print(update_status)
-                    __ = input("(press Enter)")
+                    update_status = self.flightTable.update_flight(flight_id, "departure_datetime", selected.strftime("%Y-%m-%d %H:%M"))
+                    print(update_status)                    
+                    update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)   #----------------------------------------
+                    print(update_status + " flight date/time changed. Please re-assign a pilot.")
+                    __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
                     __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
-            elif __user_input == "2":
-                print(f"------------------------------------------------------------ Enter new departure time: ")
-                selected = request_user_input_time(">>> Enter new time (HR:MM): ")
-
-                print("replace with ", selected.strftime("%H:%M"))
-                __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
-                if __confirmation == "Y":
-                    update_status = self.flightTable.update_flight(flight_id, "departure_time", selected.strftime("%H:%M"))
-                    print(update_status)
-                    __ = input("(press Enter)")
-                    self.view_details_one_flight(flight_id)
-                else:
-                    print("cancelled update")
-                    __ = input("(press Enter)")                    
-                    self.view_details_one_flight(flight_id)
-
-            elif __user_input == "3" or __user_input == "4":
+            elif __user_input == "2" or __user_input == "3":
                 print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'arrival'} airport:")
 
                 selected = self.airportPage.view_all_airport_selection()
@@ -685,14 +665,14 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "arrival_airport_id", selected["id"])
                     print(update_status)
-                    __ = input("(press Enter)")
+                    __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
                     __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
-            elif __user_input == "5":
+            elif __user_input == "4":
                 print(f"------------------------------------------------------------ Enter new duration: ")
                 selected = request_user_input_time(">>> Enter new time (HR:MM): ")
 
@@ -701,7 +681,9 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "duration", selected.strftime("%H:%M"))
                     print(update_status)
-                    __ = input("(press Enter)")
+                    update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)   #----------------------------------------
+                    print(update_status + " flight duration changed. Please re-assign a pilot.")                    
+                    __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
@@ -709,7 +691,7 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
 
 
-            elif __user_input == "6":
+            elif __user_input == "5":
                 print(f"------------------------------------------------------------ Enter new status: ")
                 selected = request_user_input_in_list(">>> Enter new status (0: on time, 1: delayed, 2: cancelled): ", ["0","1","2"])
 
@@ -718,14 +700,14 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "status_id", selected)
                     print(update_status)
-                    __ = input("(press Enter)")
+                    __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
                     __ = input("(press Enter)")                    
                     self.view_details_one_flight(flight_id)
 
-            elif __user_input == "7":
+            elif __user_input == "6":
                 print(f"------------------------------------------------------------ Select new pilot:")
                 from_datetime = datetime.strptime(f"{data['departure_date']} {data['departure_time']}", "%Y-%m-%d %H:%M") - timedelta(days=PILOT_AVAILABILITY_MARGIN_DAYS)
                 from_datetime_str = from_datetime.strftime("%Y-%m-%d %H:%M") 
@@ -739,14 +721,14 @@ class FlightPage:
                 if __confirmation == "Y":
                     update_status = self.flightTable.update_flight(flight_id, "pilot_id", selected["id"])
                     print(update_status)
-                    __ = input("(press Enter)")
+                    __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)
                 else:
                     print("cancelled update")
                     __ = input("(press Enter)")
                     self.view_details_one_flight(flight_id)
 
-            elif __user_input == "8":
+            elif __user_input == "7":
                 print(f"------------------------------------------------------------ Unassign current pilot:")
 
                 if data["pilot_id"] is None:
@@ -759,14 +741,14 @@ class FlightPage:
                     if __confirmation == "Y":
                         update_status = self.flightTable.update_flight(flight_id, "pilot_id", None)
                         print(update_status)
-                        __ = input("(press Enter)")
+                        __ = input("(press Enter to refresh)")
                         self.view_details_one_flight(flight_id)
                     else:
                         print("cancelled update")
                         __ = input("(press Enter)")                        
                         self.view_details_one_flight(flight_id)
             
-            elif __user_input == "9":
+            elif __user_input == "8":
                 print(f"------------------------------------------------------------ Delete flight:")
                 __confirmation = request_user_input_in_list(">>> Confirm deletion ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":

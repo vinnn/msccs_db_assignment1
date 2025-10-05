@@ -5,6 +5,7 @@ from utils import request_user_input_in_list, request_user_input_name
 
 class AirportPage:
 
+    ###############################################################################################################################
     def __init__(self):
         self.airportTable = AirportTable()
         self.parentView = self.view_menu
@@ -263,7 +264,7 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "name", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")
@@ -279,7 +280,7 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "city", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")
@@ -295,7 +296,7 @@ class AirportPage:
                 if __confirmation == "Y":
                     update_status = self.airportTable.update_airport(airport_id, "country", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_airport(airport_id)
                 else:
                     print("cancelled update")

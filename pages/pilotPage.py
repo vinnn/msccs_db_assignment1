@@ -4,6 +4,7 @@ from utils import request_user_input_in_list, request_user_input_name, request_u
 
 class PilotPage:
 
+    ###############################################################################################################################
     def __init__(self):
 
         self.pilotTable = PilotTable()
@@ -251,7 +252,7 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "first_name", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
@@ -267,7 +268,7 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "last_name", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
@@ -283,7 +284,7 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "email", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
@@ -299,7 +300,7 @@ class PilotPage:
                 if __confirmation == "Y":
                     update_status = self.pilotTable.update_pilot(pilot_id, "phone", selected)
                     print(update_status)
-                    __ = input("(press Enter)") 
+                    __ = input("(press Enter to refresh)") 
                     self.view_details_one_pilot(pilot_id)
                 else:
                     print("cancelled update")
