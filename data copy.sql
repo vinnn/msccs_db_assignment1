@@ -162,7 +162,8 @@ CREATE TABLE airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(40) NOT NULL,
     city VARCHAR(20) NOT NULL,
-    country VARCHAR(20) NOT NULL
+    country VARCHAR(20) NOT NULL,
+    weather VARCHAR(20)
 );
 
 INSERT INTO airport (name, city, country, weather) VALUES

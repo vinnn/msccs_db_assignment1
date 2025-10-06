@@ -26,7 +26,7 @@ class FlightPage:
 
         os.system('cls' if os.name == 'nt' else 'clear')
         print("\n*************************************************************")
-        print("************************************************************* FLIGHTS") 
+        print("************************************************************* FLIGHT MENU") 
         print("*************************************************************")
         print("----------------------")
         print("SCHEDULED FLIGHTS :")
@@ -657,13 +657,13 @@ class FlightPage:
                     self.view_details_one_flight(flight_id)
 
             elif __user_input == "2" or __user_input == "3":
-                print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='3' else 'arrival'} airport:")
+                print(f"------------------------------------------------------------ Select new {'departure' if __user_input=='2' else 'arrival'} airport:")
 
                 selected = self.airportPage.view_all_airport_selection()
                 print("replace with ", selected["name"] + ", " + selected["city"] + ", " + selected["country"])
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
-                    update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='3' else "arrival_airport_id", selected["id"])
+                    update_status = self.flightTable.update_flight(flight_id, "departure_airport_id" if __user_input=='2' else "arrival_airport_id", selected["id"])
                     print(update_status)
                     __ = input("(press Enter to refresh)")
                     self.view_details_one_flight(flight_id)

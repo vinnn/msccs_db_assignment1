@@ -10,7 +10,7 @@ from utils import request_user_input_in_list
 while True:
   os.system('cls' if os.name == 'nt' else 'clear')  
   print("\n*************************************************************")
-  print("************************************************************* GENERAL MENU")   
+  print("************************************************************* MAIN MENU")   
   print("*************************************************************")  
   print("1. Flights")
   print("2. Pilots")
