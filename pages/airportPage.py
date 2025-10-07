@@ -351,6 +351,7 @@ class AirportPage:
                     if __confirmation == "Y":
                         data["name"] = selected
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "city" not in data:
@@ -361,6 +362,7 @@ class AirportPage:
                     if __confirmation == "Y":
                         data["city"] = selected
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "country" not in data:
@@ -380,6 +382,7 @@ class AirportPage:
                     if __confirmation == "Y":
                         data["country"] = selected
                     else:
+                        complete = True 
                         self.parent_view
 
                 else:

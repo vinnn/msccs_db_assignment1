@@ -36,7 +36,7 @@ class FlightPage:
         print("3. Filter by departure airport")
         print("4. Filter by arrival airport")
         print("5. Filter by pilot")
-        print("6. Unassigned flights")        
+        print("6. Flights without assigned pilot")        
         print("7. Create new flight")
         print("----------------------")
         print("PAST FLIGHTS :")
@@ -117,7 +117,6 @@ class FlightPage:
         try:
             # get data from select query:
             data = self.flightTable.select_all_future_flights()
-            print(data)
 
             # display extracted data as a table:
             os.system('cls' if os.name == 'nt' else 'clear')  # clear screen before displaying page
@@ -811,6 +810,7 @@ class FlightPage:
                         data["departure_city"] = selected["city"]
                         data["departure_country"] = selected["country"]
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "departure_date" not in data:
@@ -822,18 +822,20 @@ class FlightPage:
                     if __confirmation == "Y":
                         data["departure_date"] = selected.strftime("%Y-%m-%d")
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "departure_time" not in data:
                     print("------------------------------------------------------------- Enter departure time:")  
 
-                    selected = request_user_input_time(">>> Enter new time (HR:MM): ")
+                    selected = request_user_input_time(">>> Enter time (HR:MM): ")
                     print("selected departure time ", selected.strftime("%H:%M"))
                     __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                     if __confirmation == "Y":
                         data["departure_time"] = selected.strftime("%H:%M")
                         data["departure_datetime"] = datetime.strptime(f"{data['departure_date']} {data['departure_time']}", "%Y-%m-%d %H:%M")
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "arrival_airport_id" not in data:
@@ -848,6 +850,7 @@ class FlightPage:
                         data["arrival_city"] = selected["city"]
                         data["arrival_country"] = selected["country"]
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "duration" not in data:
@@ -863,6 +866,7 @@ class FlightPage:
                         data["arrival_time"] = arrival_datetime.strftime("%H:%M")                        
                         data["duration"] = selected.strftime("%H:%M")
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "status_id" not in data:
@@ -876,6 +880,7 @@ class FlightPage:
                         data["status_id"] = selected
                         data["status"] = status
                     else:
+                        complete = True 
                         self.parent_view
 
                 elif "pilot_id" not in data:
@@ -894,6 +899,7 @@ class FlightPage:
                         data["pilot_first_name"] = selected["first_name"]
                         data["pilot_last_name"] = selected["last_name"]
                     else:
+                        complete = True 
                         self.parent_view
 
                 else:

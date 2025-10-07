@@ -79,7 +79,7 @@ class PilotPage:
                                         "email", 
                                         "phone"
                                         ))
-            print("-" * 175)
+            print("-" * 100)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
@@ -88,7 +88,7 @@ class PilotPage:
                                             row["email"], 
                                             row["phone"]
                                             ))
-            print("-" * 175)
+            print("-" * 100)
 
             # get list of pilot id options from the table (add "0" for 'go back' option):
             list_pilot_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -178,7 +178,7 @@ class PilotPage:
                                         "email", 
                                         "phone"
                                         ))
-            print("-" * 175)
+            print("-" * 100)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
@@ -187,7 +187,7 @@ class PilotPage:
                                             row["email"], 
                                             row["phone"]
                                             ))
-            print("-" * 175)
+            print("-" * 100)
 
             # get list of pilot id options from the table (add "0" for 'go back' option):
             list_pilot_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -341,7 +341,7 @@ class PilotPage:
 
             formatspecifier = "{:<6}{:<20}{:<20}{:<30}{:<20}"
             print(formatspecifier.format("id", "first_name", "last_name", "email", "phone"))
-            print("-" * 120)
+            print("-" * 100)
 
             for row in data:
                 print(formatspecifier.format(row["id"], 
@@ -350,7 +350,7 @@ class PilotPage:
                                             row["email"],
                                             row["phone"]
                                             ))
-            print("-" * 120)
+            print("-" * 100)
 
             # get list of flight id options from the table (add "0" for 'go back' option):
             list_ids_str = [str(r["id"]) for r in data] + ["0"]
@@ -400,6 +400,7 @@ class PilotPage:
                     if __confirmation == "Y":
                         data["first_name"] = selected
                     else:
+                        complete = True
                         self.parent_view
 
                 elif "last_name" not in data:
@@ -410,6 +411,7 @@ class PilotPage:
                     if __confirmation == "Y":
                         data["last_name"] = selected
                     else:
+                        complete = True
                         self.parent_view
 
                 elif "email" not in data:
@@ -428,6 +430,7 @@ class PilotPage:
                     if __confirmation == "Y":
                         data["email"] = selected
                     else:
+                        complete = True
                         self.parent_view
 
                 elif "phone" not in data:
@@ -446,6 +449,7 @@ class PilotPage:
                     if __confirmation == "Y":
                         data["phone"] = selected
                     else:
+                        complete = True
                         self.parent_view
 
                 else:
