@@ -12,9 +12,9 @@ class FlightTable:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             departure_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
             arrival_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
-            status_id INTEGER CHECK(status_id IN (0,1,2,3,4)) REFERENCES status(id) ON DELETE RESTRICT,
+            status_id INTEGER CHECK(status_id IN (0,1,2)) REFERENCES status(id) ON DELETE RESTRICT,
             pilot_id INTEGER CHECK(pilot_id IS NULL OR typeof(pilot_id) = 'integer') REFERENCES pilot(id) ON DELETE RESTRICT,
-            departure_datetime DATETIME,
+            departure_datetime DATETIME NOT NULL,
             duration TIME NOT NULL
         );
     """
@@ -23,7 +23,7 @@ class FlightTable:
     def __init__(self):
         try:
             self.conn = sqlite3.connect("airline.db")
-            self.conn.execute("PRAGMA foreign_keys = ON") # to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html            
+            self.conn.execute("PRAGMA foreign_keys = ON") # needed to enable foreign key support (eg enforce DELETE RESTRICT) https://sqlite.org/foreignkeys.html            
             self.cur = self.conn.cursor()
             self.cur.execute(self.sql_create_if_not_exist_table)
             self.conn.commit()
@@ -43,29 +43,25 @@ class FlightTable:
     def select_all_future_flights(self):
         try:
             self.get_connection()
-
-            # formatting and create new columns
-            # - LEFT JOIN the pilot table so that we have all rows of the flight table. And the column 'pilot' will contain 
-            # the pilot ids in the pilot table, or None if not found (eg if a pilot has been deleted) 
             self.cur.execute('''
-                            SELECT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id
-                            WHERE 
-                             f.departure_airport_id=a1.id 
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND datetime(f.departure_datetime) > datetime('now', 'localtime')          
-                             ORDER BY datetime(f.departure_datetime) ASC
-                             ''')
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE 
+                        datetime(f.departure_datetime) > datetime('now', 'localtime')          
+                    ORDER BY datetime(f.departure_datetime) ASC;
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -79,28 +75,27 @@ class FlightTable:
     def select_all_future_unassigned_flights(self):
         try:
             self.get_connection()
-
-            # formatting and create new columns
             self.cur.execute('''
-                            SELECT f.id AS id,
-                             date(f.departure_datetime) AS "departure_date",
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",              
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                            LEFT JOIN pilot p ON p.id=f.pilot_id
-                            WHERE
-                             f.departure_airport_id=a1.id
-                             AND f.arrival_airport_id=a2.id
-                             AND f.status_id=s.id
-                             AND (f.pilot_id IS NULL OR p.id IS NULL)
-                             AND f.departure_datetime > datetime('now', 'localtime')
-                             ORDER BY f.departure_datetime ASC
-                             ''')
+                    SELECT f.id AS id,
+                        date(f.departure_datetime) AS "departure_date",
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",              
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE 
+                        f.pilot_id IS NULL 
+                        OR p.id IS NULL
+                        AND f.departure_datetime > datetime('now', 'localtime')
+                    ORDER BY f.departure_datetime ASC;
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -116,26 +111,25 @@ class FlightTable:
             self.get_connection()
             # LEFT JOIN for pilot IN ORDER TO SHOW RESULTS EVEN IF NO PILOT ASSIGNED OR MATCHING
             self.cur.execute('''
-                            SELECT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",
-                             f.duration AS "duration",
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country",
-                             s.text AS "status",
-                             p.id AS "pilot_id", p.first_name AS "pilot_first_name", p.last_name AS "pilot_last_name"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id=p.id
-                            WHERE
-                             f.id=?
-                             AND f.departure_airport_id=a1.id 
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             ''',
-                             (flight_id,)
-                             )
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",
+                        f.duration AS "duration",
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country",
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country",
+                        s.text AS "status",
+                        p.id AS "pilot_id", p.first_name AS "pilot_first_name", p.last_name AS "pilot_last_name"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE f.id=?
+                    ''',
+                    (flight_id,)
+                    )
             
             row = self.cur.fetchone()  # query result as sqlite3 Row object
             result = dict(row) if row is not None else None  # transform query result as dictionary with column names as keys
@@ -151,24 +145,24 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT DISTINCT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
-                            WHERE 
-                             f.departure_airport_id=a1.id 
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND strftime('%Y-%m-%d', f.departure_datetime) = strftime('%Y-%m-%d', ?)
-                             ORDER BY f.departure_datetime ASC
-                             ''', (on_datetime,))
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id                         
+                    WHERE 
+                        strftime('%Y-%m-%d', f.departure_datetime) = strftime('%Y-%m-%d', ?)
+                    ORDER BY f.departure_datetime ASC
+                    ''', (on_datetime,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -183,25 +177,25 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT DISTINCT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
-                            WHERE 
-                             f.departure_airport_id=? 
-                             AND f.departure_airport_id=a1.id                              
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now', 'localtime')
-                             ORDER BY f.departure_datetime ASC
-                             ''', (airport_id,))
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE
+                        f.departure_airport_id=?
+                        AND f.departure_datetime > datetime('now', 'localtime')
+                    ORDER BY f.departure_datetime ASC
+                    ''', (airport_id,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -216,25 +210,25 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT DISTINCT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
-                            WHERE 
-                             f.arrival_airport_id=? 
-                             AND f.departure_airport_id=a1.id                              
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND f.departure_datetime > datetime('now', 'localtime')
-                             ORDER BY f.departure_datetime ASC
-                             ''', (airport_id,))
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE
+                        f.arrival_airport_id=?
+                        AND f.departure_datetime > datetime('now', 'localtime')
+                    ORDER BY f.departure_datetime ASC
+                    ''', (airport_id,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -249,25 +243,25 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT DISTINCT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id
-                            WHERE 
-                             f.pilot_id=? 
-                             AND f.departure_airport_id=a1.id
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND datetime(f.departure_datetime) > datetime('now', 'localtime')
-                             ORDER BY f.departure_datetime ASC
-                             ''', (pilot_id,))
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE 
+                        f.pilot_id=?
+                        AND datetime(f.departure_datetime) > datetime('now', 'localtime')
+                    ORDER BY f.departure_datetime ASC
+                    ''', (pilot_id,))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -282,24 +276,24 @@ class FlightTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT f.id AS id, 
-                             date(f.departure_datetime) AS "departure_date", 
-                             strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
-                             strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
-                             strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
-                             a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
-                             a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
-                             s.text AS "status",
-                             p.id AS "pilot"
-                            FROM flight f, airport a1, airport a2, status s
-                             LEFT JOIN pilot p ON f.pilot_id = p.id                             
-                            WHERE 
-                             f.departure_airport_id=a1.id 
-                             AND f.arrival_airport_id=a2.id 
-                             AND f.status_id=s.id 
-                             AND f.departure_datetime < datetime('now', 'localtime')                          
-                             ORDER BY f.departure_datetime DESC
-                             ''')
+                    SELECT f.id AS id, 
+                        date(f.departure_datetime) AS "departure_date", 
+                        strftime('%H:%M', time(f.departure_datetime)) AS "departure_time",
+                        strftime('%Y-%m-%d', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_date",
+                        strftime('%H:%M', datetime(f.departure_datetime, '+' || f.duration)) AS "arrival_time",                             
+                        a1.name AS "departure_airport", a1.city AS "departure_city", a1.country AS "departure_country", 
+                        a2.name AS "arrival_airport", a2.city AS "arrival_city", a2.country AS "arrival_country", 
+                        s.text AS "status",
+                        p.id AS "pilot"
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
+                    WHERE 
+                        f.departure_datetime < datetime('now', 'localtime')                          
+                    ORDER BY f.departure_datetime DESC
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results

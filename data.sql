@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS airport;
 -- );
 
 
-CREATE TABLE flight (
+CREATE TABLE IF NOT EXISTS flight (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     departure_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
     arrival_airport_id INTEGER NOT NULL REFERENCES airport(id) ON DELETE RESTRICT,
@@ -123,7 +123,7 @@ INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_i
 
 
 
-CREATE TABLE status (
+CREATE TABLE IF NOT EXISTS status (
     id INTEGER PRIMARY KEY,
     text VARCHAR(10) NOT NULL 
 );
@@ -134,7 +134,7 @@ INSERT INTO status (id, text) VALUES
 
 
 
-CREATE TABLE pilot (
+CREATE TABLE IF NOT EXISTS pilot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
@@ -158,7 +158,7 @@ INSERT INTO pilot (first_name, last_name, email, phone) VALUES
 
 
 
-CREATE TABLE airport (
+CREATE TABLE IF NOT EXISTS airport (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(40) NOT NULL,
     city VARCHAR(20) NOT NULL,

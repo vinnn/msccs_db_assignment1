@@ -47,7 +47,7 @@ class FlightPage:
         print("0. to go back")
         print("----------------------")
 
-        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8"])
+        __user_input = request_user_input_in_list(">>> Enter selection: ", ["0","1","2","3","4","5","6","7","8","9"])
 
         if __user_input == "0":
             return
