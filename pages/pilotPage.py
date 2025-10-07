@@ -36,12 +36,12 @@ class PilotPage:
             self.view_all_pilots()
 
         elif __user_input == "2":
-            # user selected departure date:
+            # user selected period:
             selected_datetime_from = request_user_input_date(">>> Enter period start date (YYYY-MM-DD): ")
             selected_datetime_to = request_user_input_date(">>> Enter period end date (YYYY-MM-DD): ")            
             if selected_datetime_from is not None and selected_datetime_to is not None:
-                self.page_selected_datetime_from = selected_datetime_from #.strftime("%Y-%m-%d %H:%M:%S")
-                self.page_selected_datetime_to = selected_datetime_to #.strftime("%Y-%m-%d %H:%M:%S")                
+                self.page_selected_datetime_from = selected_datetime_from
+                self.page_selected_datetime_to = selected_datetime_to                
                 self.view_pilots_available_in_period()
             else: 
                 self.view_menu()

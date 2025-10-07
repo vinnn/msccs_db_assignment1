@@ -339,7 +339,11 @@ class FlightTable:
     def create_flight(self, data):
         try:
             self.get_connection()
-            query = f"INSERT INTO flight (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) VALUES (?,?,?,?,?,?)"
+            query = f"""
+                INSERT INTO flight 
+                    (departure_airport_id, arrival_airport_id, status_id, pilot_id, departure_datetime, duration) 
+                VALUES (?,?,?,?,?,?)
+                """
             self.cur.execute(query, 
                              (int(data["departure_airport_id"]), 
                               int(data["arrival_airport_id"]), 
@@ -370,13 +374,13 @@ class FlightTable:
                                 WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
                                 AND datetime(f.departure_datetime) < datetime('now')
                             ) = 0 
-                        THEN NULL
+                        THEN 0
                         ELSE (
                             SELECT COUNT(*) FROM flight f 
                                 WHERE f.status_id={status_id}
                                 AND datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
                                 AND datetime(f.departure_datetime) < datetime('now')
-                            ) * 1.0 
+                            ) * 100.0 
                             / (
                             SELECT COUNT(*) FROM flight f 
                                 WHERE datetime(f.departure_datetime) >= datetime(strftime('%Y-01-01', 'now'))
@@ -401,16 +405,15 @@ class FlightTable:
             self.get_connection()
             self.cur.execute(f"""
                     SELECT COUNT(f.id) AS result_nb
-                    FROM flight f, airport a1, airport a2, status s
-                    LEFT JOIN pilot p ON p.id=f.pilot_id
+                    FROM flight f
+                        JOIN airport a1 ON f.departure_airport_id=a1.id
+                        JOIN airport a2 ON f.arrival_airport_id=a2.id
+                        JOIN status s ON f.status_id=s.id
+                        LEFT JOIN pilot p ON f.pilot_id = p.id
                     WHERE
-                        f.departure_airport_id=a1.id
-                        AND f.arrival_airport_id=a2.id
-                        AND f.status_id=s.id
-                        AND (f.pilot_id IS NULL OR p.id IS NULL)
+                        f.pilot_id IS NULL 
                         AND datetime(f.departure_datetime) > datetime('now', 'localtime')
-                        ORDER BY f.departure_datetime ASC;          
-            """)
+                    """)
             
             row = self.cur.fetchone()  # query results as list of sqlite3 Row objects
             result = dict(row)

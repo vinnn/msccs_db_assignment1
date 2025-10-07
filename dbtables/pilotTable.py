@@ -36,12 +36,11 @@ class PilotTable:
     def select_all_pilots(self):
         try:
             self.get_connection()
-            # LEFT JOIN for location IN ORDER TO SHOW RESULTS EVEN IF NO LOCATION MATCHING
             self.cur.execute('''
-                            SELECT p.id AS id, p.first_name AS "first_name", p.last_name AS "last_name", p.email AS "email", p.phone AS "phone"
-                            FROM pilot p
-                            ORDER BY id ASC
-                            ''')
+                    SELECT id, first_name, last_name, email, phone
+                    FROM pilot
+                    ORDER BY id ASC
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -53,7 +52,6 @@ class PilotTable:
 
     ###############################################################################################################################
     def select_all_pilots_available_by_period(self, from_datetime, to_datetime):
-
         try:
             self.get_connection()
             # create a table of all flights that show if clash with the period
@@ -67,7 +65,7 @@ class PilotTable:
                         SELECT f.pilot_id AS "pilot_id",
                             CASE 
                                 WHEN strftime('%Y-%m-%d %H:%M', datetime(f.departure_datetime, '+' || f.duration)) < ?
-                                    OR f.departure_datetime > ?
+                                    OR datetime(f.departure_datetime) > ?
                                 THEN 0
                                 ELSE 1
                             END AS "clash"
@@ -80,7 +78,6 @@ class PilotTable:
             ''', (from_datetime, to_datetime))
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
-            # print(results)
             return results
 
         except Exception as e:
@@ -93,13 +90,12 @@ class PilotTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT id, first_name, last_name, email, phone
-                            FROM pilot
-                            WHERE id=?
-                             ''',
-                             (pilot_id,)
-                             )
-            
+                    SELECT id, first_name, last_name, email, phone
+                    FROM pilot
+                    WHERE id=?
+                    ''',
+                    (pilot_id,)
+            )
             row = self.cur.fetchone()  # query result as sqlite3 Row object
             result = dict(row) if row is not None else None  # transform query result as dictionary with column names as keys
             return result
@@ -111,7 +107,6 @@ class PilotTable:
 
     ###############################################################################################################################
     def update_pilot(self, id, field_to_update, field_new_value):
-
         try:
             self.get_connection()
             query = f"UPDATE pilot SET {field_to_update} = ? WHERE id= ?"
@@ -169,7 +164,7 @@ class PilotTable:
             self.cur.execute(f"SELECT {col_name} FROM pilot")
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row)[col_name] for row in rows]   # transform query results as list of dictionaries with column names as keys         
-            return results  # returns the list of all the phone nos
+            return results 
 
         except Exception as e:
             print(e)
@@ -197,7 +192,6 @@ class PilotTable:
                     ON p.id=pilot_id
                     ORDER BY id ASC
             """)
-            
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results

@@ -7,8 +7,7 @@ class AirportTable:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name VARCHAR(40) NOT NULL,
                 city VARCHAR(20) NOT NULL,
-                country VARCHAR(20) NOT NULL,
-                weather VARCHAR(20)
+                country VARCHAR(20) NOT NULL
             );
         """
 
@@ -40,8 +39,9 @@ class AirportTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT a.id AS id, a.name AS "name", a.city AS "city", a.country AS "country"
-                            FROM airport a
+                            SELECT id, name, city, country
+                            FROM airport
+                            ORDER BY id ASC
                              ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
@@ -61,15 +61,16 @@ class AirportTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT a.id AS id, a.name AS "name", a.city AS "city", a.country AS "country"
-                            FROM airport a
-                            WHERE id
-                            IN (
-                                SELECT f.departure_airport_id
-                                FROM flight f
-                                WHERE f.departure_datetime > datetime('now', 'localtime')
-                            )
-                             ''')
+                    SELECT id, name, city, country
+                    FROM airport
+                    WHERE id
+                        IN (
+                            SELECT f.departure_airport_id
+                            FROM flight f
+                            WHERE datetime(f.departure_datetime) > datetime('now', 'localtime')
+                        )
+                    ORDER BY id ASC
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -88,15 +89,16 @@ class AirportTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT a.id AS id, a.name AS "name", a.city AS "city", a.country AS "country"
-                            FROM airport a
-                            WHERE id
-                            IN (
-                                SELECT f.arrival_airport_id
-                                FROM flight f
-                                WHERE f.departure_datetime > datetime('now', 'localtime')
-                            )
-                             ''')
+                    SELECT id, name, city, country
+                    FROM airport
+                    WHERE id
+                        IN (
+                            SELECT f.arrival_airport_id
+                            FROM flight f
+                            WHERE datetime(f.departure_datetime) > datetime('now', 'localtime')
+                        )
+                    ORDER BY id ASC
+                    ''')
             rows = self.cur.fetchall()  # query results as list of sqlite3 Row objects
             results = [dict(row) for row in rows]   # transform query results as list of dictionaries with column names as keys
             return results
@@ -111,13 +113,12 @@ class AirportTable:
         try:
             self.get_connection()
             self.cur.execute('''
-                            SELECT id, name, city, country
-                            FROM airport
-                            WHERE id=?
-                             ''',
-                             (airport_id,)
-                             )
-            
+                    SELECT id, name, city, country
+                    FROM airport
+                    WHERE id=?
+                    ''',
+                    (airport_id,)
+            )
             row = self.cur.fetchone()  # query result as sqlite3 Row object
             result = dict(row) if row is not None else None  # transform query result as dictionary with column names as keys
             return result

@@ -935,8 +935,8 @@ class FlightPage:
             print("*************************************************************\n")
 
             print("-" * 55)
-            print("{:<46}{:<24}\n".format("YTD flights delayed : ", f"{data['delayed_ytd_pc'] * 100 :.1f}%"))
-            print("{:<46}{:<24}\n".format("YTD flights cancelled : ", f"{data['cancelled_ytd_pc'] * 100 :.1f}%"))
+            print("{:<46}{:<24}\n".format("YTD flights delayed : ", f"{data['delayed_ytd_pc'] :.1f}%"))
+            print("{:<46}{:<24}\n".format("YTD flights cancelled : ", f"{data['cancelled_ytd_pc'] :.1f}%"))
             print("{:<46}{:<24}".format("Nb of unassigned scheduled flights : ", f"{data['nb_unassigned_scheduled_flights'] :.0f}"))               
             print("-" * 55)
 
