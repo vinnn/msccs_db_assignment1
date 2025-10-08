@@ -1,10 +1,10 @@
-# msccs_db_assignment1
+## Databases and Cloud Assignment 1
 
-### Create database and insert dummy data if necessary
+##### Create database and insert dummy data if necessary
 
-run all SQL commands in setup_data.sql
-database name: airline.db
+run all SQL commands in `setup_data.sql`
+database name: `airline.db`
 
-### Run the program
+##### Run the program
 
-in the project directory: $ python3 main.py
+in the project directory: `$ python3 main.py`
