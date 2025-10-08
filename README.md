@@ -2,7 +2,7 @@
 
 ##### Create database and insert dummy data if necessary
 
-run all SQL commands in `setup_data.sql`
+run all SQL commands in `setup_data.sql`  
 database name: `airline.db`
 
 ##### Run the program
