@@ -2,7 +2,10 @@ from datetime import datetime, timedelta
 import re
 
 def request_user_input_int(prompt_msg):
-
+    '''
+    checks if the user input is an integer
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -16,10 +19,10 @@ def request_user_input_int(prompt_msg):
 
 
 def request_user_input_in_list(prompt_msg, in_list_str):
-
-    # user_input is a string type therefore convert elements of in_list as strings for comparison
-    # in_list_str = [str(s) for s in in_list]
-
+    '''
+    checks if the user input is included in the list 'in_list_str'
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -36,7 +39,10 @@ def request_user_input_in_list(prompt_msg, in_list_str):
 
 
 def request_user_input_datetime(prompt_msg):
-
+    '''
+    checks if the user input is in datetime format
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -50,7 +56,10 @@ def request_user_input_datetime(prompt_msg):
 
 
 def request_user_input_date(prompt_msg):
-
+    '''
+    checks if the user input is in a date format
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -65,7 +74,10 @@ def request_user_input_date(prompt_msg):
 
 
 def request_user_input_time(prompt_msg):
-
+    '''
+    checks if the user input is in time format
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -80,7 +92,10 @@ def request_user_input_time(prompt_msg):
 
 
 def request_user_input_name(prompt_msg):
-
+    '''
+    checks if the user input is in a person's name format (ie combination of characters, spaces and potentially dashes)
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -103,7 +118,10 @@ def request_user_input_name(prompt_msg):
 
 
 def request_user_input_email(prompt_msg):
-
+    '''
+    checks if the user input is in an email format
+    if not, prompt the user to enter a new input
+    '''
     regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
 
     valid = False
@@ -120,7 +138,10 @@ def request_user_input_email(prompt_msg):
 
 
 def request_user_input_phone(prompt_msg):
-
+    '''
+    checks if the user input is in a phone format
+    if not, prompt the user to enter a new input
+    '''
     valid = False
     while not valid:
         user_input = input(prompt_msg)
@@ -132,36 +153,6 @@ def request_user_input_phone(prompt_msg):
             print("Please enter a valid phone number (only digits, length between 8 and 16).")
 
     return user_input
-
-
-
-def add_duration_to_datetime(datetime0_str=None, duration_str=None):
-    '''
-    adds a duration expressed as "HH:MM:SS" to a datetime
-    returns the resulting datetime
-    https://stackoverflow.com/questions/19234771/adding-a-timedelta-of-the-type-hh-mm-ss-ms-to-a-datetime-object
-    '''
-
-    try:
-        datetime0_dt = datetime.strptime(datetime0_str, "%Y-%m-%d %H:%M:%S")
-        duration_dt = datetime.strptime(duration_str, "%H:%M:%S")
-        # duration_dt.hour
-        # duration_dt.minute
-
-        delta_dt = timedelta(hours=duration_dt.hour, minutes=duration_dt.minute)
-
-        datetime1_dt = datetime0_dt + delta_dt
-
-        datetime1_str = datetime1_dt.strftime("%Y-%m-%d %H:%M:%S")
-
-        print(datetime0_str)
-        print(duration_str)
-        print(datetime1_str)
-
-        return datetime1_str
-    
-    except ValueError:
-        return None
 
 
 

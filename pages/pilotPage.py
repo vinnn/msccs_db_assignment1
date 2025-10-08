@@ -337,8 +337,6 @@ class PilotPage:
             # get data from select query:
             data = self.pilotTable.select_all_pilots_available_by_period(from_datetime, to_datetime)
 
-            # print(data)
-
             formatspecifier = "{:<6}{:<20}{:<20}{:<30}{:<20}"
             print(formatspecifier.format("id", "first_name", "last_name", "email", "phone"))
             print("-" * 100)

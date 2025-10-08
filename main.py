@@ -7,9 +7,11 @@ from pages.airportPage import AirportPage
 from dbtables.statusTable import StatusTable
 from utils import request_user_input_in_list
 
-
 while True:
-  os.system('cls' if os.name == 'nt' else 'clear')  
+  # clear the terminal screen before displaying the program menu:
+  os.system('cls' if os.name == 'nt' else 'clear')
+
+  # render the main menu:
   print("\n*************************************************************")
   print("************************************************************* MAIN MENU")   
   print("*************************************************************")  
@@ -20,11 +22,13 @@ while True:
   print("E. Exit")
   print("-------------")
 
+  # Instantiate objects handling the flight, pilot, airport and status views and data:
   flightPage = FlightPage()
   pilotPage = PilotPage()
   airportPage = AirportPage()
   statusTable = StatusTable()
 
+  # prompt user for menu option selection:
   __user_input = request_user_input_in_list(">>> Enter selection: ", ["1","2","3","E"])
 
   if __user_input == "E":
@@ -34,14 +38,6 @@ while True:
   elif __user_input == "2":
     pilotPage.view_menu()
   elif __user_input == "3":
-    airportPage.view_menu()
-#     db_ops.select_all()
-#   elif __user_input == "4":
-#     pilot_ops.insert_new_pilot()  
+    airportPage.view_menu() 
   else:
     print("Invalid Choice")
-
-
-
-# ASSUMPTIONS:
-# - flight duration max is 24HRS

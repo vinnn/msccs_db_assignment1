@@ -248,7 +248,6 @@ class FlightPage:
         display all flights departing from a certain airport
         + prompt user to select one flight for details or make changes
         '''
-        # self.parent_view = self.view_flights_by_departure_airport # to go back to this view when user goes back from detail view
 
         try:
             # get data from select query:
@@ -317,7 +316,6 @@ class FlightPage:
         display all flights arriving to a certain airport
         + prompt user to select one flight for details or make changes
         '''
-        # self.parent_view = self.view_flights_by_departure_airport # to go back to this view when user goes back from detail view
 
         try:
             # get data from select query:
@@ -521,7 +519,6 @@ class FlightPage:
         '''
         display information for all past flights
         '''
-        # self.parent_view = self.view_past_flights # to go back to this view when user goes back from detail view
 
         try:
             # get data from select query:
@@ -675,6 +672,8 @@ class FlightPage:
                 print(f"------------------------------------------------------------ Enter new duration: ")
                 selected = request_user_input_time(">>> Enter new time (HR:MM): ")
 
+                # ASSUMPTION: flight duration max is 24HRS
+
                 print("replace with ", selected.strftime("%H:%M"))
                 __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                 if __confirmation == "Y":
@@ -758,10 +757,7 @@ class FlightPage:
                 else:
                     print("cancelled deletion")
                     __ = input("(press Enter)")
-                    self.view_details_one_flight(flight_id)            
-
-
-
+                    self.view_details_one_flight(flight_id)
 
         except Exception as e: # if exception, print + redirect to all flight menu page
             print("Error : " + str(e))   

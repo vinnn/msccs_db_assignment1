@@ -367,16 +367,7 @@ class AirportPage:
 
                 elif "country" not in data:
                     print("------------------------------------------------------------- Enter airport country:")  
-
                     selected = request_user_input_name(">>> Enter country name: ")
-                    # valid = False
-                    # while not valid:
-                    #     selected = request_user_input_name(">>> Enter country name: ")
-                        # if self.is_value_existing_in_db(selected, "email"): # check if the email is already in the db
-                        #     print('email address already exists. Please try again')
-                        # else:
-                        #     valid = True
-                    
                     print("selected country name: ", selected)
                     __confirmation = request_user_input_in_list(">>> Confirm ? (Y/N): ", ["Y","N"])
                     if __confirmation == "Y":
@@ -384,7 +375,6 @@ class AirportPage:
                     else:
                         complete = True 
                         self.parent_view
-
                 else:
                     __confirmation = request_user_input_in_list(">>> Confirm airport creation ? (Y/N): ", ["Y","N"])
                     if __confirmation == "Y":
